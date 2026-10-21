@@ -1,0 +1,148 @@
+{
+  "task": 50,
+  "branch": "feat/ai-workflow-readiness",
+  "base": "4c71923e14683ad20165b1d16dfd8cc39e99c9ba",
+  "scope": "Verified original-document access and shared read-only source-cell presentation; no analysis/exporter/calculation changes.",
+  "implementation": [
+    "Documents & Reports route retains ?page=excel; originals separated from generated reports.",
+    "Strict registered-company/manifest/provenance allowlist; exact served bytes rehashed before every source request.",
+    "Shared large native Streamlit dialog: actual sheets, bounded 12-row/4-column range, Excel coordinates, original values/formats/bold, highlighted target, formula text and original comments.",
+    "View in Source in Foundation mapping, Investment Issues and Company Detail evidence. Derived definitions retained separately with original operand selection.",
+    "Fresh per-opening state prevents an edited viewer coordinate from replacing a reopened citation target. Original downloads leave the viewer open."
+  ],
+  "validation": {
+    "portfolio_pytest": "89 passed in 112.89s",
+    "focused_after_review": "8 passed in 19.91s; additional 10 focused checks passed before final state-key correction",
+    "source_browser": {
+      "originals": {
+        "summit": {
+          "sha256": "52c66cf2c5b95fbfd68b4cbafcffd2d1c1fd4877cbc16a8fec75ff4eb90cbaf0",
+          "filename": "Summit_Home_Services_Sep2026 (1).xlsx",
+          "highlight": "Income Statement!D15",
+          "invalid_reference": "fails safely"
+        },
+        "tallis": {
+          "sha256": "197be0d0e0a34273206d61c47df3f63fbb22fca468a2d9c4fc497d030c49cd9b",
+          "filename": "Tallis_Brook_Accounting_Sep2026.xlsx",
+          "highlight": "Practice P&L!G12",
+          "invalid_reference": "fails safely"
+        },
+        "harrow": {
+          "sha256": "bdd9c427e57f4c55fa4a135a0126bd25f5fbdae5781b7c192067bbb937788efb",
+          "filename": "Harrow_Ridge_Environmental_FY2026.xlsx",
+          "highlight": "P&L Summary!F13",
+          "invalid_reference": "fails safely"
+        }
+      },
+      "citations": [
+        {
+          "route": "foundation",
+          "company": "summit",
+          "target": "Income Statement!D15"
+        },
+        {
+          "route": "foundation",
+          "company": "tallis",
+          "target": "Practice P&L!G12"
+        },
+        {
+          "route": "foundation",
+          "company": "harrow",
+          "target": "P&L Summary!F13"
+        },
+        {
+          "route": "issues",
+          "target": "Income Statement!K44",
+          "matches_recorded_operand": true
+        },
+        {
+          "route": "company&company=summit&finding=10000",
+          "target": "Income Statement!K44",
+          "matches_recorded_operand": true
+        }
+      ],
+      "errors": [],
+      "external_requests": [],
+      "reopened_citation_reset": "D16 inspection -> Escape -> original D15 citation"
+    },
+    "responsive_cases": 49,
+    "responsive_errors": [],
+    "responsive_external_requests": [],
+    "preserved_downloads": {
+      "gp_workbook": true,
+      "company_workbooks": 6,
+      "data_zip": true,
+      "excel_issue_source_chains": 17,
+      "independent_consumer": {
+        "bytes": 60627,
+        "standalone_consumer": "pass",
+        "company_comparisons": 3
+      }
+    },
+    "export_parity": {
+      "xlsx": [
+        {
+          "file": "portfolio-browser.xlsx",
+          "values_formats_types_links": "unchanged"
+        },
+        {
+          "file": "summit-standard.xlsx",
+          "values_formats_types_links": "unchanged"
+        },
+        {
+          "file": "summit-custom.xlsx",
+          "values_formats_types_links": "unchanged"
+        },
+        {
+          "file": "tallis-standard.xlsx",
+          "values_formats_types_links": "unchanged"
+        },
+        {
+          "file": "tallis-custom.xlsx",
+          "values_formats_types_links": "unchanged"
+        },
+        {
+          "file": "harrow-standard.xlsx",
+          "values_formats_types_links": "unchanged"
+        },
+        {
+          "file": "harrow-custom.xlsx",
+          "values_formats_types_links": "unchanged"
+        }
+      ],
+      "zip_sha256": "b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b",
+      "zip_bytes": "identical"
+    },
+    "frozen_hash_pins": 29,
+    "prepared_results_verified": 3,
+    "new_analyst_calls": 0,
+    "secret_audit": "Exact changed-path allowlist and high-confidence credential scan; no credentials/environment files read; no findings."
+  },
+  "bounded_review_corrections": [
+    "Use the existing company-export bytes/filename/warnings contract.",
+    "Do not rerun the app when downloading an original inside the viewer.",
+    "Reset viewer widget identity for every opening to preserve exact citation targets after Escape.",
+    "Open a tabular original worksheet by default; keep every actual worksheet selectable."
+  ],
+  "screenshots": [
+    "docs/images/source-documents/documents-library-desktop.png",
+    "docs/images/source-documents/documents-library-mobile.png",
+    "docs/images/source-documents/finding-original-operand-desktop.png",
+    "docs/images/source-documents/harrow-highlighted-source-desktop.png",
+    "docs/images/source-documents/source-dialog-mobile-controls.png",
+    "docs/images/source-documents/summit-highlighted-source-desktop.png",
+    "docs/images/source-documents/summit-highlighted-source-mobile.png",
+    "docs/images/source-documents/tallis-highlighted-source-desktop.png"
+  ],
+  "preview": {
+    "url": "http://127.0.0.1:8502/?page=excel",
+    "restart": "./scripts/run_portfolio_demo.sh --server.headless true",
+    "analytical_8501_pid_unchanged": 20385
+  },
+  "limitations": [
+    "Bounded worksheet reconstruction, not pixel-perfect Excel rendering; merged layouts, artwork and embedded charts are not reproduced.",
+    "Formula values use original workbook caches, or explicitly identified approved source-unit observations if no cache exists. No recalculation.",
+    "Metadata-only or unsupported multi-location evidence remains textual rather than being assigned a fabricated single cell.",
+    "A native dialog is the active scrolling surface while open; the grid itself has no internal scrolling. Phone users scroll the bounded range to inspect the target and details."
+  ]
+}

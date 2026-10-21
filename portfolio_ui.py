@@ -29,14 +29,14 @@ def shell(page, companies):
         st.markdown('<div class="gp-brand">154 Partners<span class="gp-product">Portfolio Reporting Copilot</span><small>by NL Intelligence</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
         with st.container(key='workspace_navigation'):
-            for label, destination in [('Portfolio Overview', 'overview'), ('Data Foundation','foundation'), ('Investment Issues', 'issues'), ('Company Detail', 'company'), ('Excel Reports', 'excel')]:
+            for label, destination in [('Portfolio Overview', 'overview'), ('Data Foundation','foundation'), ('Investment Issues', 'issues'), ('Company Detail', 'company'), ('Documents & Reports', 'excel')]:
                 st.button(label, key='nav_watchlist' if destination == 'issues' else 'nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
                           on_click=navigate, args=(destination, st.query_params.get('company', companies[0].id)) if destination == 'company' else (destination,))
         with st.container(key='sidebar_footer'):
             from portfolio_mobile import mobile_panel
             mobile_panel()
             st.markdown('<div class="sidebar-demo">Product Demo · Synthetic Data</div>',unsafe_allow_html=True)
-    names = {'overview': 'Overview', 'foundation':'Data Foundation', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Company Detail', 'excel': 'Excel Reports'}
+    names = {'overview': 'Overview', 'foundation':'Data Foundation', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Company Detail', 'excel': 'Documents & Reports'}
     st.markdown('<div class="gp-breadcrumb">Portfolio / '+names.get(page, 'Overview')+'<span class="gp-tag">Product Demo · Synthetic Data</span></div>', unsafe_allow_html=True)
 
 
@@ -182,6 +182,8 @@ def _full_issues(groups):
                     literal_prose(f[key])
                 st.button('View source evidence →',key='watch_'+company.id+'_'+str(f['id']),on_click=navigate,
                           args=('company',company.id,f['id']),width='stretch')
+                from portfolio_document_ui import evidence_actions
+                evidence_actions(company,f['fact_ids'],'issue_source_'+company.id+'_'+str(f['id']))
                 with st.expander('Original analysis, qualifications & source quotations'):
                     for label,key in [('Accepted finding narrative','text'),('Evidence','evidence'),('Financial implication','financial_implication'),('Investment assessment','assessment')]:
                         st.markdown('**'+label+'**');literal_prose(f[key])

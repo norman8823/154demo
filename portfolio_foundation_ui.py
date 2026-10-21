@@ -133,7 +133,7 @@ def _render_mapping(companies,view):
             by_id={r['fact_key']:r for r in rows}
             if st.session_state.get('foundation_mapping') not in by_id:st.session_state.foundation_mapping=next(iter(by_id))
             fact=st.selectbox('Mapping source',list(by_id),format_func=lambda key:by_id[key]['company_name']+' · '+by_id[key]['source_label']+' · '+by_id[key]['period']+' · '+by_id[key]['scenario']+' · '+by_id[key]['workbook_reference'],key='foundation_mapping')
-            _render_detail(catalog_detail(by_id[fact],view['lineage'],view['model']))
+            _render_detail(catalog_detail(by_id[fact],view['lineage'],view['model']),next(c for c in companies if c.id==by_id[fact]['company_id']))
 
 
 def catalog_linked_issues(entry,view):
@@ -145,7 +145,7 @@ def catalog_linked_issues(entry,view):
         for evidence in issue['evidence'])]
 
 
-def _render_detail(row):
+def _render_detail(row,company=None):
     origin=row['lineage'];formula=json.loads(origin['original_formula_json'])
     source=_fields([('Workbook',Path(origin['canonical_workbook']).name),('Worksheet',origin['source_sheet']),('Cell',origin['source_cell']),('Source label',row['source_label']),('Original value',str(row['raw_source_value']))])
     if formula:source+='<div style="margin-top:8px"><code>'+escape(formula)+'</code></div>'
@@ -158,6 +158,9 @@ def _render_detail(row):
     output+='<div class="foundation-export-copy" style="margin-top:8px">'+escape(row['target_definition'])+'</div>'
     st.markdown('<div class="foundation-detail-grid"><div class="foundation-detail"><h4>Original company input</h4>'+source+'</div><div class="foundation-detail"><h4>Normalization &amp; transformation</h4>'+transformation+'</div><div class="foundation-detail"><h4>GP-standardized output</h4>'+output+'</div></div>',unsafe_allow_html=True)
     st.caption('Entity: '+row['entity_name']+' · Accounting basis: '+row['accounting_basis']+' · Human approval: '+row['human_approval_status'])
+    if company is not None:
+        from portfolio_document_ui import source_action
+        source_action(company,origin['observed_source_fact_id'],'foundation_source_view')
     with st.expander('Full lineage and formula provenance'):
         st.caption('Source: '+row['verification_status']+' · Mapping: '+row['mapping_status'])
         st.caption('Source ID: '+row['fact_key']+' · Workbook SHA-256: '+row['workbook_sha256'])

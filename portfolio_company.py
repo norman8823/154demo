@@ -113,5 +113,10 @@ def _render_desktop_company(company,r,v):
             st.session_state.selected = st.session_state.gp_selected_finding
         views['evidence_view'](r)
         st.session_state.gp_selected_finding = st.session_state.selected
+        from portfolio_document_ui import evidence_actions
+        finding=next((f for f in r.package['ai_insights'] if f['id']==st.session_state.selected),None)
+        if finding:
+            st.subheader('Inspect original worksheet cells')
+            evidence_actions(company,finding['fact_ids'],'company_source_'+company.id+'_'+str(finding['id']))
     else:
         views['overview'](r)

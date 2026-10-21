@@ -160,3 +160,11 @@ div[class*="st-key-gp_company_"]:has(.v2-company-head) .stButton button {backgro
  [data-testid="stSidebarUserContent"]>div>[data-testid="stVerticalBlock"] {min-height:calc(100dvh - 100px);}
  [data-testid="stSidebarUserContent"] [data-testid="stLayoutWrapper"]:has(>.st-key-sidebar_footer) {margin-top:auto;}
 }
+
+/* Original worksheet preview: bounded rows/columns; page/dialog owns scrolling. */
+.source-grid{border-collapse:collapse;width:100%;table-layout:fixed;margin:8px 0 16px;font-size:.83rem;background:white;color:#172b49}
+.source-grid th,.source-grid td{border:1px solid #dbe3ed;padding:7px 8px;overflow-wrap:anywhere;vertical-align:top}
+.source-grid th{background:#eef2f7;font-weight:600;text-align:center}
+.source-grid th:first-child{width:38px}.source-grid td{text-align:right;white-space:pre-wrap}
+.source-grid .source-bold{font-weight:650}.source-grid .source-target{background:#fff1bf;outline:2px solid #b47c39;outline-offset:-2px;font-weight:700}
+@media(max-width:600px){.source-grid{font-size:.72rem}.source-grid td,.source-grid th{padding:6px 4px}}

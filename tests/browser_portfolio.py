@@ -135,17 +135,12 @@ with sync_playwright() as p:
     expect(page.get_by_role('heading', name='See where every conclusion came from', exact=True)).to_be_visible(timeout=60000)
     expect(page.get_by_role('radio', name='010000  Reported earnings materially trail plan', exact=True)).to_be_checked()
     results['deep_link_summary_evidence_regression'] = 'pass'
-    page.get_by_role('button', name='Excel Reports', exact=True).click()
-    expect(page.get_by_role('heading', name='Workbook preview', exact=True)).to_be_visible(timeout=60000)
-    for name in ['Portfolio Overview','Company Comparison','Investment Issues','Source References']:
-        page.get_by_role('combobox',name='Worksheet preview',exact=True).click()
-        page.get_by_role('option',name=name,exact=True).click()
-        check(page)
-    page.get_by_role('combobox',name='Worksheet preview',exact=True).click()
-    page.get_by_role('option',name='Portfolio Overview',exact=True).click()
-    page.wait_for_function("Array.from(document.querySelectorAll('.gp-table')).some(e=>e.checkVisibility() && e.getBoundingClientRect().width>600)")
-    page.wait_for_timeout(250)  # Allow canvas painting after the hidden tab resizes.
-    page.screenshot(path=str(OUT/'excel-preview.png'), full_page=True)
+    page.get_by_role('button', name='Documents & Reports', exact=True).click()
+    expect(page.get_by_role('heading', name='Source Documents', exact=True)).to_be_visible(timeout=60000)
+    expect(page.get_by_role('button',name='Preview',exact=True)).to_have_count(3)
+    expect(page.get_by_role('heading',name='Workbook preview',exact=True)).to_have_count(0)
+    check(page)
+    page.screenshot(path=str(OUT/'documents-library.png'),full_page=True)
     page.get_by_role('button',name='Data Foundation',exact=True).click()
     expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
     check(page)

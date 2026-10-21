@@ -12,10 +12,11 @@ def test_overview_uses_prepared_financials_and_explicit_periods():
     assert len([b for b in at.button if b.label == 'View Investment Detail →']) == 3
 
 
-def test_excel_preview_shows_workbook_currency_and_percent_formats():
+def test_documents_library_separates_originals_and_generated_reports():
     at = AppTest.from_file(str(ROOT / 'portfolio_app.py'), default_timeout=60).run()
     at.button(key='nav_excel').click().run()
     assert not at.exception
-    from html import unescape
-    table='\n'.join(unescape(m.value) for m in at.markdown if '<table' in m.value)
-    for value in ('$3,298,000','15.2%','FY2026 · annual'):assert value in table
+    assert at.title[0].value == 'Documents & Reports'
+    assert [s.value for s in at.subheader] == ['Source Documents','Generated Reports']
+    assert len([b for b in at.button if b.label == 'Preview']) == 3
+    assert not any('Workbook preview' in s.value for s in at.subheader)
