@@ -78,6 +78,10 @@ with sync_playwright() as p:
         page.locator('.st-key-open_'+slug+' button').click()
         expect(page.get_by_role('heading', name='Investment Summary', exact=True)).to_be_visible(timeout=60000)
         check(page)
+        page.locator('summary').filter(has_text='Synthetic illustrative investment').click()
+        page.wait_for_timeout(400)  # Native expander animation must finish before capturing details.
+        expect(page.get_by_text('Illustrative enterprise value ',exact=False)).to_be_visible()
+        assert page.locator('.katex').count()==0
         page.screenshot(path=str(OUT/(slug+'-summary.png')), full_page=True)
         page.get_by_role('heading', name='Management Questions', exact=True).scroll_into_view_if_needed()
         page.screenshot(path=str(OUT/(slug+'-assessment-questions.png')), full_page=True)

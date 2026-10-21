@@ -36,12 +36,13 @@ def investment_cards(companies):
 
 
 def company_investment(company):
+    from portfolio_ui import literal_prose
     investment=investments_for([company])[0];result=investment_summary([investment])
     with st.expander('Synthetic illustrative investment · '+money(result['current_equity_value'])+' equity · '+f'{result["gross_moic"]:.2f}x MOIC · '+gross_rate(result['gross_irr'])+' gross IRR'):
         st.caption(NOTICE+' · '+METHOD)
-        st.write(investment.sponsor+' · '+investment.fund+' · '+investment.investment_id)
-        st.write(f'Invested {money(result["invested_capital"])} · Realized {money(result["realized_proceeds"])} · Ownership {investment.ownership:.1%} · Valuation {investment.valuation_date}')
-        st.write(f'Illustrative enterprise value {money(investment.enterprise_value)} − gross debt {money(investment.gross_debt)} + cash {money(investment.cash)} = total common equity {money(investment.total_common_equity)}. Sponsor equity {money(investment.current_equity_value)}.')
-        st.write(investment.assumptions)
+        literal_prose(investment.sponsor+' · '+investment.fund+' · '+investment.investment_id)
+        literal_prose(f'Invested {money(result["invested_capital"])} · Realized {money(result["realized_proceeds"])} · Ownership {investment.ownership:.1%} · Valuation {investment.valuation_date}')
+        literal_prose(f'Illustrative enterprise value {money(investment.enterprise_value)} − gross debt {money(investment.gross_debt)} + cash {money(investment.cash)} = total common equity {money(investment.total_common_equity)}. Sponsor equity {money(investment.current_equity_value)}.')
+        literal_prose(investment.assumptions)
         st.dataframe(pd.DataFrame([{'Date':f.date.isoformat(),'Type':f.kind,'Sponsor USD':f.amount,'Description':f.description} for f in investment.return_cash_flows]),hide_index=True,width='stretch',column_config={'Sponsor USD':st.column_config.NumberColumn(format='dollar')})
         st.caption(result['irr_detail']+' · Ledger SHA-256 '+investment.ledger_sha256)

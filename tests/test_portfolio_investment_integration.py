@@ -54,3 +54,7 @@ def test_real_investment_cards_remain_distinct_from_verified_operating_values():
     assert not at.exception
     assert at.title[0].value=='Tallis Brook Accounting'
     assert any('0.71x MOIC' in e.label and '-9.54%' in e.label for e in at.expander)
+    company_html='\n'.join(m.value for m in at.markdown)
+    assert 'Invested &#36;21.00M · Realized &#36;0' in company_html
+    assert 'enterprise value &#36;47.00M − gross debt &#36;28.00M + cash &#36;1.00M' in company_html
+    assert 'Hypothetical &#36;47m' in company_html
