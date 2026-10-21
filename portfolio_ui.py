@@ -106,7 +106,7 @@ def shell(page, companies):
     with st.sidebar:
         st.markdown('<div class="gp-brand">▣ &nbsp;Portfolio Intelligence<br><small>GP Reporting Copilot</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
-        for label, destination in [('Portfolio Overview', 'overview'), ('Company Comparison', 'comparison'), ('Investment Issues', 'issues'), ('Company Detail', 'company'), ('Excel Reports', 'excel')]:
+        for label, destination in [('Portfolio Overview', 'overview'), ('Data Foundation','foundation'), ('Company Comparison', 'comparison'), ('Investment Issues', 'issues'), ('Company Detail', 'company'), ('Excel Reports', 'excel')]:
             st.button(label, key='nav_watchlist' if destination == 'issues' else 'nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
                       on_click=navigate, args=(destination, st.query_params.get('company', companies[0].id)) if destination == 'company' else (destination,))
         ids = [c.id for c in companies]
@@ -119,7 +119,7 @@ def shell(page, companies):
         st.divider()
         st.caption('Synthetic demonstration only')
         st.caption('Prepared results · 0 new model calls')
-    names = {'overview': 'Overview', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Company Detail', 'excel': 'Excel Reports'}
+    names = {'overview': 'Overview', 'foundation':'Data Foundation', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Company Detail', 'excel': 'Excel Reports'}
     st.markdown('<div class="gp-breadcrumb">Portfolio / '+names.get(page, 'Overview')+'<span class="gp-tag">SYNTHETIC DATA &nbsp; · &nbsp; GP</span></div>', unsafe_allow_html=True)
 
 

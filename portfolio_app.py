@@ -38,7 +38,13 @@ try:
 except (InputError,OSError,ValueError) as exc:
     st.error('GP Excel source verification failed. Restore the canonical prepared sources before downloading. '+str(exc))
     st.stop()
-if page == 'company':
+if page == 'foundation':
+    from portfolio_foundation_ui import render_foundation
+    try:
+        render_foundation(companies)
+    except (ValueError,OSError) as exc:
+        st.error('Operating data package verification failed: '+str(exc))
+elif page == 'company':
     from portfolio_company import render_company
     company = company_by_id(companies, st.query_params.get('company', 'summit'))
     if company is None:
