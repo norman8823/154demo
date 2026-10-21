@@ -1,0 +1,68 @@
+{
+  "schema_version": "illustrative-investments-1.0",
+  "provenance": "synthetic_illustrative",
+  "notice": "SYNTHETIC ILLUSTRATIVE DATA. Fictional investments, sponsor and fund. Not facts about 154 Partners or any real holdings or returns. Not supported by company reporting workbooks.",
+  "valuation_date": "2026-09-30",
+  "currency": "USD",
+  "sponsor": "Illustrative Sponsor (fictional)",
+  "fund": "Illustrative Buyout Fund I (fictional)",
+  "asset_class": "Private equity / buyout",
+  "valuation_convention": "Independent hypothetical enterprise-value scenarios, not derived from the verified operating financials. Common equity = max(0, enterprise value - gross debt + cash). Sponsor equity = common equity times ownership. Cash flows already represent sponsor amounts; do not multiply them by ownership again. Debt and cash are illustrative valuation inputs, not reported balance-sheet balances.",
+  "return_convention": "Gross sponsor investment returns in USD, before fees, carry and fund expenses. No LP-level or net fund return is calculated. Terminal equity value is included once on the valuation date for IRR; it is not a realized distribution.",
+  "investments": [
+    {
+      "investment_id": "ILL-SHS-001",
+      "company_id": "summit",
+      "company_name": "Summit Home Services",
+      "sector": "Residential home services",
+      "investment_date": "2021-09-30",
+      "status": "Unrealized / active",
+      "ownership": 0.8,
+      "enterprise_value": 52000000,
+      "gross_debt": 20000000,
+      "cash": 1750000,
+      "valuation_assumptions": "Mature holding with partial cash realizations. Hypothetical $52m enterprise value and $18.25m net debt imply $33.75m total common equity; sponsor owns 80%. All common equity is assumed pari passu, with no preferred claims, transaction costs or sale discount. This illustrative mark does not resolve the verified operating issues.",
+      "cash_flows": [
+        {"date": "2021-09-30", "kind": "contribution", "amount": -10000000, "description": "Initial sponsor equity"},
+        {"date": "2022-09-30", "kind": "contribution", "amount": -2000000, "description": "Follow-on equity for expansion"},
+        {"date": "2024-09-30", "kind": "distribution", "amount": 2000000, "description": "Partial sponsor distribution"},
+        {"date": "2025-09-30", "kind": "distribution", "amount": 1000000, "description": "Sponsor cash distribution"}
+      ]
+    },
+    {
+      "investment_id": "ILL-TBA-001",
+      "company_id": "tallis",
+      "company_name": "Tallis Brook Accounting",
+      "sector": "Accounting services",
+      "investment_date": "2023-03-31",
+      "status": "Unrealized / active",
+      "ownership": 0.75,
+      "enterprise_value": 47000000,
+      "gross_debt": 28000000,
+      "cash": 1000000,
+      "valuation_assumptions": "Underperforming investment with follow-on funding and no realized proceeds. Hypothetical $47m enterprise value and $27m net debt imply $20m total common equity; sponsor owns 75%. The resulting mark is below sponsor cost. All common equity is pari passu; no preferred claims or future recovery is assumed. Not a valuation conclusion from the accounting package.",
+      "cash_flows": [
+        {"date": "2023-03-31", "kind": "contribution", "amount": -18000000, "description": "Initial sponsor equity"},
+        {"date": "2024-03-31", "kind": "contribution", "amount": -3000000, "description": "Follow-on sponsor funding"}
+      ]
+    },
+    {
+      "investment_id": "ILL-HRE-001",
+      "company_id": "harrow",
+      "company_name": "Harrow Ridge Environmental",
+      "sector": "Environmental services",
+      "investment_date": "2022-06-30",
+      "status": "Unrealized / active",
+      "ownership": 0.625,
+      "enterprise_value": 110000000,
+      "gross_debt": 50000000,
+      "cash": 4000000,
+      "valuation_assumptions": "Moderate positive outcome with follow-on equity and one partial realization. Hypothetical $110m enterprise value and $46m net debt imply $64m total common equity; sponsor owns 62.5%. All common equity is pari passu, with no preferred claims or exit costs. The return is an illustrative scenario, independent of the environmental reporting workbook.",
+      "cash_flows": [
+        {"date": "2022-06-30", "kind": "contribution", "amount": -20000000, "description": "Initial sponsor equity"},
+        {"date": "2023-06-30", "kind": "contribution", "amount": -5000000, "description": "Follow-on sponsor equity"},
+        {"date": "2025-09-30", "kind": "distribution", "amount": 2000000, "description": "Partial sponsor distribution"}
+      ]
+    }
+  ]
+}
