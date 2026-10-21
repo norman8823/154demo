@@ -26,8 +26,8 @@ def target(cell):
 
 def test_all_original_cells_and_1755_observed_formula_values_are_retained(exported):
     companies,book=exported
-    assert len(book.sheetnames)==33
-    assert len({s.casefold() for s in book.sheetnames})==33
+    assert len(book.sheetnames)==34
+    assert len({s.casefold() for s in book.sheetnames})==34
     assert all(len(s)<=31 and not re.search(r'[\[\]:*?/\\]',s) for s in book.sheetnames)
     assert not book._external_links
     formulas=0

@@ -65,7 +65,7 @@ elif page == 'excel':
             # Show the actual generated tables; watchlist detail narratives follow
             # its index in Excel and are also available in the portfolio watchlist.
             head=OVERVIEW_HEAD if name=='Portfolio Overview' else 5
-            count=(len(companies) if name=='Portfolio Overview' else (14 if name=='Company Comparison' else (len(watchlist(companies)) if name=='Investment Issues' else len(reference_records(companies)))))
+            count=(len(companies) if name=='Portfolio Overview' else (23 if name=='Company Comparison' else (len(watchlist(companies)) if name=='Investment Issues' else len(reference_records(companies)))))
             rows = list(sheet.iter_rows(min_row=head, max_row=head+count))
             frame = pd.DataFrame([[workbook_preview_value(c) for c in row] for row in rows[1:]], columns=[c.value for c in rows[0]])
             st.dataframe(frame, hide_index=True, width='stretch')

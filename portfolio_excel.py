@@ -18,7 +18,7 @@ MONEY = '"$"#,##0;[Red]("$"#,##0);"$0"'
 PERCENT = '0.0%;[Red](0.0%);"0.0%"'
 PP = '0.0" pp";[Red](0.0" pp");"0.0 pp"'
 SHEETS = ('Portfolio Overview','Company Comparison','Investment Issues','Summit Home Services',
-          'Tallis Brook Accounting','Harrow Ridge Environmental','Source References','Source Snapshots','Reporting Output')
+          'Tallis Brook Accounting','Harrow Ridge Environmental','Source References','Source Snapshots','Reporting Output','Investment Ledger')
 COMPANY_SHEETS = dict(zip(('summit','tallis','harrow'), SHEETS[3:6]))
 OVERVIEW_HEAD = 28
 
@@ -299,6 +299,7 @@ def export_portfolio(companies):
     sources=title_sheet(wb,SHEETS[6],[29,22,20,45,23,68,95,48,52,26],'Company-qualified source and calculation index. Validated monetary figures use base units; source snapshots retain original units and coordinates. All interpretation caveats remain visible.')
     catalog=title_sheet(wb,SHEETS[7],[29,54,40,70,70],'Canonical approved source workbooks from demo_results/manifest.json. Source snapshot navigation is catalogued here.')
     output=title_sheet(wb,SHEETS[8],[29,30,23,21,21,23,23,19,18,60,26],'Plain tabular output for copying or mapping into an existing reporting template. No automatic integration or compatibility is claimed. Company periods remain separate.')
+    title_sheet(wb,'Investment Ledger',[29,24,24,26,23,24,22,23,54,52],'Separate synthetic illustrative sponsor investments and transparent return supporting schedules. Not source-verified operating financials.')
     records=reference_records(companies);source_rows=write_references(sources,records)
     write_overview(overview,companies,source_rows);write_comparison(compare,companies,source_rows)
     details=write_issues(issues,companies,source_rows)
@@ -310,6 +311,8 @@ def export_portfolio(companies):
     from portfolio_sources import attach_source_snapshots
     attach_source_snapshots(wb,companies,records,source_rows)
     attach_metric_proofs(wb,companies,source_rows)
+    from portfolio_investment_excel import attach_investment_excel
+    attach_investment_excel(wb,companies)
     # Source snapshots keep their original grid; never write navigation into it.
     for name in SHEETS:
         if name not in wb.sheetnames:continue

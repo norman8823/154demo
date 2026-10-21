@@ -145,3 +145,9 @@ def investment_summary(investments):
     return dict(invested_capital=paid,realized_proceeds=realized,current_equity_value=unrealized,total_value=realized+unrealized,
                 gross_moic=(realized+unrealized)/paid if paid else None,gross_irr=irr.rate,irr_status=irr.status,irr_detail=irr.detail,
                 valuation_date=investments[0].valuation_date.isoformat() if investments else None,currency=investments[0].currency if investments else 'USD')
+
+
+def investments_for(companies):
+    lookup={i.company_id:i for i in load_investments()}
+    if any(c.id not in lookup for c in companies):raise ValueError('A company has no linked illustrative investment.')
+    return tuple(lookup[c.id] for c in companies)

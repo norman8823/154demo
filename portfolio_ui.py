@@ -160,7 +160,11 @@ def overview(companies, workbook_data=None):
     st.markdown('<div class="gp-eyebrow">GP MONITORING / REPORTING CYCLE</div>', unsafe_allow_html=True)
     page_heading('Portfolio Overview', 'Operating performance, investment issues and management follow-up · September 2026 / FY2026', workbook_data)
     st.markdown('<div class="v2-workflow"><b>01 &nbsp;Company packages ✓</b><span>→</span><b>02 &nbsp;Prepared AI assessments ✓</b><span>→</span><b>03 &nbsp;Portfolio review</b><span>→</span><b>04 &nbsp;Management follow-up</b><span>→</span><b>05 &nbsp;Source-linked Excel</b></div>', unsafe_allow_html=True)
-    stats(companies)
+    from portfolio_investment_ui import investment_cards
+    investment_cards(companies)
+    from portfolio_dashboard import workflow_summary
+    review=workflow_summary(companies)
+    st.markdown('<div class="gp-guard">OPERATING REVIEW · '+str(review['received'])+'/'+str(review['companies'])+' packages verified · '+str(review['below_plan'])+' below EBITDA plan · '+str(review['issues'])+' accepted investment issues · '+str(review['act_now'])+' act-now follow-ups</div>',unsafe_allow_html=True)
     st.subheader('Operating performance')
     st.caption('Reported EBITDA: Actual vs Budget · Each chart has its own dollar axis and period. Annual and monthly amounts are never pooled.')
     for column, company in zip(st.columns(len(companies)), companies):
@@ -173,15 +177,17 @@ def overview(companies, workbook_data=None):
 def render_comparison(companies, matrix=False):
     import pandas as pd
     from portfolio_dashboard import operating_rows, comparison_matrix
-    st.subheader('Company comparison')
-    st.caption('Review source-period performance. Sort by a column heading; open a company above for findings and evidence.')
+    st.subheader('Company comparison' if matrix else 'Investment holdings & operating comparison')
+    st.caption('Operating figures retain source periods. Investment columns are separate synthetic illustrative data, valued September 30, 2026. Sort a column heading; open a company above for detail.')
     if matrix:
         st.dataframe(pd.DataFrame(comparison_matrix(companies)), hide_index=True, width='stretch')
     else:
         st.dataframe(pd.DataFrame(operating_rows(companies)).drop(columns=['Company ID']), hide_index=True, width='stretch',
                      column_config={'Revenue':st.column_config.NumberColumn(format='dollar'), 'Reported EBITDA':st.column_config.NumberColumn(format='dollar'),
                         'EBITDA budget':st.column_config.NumberColumn(format='dollar'), 'EBITDA margin':st.column_config.NumberColumn(format='percent'),
-                        'EBITDA vs budget':st.column_config.NumberColumn(format='percent'), 'Revenue vs budget':st.column_config.NumberColumn(format='percent')})
+                        'EBITDA vs budget':st.column_config.NumberColumn(format='percent'), 'Revenue vs budget':st.column_config.NumberColumn(format='percent'),
+                        'Invested capital (illustrative)':st.column_config.NumberColumn(format='dollar'), 'Current equity (illustrative)':st.column_config.NumberColumn(format='dollar'),
+                        'Gross MOIC (illustrative)':st.column_config.NumberColumn(format='%.2fx'), 'Gross IRR (illustrative)':st.column_config.NumberColumn(format='percent')})
 
 
 def footer():

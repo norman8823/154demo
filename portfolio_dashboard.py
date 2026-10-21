@@ -14,6 +14,8 @@ def workflow_summary(companies):
 
 
 def operating_rows(companies):
+    from portfolio_investments import investments_for, investment_summary
+    investments={i.company_id:i for i in investments_for(companies)}
     rows = []
     for c in companies:
         v = comparison(c)
@@ -21,6 +23,9 @@ def operating_rows(companies):
                      'Reported EBITDA': v['ebitda'].actual, 'EBITDA budget': v['ebitda'].budget,
                      'EBITDA margin': v['margin'].actual, 'EBITDA vs budget': v['ebitda'].variance_pct,
                      'Revenue vs budget': v['revenue'].variance_pct, 'Company ID': c.id})
+        investment=investments[c.id];result=investment_summary([investment])
+        rows[-1].update({'Invested capital (illustrative)':result['invested_capital'],'Current equity (illustrative)':result['current_equity_value'],
+                        'Gross MOIC (illustrative)':result['gross_moic'],'Gross IRR (illustrative)':result['gross_irr'],'Investment valuation date':result['valuation_date'],'Sector':c.sector})
     return rows
 
 
@@ -55,4 +60,9 @@ def comparison_matrix(companies):
                 f"{v['margin'].variance:+.1f} pp" if v['margin'].variance is not None else 'Unavailable', v['basis']]
         for row, value in zip(rows, vals):
             row[c.name] = value
-    return rows
+    from portfolio_investments import investments_for, investment_summary
+    extra=[dict(Attribute=label) for label in ('Illustrative valuation date','Illustrative invested capital','Illustrative current sponsor equity','Illustrative gross MOIC','Illustrative gross IRR')]
+    for i in investments_for(companies):
+        company=next(c for c in companies if c.id==i.company_id);result=investment_summary([i])
+        for row,value in zip(extra,[result['valuation_date'],money(result['invested_capital']),money(result['current_equity_value']),f'{result["gross_moic"]:.2f}x',f'{result["gross_irr"]:.2%}' if result['gross_irr'] is not None else 'Unavailable']):row[company.name]=value
+    return rows+extra
