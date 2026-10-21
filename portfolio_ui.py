@@ -111,3 +111,42 @@ def overview(companies):
 
 def footer():
     st.markdown('<div class="gp-note">Synthetic demonstration · Prepared assessments · For Investment Team Review · No new inference</div>', unsafe_allow_html=True)
+
+
+def render_watchlist(companies, compact=False):
+    from portfolio_watchlist import watchlist
+    items = watchlist(companies)
+    st.subheader('Portfolio watchlist')
+    st.caption('Original analyst priority and disposition; high before medium, act now before investigate. Source order breaks ties. Findings may cite YTD, LTM or other periods beyond the headline reporting period.')
+    if compact:
+        # One original lead issue per company keeps the landing screen concise.
+        items = [next(i for i in items if i.company_id == c.id and i.finding['id'] == c.review.package['ai_insights'][0]['id']) for c in companies]
+    else:
+        company_filter, priority_filter = st.columns(2)
+        selected_company = company_filter.selectbox('Company', ['All companies']+[c.name for c in companies])
+        selected_priority = priority_filter.selectbox('Original priority', ['All priorities', 'high', 'medium', 'low'])
+        items = [i for i in items if (selected_company == 'All companies' or i.company_name == selected_company)
+                 and (selected_priority == 'All priorities' or i.finding['priority'] == selected_priority)]
+    st.caption(f'{len(items)} findings shown · company amounts and impacts are never summed')
+    for item in items:
+        f = item.finding
+        with st.container(border=True):
+            issue, action = st.columns([4, 1])
+            issue.markdown('**'+item.company_name+' · '+f['title']+'**')
+            issue.caption(item.report_period+' report · '+f['priority'].title()+' · '+f['disposition'].replace('_', ' ').title())
+            issue.write(f['conclusion'])
+            action.button('View source evidence →', key=('lead_' if compact else 'watch_')+item.company_id+'_'+str(f['id']),
+                          on_click=navigate, args=('company', item.company_id, f['id']), width='stretch')
+            if not compact:
+                with st.expander('Finding, management question & caveats'):
+                    for label, key in [('Evidence', 'evidence'), ('Financial implication', 'financial_implication'), ('Investment assessment', 'assessment'),
+                                       ('Next action', 'action'), ('Management question', 'management_question')]:
+                        st.markdown('**'+label+'**')
+                        st.write(f[key])
+                    st.info(item.presentation['caveat'])
+                    st.caption('Source IDs: '+', '.join(f['fact_ids']))
+                    for quote in f.get('source_quotes', []):
+                        st.write(quote['quote'])
+                        st.caption('Original source quote · '+quote['source_id'])
+    if compact:
+        st.button('Open all portfolio findings →', on_click=navigate, args=('watchlist',))

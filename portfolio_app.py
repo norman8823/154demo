@@ -2,7 +2,7 @@
 import streamlit as st
 from engine import InputError
 from portfolio_data import load_companies
-from portfolio_ui import shell, overview, footer
+from portfolio_ui import shell, overview, footer, render_watchlist
 
 st.set_page_config(page_title='Portfolio Intelligence · GP', page_icon='▣', layout='wide', initial_sidebar_state='expanded')
 
@@ -21,5 +21,10 @@ except (InputError, OSError, ValueError, KeyError) as exc:
 
 page = st.query_params.get('page', 'overview')
 shell(page, companies)
-overview(companies)
+if page == 'watchlist':
+    st.title('Portfolio Watchlist')
+    render_watchlist(companies)
+else:
+    overview(companies)
+    render_watchlist(companies, compact=True)
 footer()
