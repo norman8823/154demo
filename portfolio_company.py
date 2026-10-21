@@ -16,7 +16,7 @@ from card_presentation import finding_html
 from package_analysis import analysis_findings
 from reports import export_report
 from portfolio_comparison import comparison
-from portfolio_ui import navigate
+from portfolio_ui import navigate, company_selector
 
 UI_FUNCTIONS = frozenset({'download', 'prose', 'readiness', 'money', 'overview', 'evidence_view'})
 
@@ -57,9 +57,11 @@ def company_export(review, custom):
     return export_report(review, template)
 
 
-def render_company(company):
+def render_company(company, companies=None):
     r = company.review
     v = comparison(company)
+    if companies:
+        company_selector(companies, company.id)
     # Reset widget state only when the company/finding route changes.
     route = (company.id, st.query_params.get('finding'))
     if st.session_state.get('gp_company_route') != route:

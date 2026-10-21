@@ -5,7 +5,7 @@ import pandas as pd
 from openpyxl import load_workbook
 from engine import InputError
 from portfolio_data import load_companies, company_by_id
-from portfolio_ui import shell, overview, footer, render_watchlist, page_heading, workbook_preview_value
+from portfolio_ui import shell, overview, footer, render_watchlist, page_heading, workbook_preview_value, render_comparison
 from portfolio_excel import export_portfolio, SHEETS
 from portfolio_watchlist import watchlist
 
@@ -30,6 +30,8 @@ except (InputError, OSError, ValueError, KeyError) as exc:
     st.stop()
 
 page = st.query_params.get('page', 'overview')
+if page == 'watchlist':
+    page = 'issues'  # Existing deep links remain valid; current UI uses new name.
 shell(page, companies)
 workbook_data = gp_workbook(companies)
 if page == 'company':
@@ -38,10 +40,13 @@ if page == 'company':
     if company is None:
         st.warning('Unknown company. Select Portfolio Overview to open a prepared report.')
     else:
-        render_company(company)
-elif page == 'watchlist':
-    page_heading('Portfolio Watchlist', 'Accepted findings across three prepared company analyses', workbook_data)
+        render_company(company, companies)
+elif page == 'issues':
+    page_heading('Investment Issues', 'Verified findings → Management follow-up → Supporting source evidence', workbook_data)
     render_watchlist(companies)
+elif page == 'comparison':
+    page_heading('Company Comparison', 'Verified financials · Clearly separated reporting periods',workbook_data)
+    render_comparison(companies,matrix=True)
 elif page == 'excel':
     from portfolio_ui import stats
     page_heading('One downloadable GP report', 'Portfolio overview · Company comparison · Portfolio watchlist · Source references', workbook_data)

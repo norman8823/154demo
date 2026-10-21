@@ -87,6 +87,9 @@ div[class*="st-key-gp_company_"] {border:1px solid #dce5ec;padding:17px 18px 13p
 
 
 def navigate(page, company=None, finding=None):
+    if page == 'company' and company and company != st.query_params.get('company'):
+        for key in ('gp_company_route','gp_company_tab','selected','gp_selected_finding','export','custom','gp_company_format','gp_company_template'):
+            st.session_state.pop(key, None)
     params = {'page': page}
     if company:
         params['company'] = company
@@ -100,13 +103,20 @@ def shell(page, companies):
     with st.sidebar:
         st.markdown('<div class="gp-brand">▣ &nbsp;Portfolio Intelligence<br><small>GP Reporting Copilot</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
-        for label, destination in [('Portfolio Overview', 'overview'), ('Portfolio Watchlist', 'watchlist'), ('Company Detail', 'company'), ('Excel Reports', 'excel')]:
-            st.button(label, key='nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
+        for label, destination in [('Portfolio Overview', 'overview'), ('Company Comparison', 'comparison'), ('Investment Issues', 'issues'), ('Company Detail', 'company'), ('Excel Reports', 'excel')]:
+            st.button(label, key='nav_watchlist' if destination == 'issues' else 'nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
                       on_click=navigate, args=(destination, st.query_params.get('company', companies[0].id)) if destination == 'company' else (destination,))
+        ids = [c.id for c in companies]
+        current = st.query_params.get('company', ids[0])
+        current = current if current in ids else ids[0]
+        if st.session_state.get('gp_sidebar_company') != current:
+            st.session_state.gp_sidebar_company = current
+        st.selectbox('Open company', ids, format_func=lambda slug: next(c.name for c in companies if c.id == slug),
+                     key='gp_sidebar_company', on_change=select_company, args=('gp_sidebar_company',))
         st.divider()
         st.caption('Synthetic demonstration only')
         st.caption('Prepared results · 0 new model calls')
-    names = {'overview': 'Overview', 'watchlist': 'Watchlist', 'company': 'Company Detail', 'excel': 'Excel Reports'}
+    names = {'overview': 'Overview', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Company Detail', 'excel': 'Excel Reports'}
     st.markdown('<div class="gp-breadcrumb">Portfolio / '+names.get(page, 'Overview')+'<span class="gp-tag">SYNTHETIC DATA &nbsp; · &nbsp; GP</span></div>', unsafe_allow_html=True)
 
 
@@ -178,42 +188,79 @@ def footer():
 def render_watchlist(companies, compact=False):
     from portfolio_watchlist import watchlist
     items = watchlist(companies)
-    st.subheader('Portfolio watchlist')
-    st.caption('Original analyst priority and disposition; high before medium, act now before investigate. Source order breaks ties. Findings may cite YTD, LTM or other periods beyond the headline reporting period.')
+    st.subheader('Investment Issues')
+    st.caption('Original accepted findings, grouped by company. Priority and disposition are inherited; finding impacts may refer to YTD, LTM or other periods beyond the headline report.')
     if compact:
         # One original lead issue per company keeps the landing screen concise.
         items = [next(i for i in items if i.company_id == c.id and i.finding['id'] == c.review.package['ai_insights'][0]['id']) for c in companies]
     else:
         company_filter, priority_filter = st.columns(2)
-        selected_company = company_filter.selectbox('Company', ['All companies']+[c.name for c in companies])
+        options = ['All companies']+[c.name for c in companies]
+        route_company = st.query_params.get('company')
+        if st.session_state.get('gp_issue_route') != route_company:
+            st.session_state.gp_issue_route = route_company
+            st.session_state.gp_issue_company = next((c.name for c in companies if c.id == route_company), 'All companies')
+        selected_company = company_filter.selectbox('Company', options, key='gp_issue_company')
         selected_priority = priority_filter.selectbox('Original priority', ['All priorities', 'high', 'medium', 'low'])
         items = [i for i in items if (selected_company == 'All companies' or i.company_name == selected_company)
                  and (selected_priority == 'All priorities' or i.finding['priority'] == selected_priority)]
     st.caption(f'{len(items)} findings shown · company amounts and impacts are never summed')
-    for item in items:
-        f = item.finding
-        with st.container(border=True):
-            issue, action = st.columns([4, 1])
-            issue.markdown('**'+item.company_name+' · '+f['title']+'**')
-            issue.caption(item.report_period+' report · '+f['priority'].title()+' · '+f['disposition'].replace('_', ' ').title())
-            if not compact:
-                with issue:
+    groups = [(c, [i for i in items if i.company_id == c.id]) for c in companies]
+    groups = [(c, group) for c, group in groups if group]
+    if not groups:
+        st.info('No accepted issues match this selection.')
+        return
+    if compact:
+        for col, (company, group) in zip(st.columns(len(groups)), groups):
+            with col, st.container(border=True):
+                item = group[0]
+                f = item.finding
+                st.markdown('**'+company.name+'**')
+                st.caption(f['priority'].title()+' · '+f['disposition'].replace('_',' ').title())
+                literal_prose(f['title'])
+                st.caption('Finding impact · source scope retained')
+                literal_prose(f.get('impact','Not quantified'))
+                st.markdown('**Management follow-up**')
+                literal_prose(f['management_question'])
+                st.button('View source evidence →', key='lead_'+company.id+'_'+str(f['id']), on_click=navigate,
+                          args=('company',company.id,f['id']),width='stretch')
+    else:
+        for company, group in groups:
+            st.subheader(company.name)
+            st.caption(comparison(company)['period_label']+' · '+str(len(group))+' accepted issues')
+            for index, item in enumerate(group):
+                f = item.finding
+                with st.expander(f['title'], expanded=index == 0):
+                    st.caption(f['priority'].title()+' · '+f['disposition'].replace('_',' ').title()+' · '+f['classification'])
+                    st.markdown('**Source-supported impact**')
+                    literal_prose(f.get('impact','Not quantified'))
                     literal_prose(f['conclusion'])
-            action.button('View source evidence →', key=('lead_' if compact else 'watch_')+item.company_id+'_'+str(f['id']),
-                          on_click=navigate, args=('company', item.company_id, f['id']), width='stretch')
-            if not compact:
-                with st.expander('Finding, management question & caveats'):
-                    for label, key in [('Evidence', 'evidence'), ('Financial implication', 'financial_implication'), ('Investment assessment', 'assessment'),
-                                       ('Next action', 'action'), ('Management question', 'management_question')]:
+                    for label, key in [('Management question','management_question'),('Proposed follow-up','action')]:
                         st.markdown('**'+label+'**')
                         literal_prose(f[key])
-                    st.info(item.presentation['caveat'])
-                    st.caption('Source IDs: '+', '.join(f['fact_ids']))
-                    for quote in f.get('source_quotes', []):
-                        literal_prose(quote['quote'])
-                        st.caption('Original source quote · '+quote['source_id'])
+                    st.button('View source evidence →',key='watch_'+company.id+'_'+str(f['id']),on_click=navigate,
+                              args=('company',company.id,f['id']),width='stretch')
+                    with st.expander('Original analysis, qualifications & source quotations'):
+                        for label,key in [('Evidence','evidence'),('Financial implication','financial_implication'),('Investment assessment','assessment')]:
+                            st.markdown('**'+label+'**');literal_prose(f[key])
+                        literal_prose(item.presentation['caveat'])
+                        st.caption('Source IDs: '+', '.join(f['fact_ids']))
+                        for quote in f.get('source_quotes',[]):
+                            literal_prose(quote['quote']);st.caption('Original source quote · '+quote['source_id'])
     if compact:
-        st.button('Open all portfolio findings →', on_click=navigate, args=('watchlist',))
+        st.button('Open all investment issues →', on_click=navigate, args=('issues',))
+
+
+def select_company(widget_key):
+    navigate('company', st.session_state[widget_key])
+
+
+def company_selector(companies, current):
+    ids = [c.id for c in companies]
+    if st.session_state.get('gp_company_selector') != current:
+        st.session_state.gp_company_selector = current
+    st.selectbox('Company', ids, format_func=lambda slug:next(c.name for c in companies if c.id == slug),
+                 key='gp_company_selector',on_change=select_company,args=('gp_company_selector',))
 
 
 def literal_prose(text):
