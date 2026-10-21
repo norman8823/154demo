@@ -35,7 +35,7 @@ def test_workbook_dashboard_matrix_company_sheets_and_output_reconcile(exported)
         assert matrix.cell(6,col).value==v['period_label']
         assert matrix.cell(7,col).value==v['revenue'].actual
         assert matrix.cell(10,col).value==v['ebitda'].actual
-        assert matrix.cell(5,col).hyperlink.target=="#'"+COMPANY_SHEETS[c.id]+"'!A1"
+        assert matrix.cell(5,col).hyperlink.location=="'"+COMPANY_SHEETS[c.id]+"'!A1"
         company=book[COMPANY_SHEETS[c.id]]
         assert company['B8'].value==v['revenue'].actual
         assert company['B9'].value==v['ebitda'].actual
@@ -68,12 +68,13 @@ def test_original_findings_are_grouped_lossless_and_all_internal_links_resolve(e
             for cell in row:
                 assert cell.data_type not in ('e','f')
                 if cell.hyperlink:
-                    match=re.fullmatch(r"#'((?:[^']|'')+)'!([A-Z]+[1-9]\d*)",cell.hyperlink.target)
-                    assert match,cell.hyperlink.target
+                    assert cell.hyperlink.target is None
+                    match=re.fullmatch(r"'((?:[^']|'')+)'!([A-Z]+[1-9]\d*)",cell.hyperlink.location)
+                    assert match,cell.hyperlink.location
                     target,coordinate=match.groups();target=target.replace("''", "'")
                     assert target in book.sheetnames
                     assert book[target][coordinate].value is not None
-                    links.append(cell.hyperlink.target)
+                    links.append(cell.hyperlink.location)
     assert len(links)>200
 
 

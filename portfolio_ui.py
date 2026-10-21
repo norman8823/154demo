@@ -231,7 +231,7 @@ def render_watchlist(companies, compact=False):
             for index, item in enumerate(group):
                 f = item.finding
                 with st.expander(f['title'], expanded=index == 0):
-                    st.caption(f['priority'].title()+' · '+f['disposition'].replace('_',' ').title()+' · '+f['classification'])
+                    st.caption(f['priority'].title()+' · '+f['disposition'].replace('_',' ').title()+' · '+item.presentation['severity'])
                     st.markdown('**Source-supported impact**')
                     literal_prose(f.get('impact','Not quantified'))
                     literal_prose(f['conclusion'])
@@ -241,7 +241,7 @@ def render_watchlist(companies, compact=False):
                     st.button('View source evidence →',key='watch_'+company.id+'_'+str(f['id']),on_click=navigate,
                               args=('company',company.id,f['id']),width='stretch')
                     with st.expander('Original analysis, qualifications & source quotations'):
-                        for label,key in [('Evidence','evidence'),('Financial implication','financial_implication'),('Investment assessment','assessment')]:
+                        for label,key in [('Accepted finding narrative','text'),('Evidence','evidence'),('Financial implication','financial_implication'),('Investment assessment','assessment')]:
                             st.markdown('**'+label+'**');literal_prose(f[key])
                         literal_prose(item.presentation['caveat'])
                         st.caption('Source IDs: '+', '.join(f['fact_ids']))

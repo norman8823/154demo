@@ -8,6 +8,7 @@ from openpyxl.chart import BarChart, Reference
 from openpyxl.chart.series import DataPoint
 from openpyxl.chart.label import DataLabelList
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.hyperlink import Hyperlink
 from portfolio_comparison import comparison, COMPARABILITY
 from portfolio_dashboard import workflow_summary
 from portfolio_watchlist import watchlist, source_closure, evidence_for
@@ -31,7 +32,8 @@ def literal(ws, row, column, value):
 
 
 def link(cell, sheet, row, label=None, column='A'):
-    cell.hyperlink = "#'"+sheet.replace("'","''")+"'!"+column+str(row)
+    location="'"+sheet.replace("'","''")+"'!"+column+str(row)
+    cell.hyperlink=Hyperlink(ref=cell.coordinate,location=location)
     if label is not None:
         cell.value=label;cell.data_type='s'
     cell.font=Font(name='Arial',size=10,color='206482',underline='single')
@@ -266,7 +268,12 @@ def export_portfolio(companies):
     headers(catalog,5,['Company','Canonical approved workbook','Prepared run','Workbook SHA-256','Snapshot SHA-256'])
     for row,c in enumerate(companies,6):row_values(catalog,row,[c.name,c.provenance['workbook'],c.run,c.provenance['workbook_sha256'],c.provenance['snapshot_sha256']],52)
     catalog.auto_filter.ref=f'A5:E{5+len(companies)}'
-    for ws in wb:
+    from portfolio_sources import attach_source_snapshots
+    attach_source_snapshots(wb,companies,records,source_rows)
+    # Source snapshots keep their original grid; never write navigation into it.
+    for name in SHEETS:
+        if name not in wb.sheetnames:continue
+        ws=wb[name]
         if ws.title!='Portfolio Overview':
             ws.print_area=f'A1:{ws.cell(ws.max_row,ws.max_column).coordinate}';ws.print_title_rows='1:5'
         if ws.title!='Portfolio Overview':link(literal(ws,4,1,'← Portfolio Overview'),'Portfolio Overview',1)

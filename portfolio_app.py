@@ -33,7 +33,11 @@ page = st.query_params.get('page', 'overview')
 if page == 'watchlist':
     page = 'issues'  # Existing deep links remain valid; current UI uses new name.
 shell(page, companies)
-workbook_data = gp_workbook(companies)
+try:
+    workbook_data = gp_workbook(companies)
+except (InputError,OSError,ValueError) as exc:
+    st.error('GP Excel source verification failed. Restore the canonical prepared sources before downloading. '+str(exc))
+    st.stop()
 if page == 'company':
     from portfolio_company import render_company
     company = company_by_id(companies, st.query_params.get('company', 'summit'))
