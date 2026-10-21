@@ -63,7 +63,7 @@ def company_card(company, investment_result=None):
             from portfolio_investment_ui import gross_rate
             moic=investment_result['gross_moic']
             st.markdown('<div class="v3-card-returns"><div><small>GROSS MOIC</small><b>'+escape(f'{moic:.2f}x' if moic is not None else 'Unavailable')+'</b></div><div><small>GROSS IRR</small><b>'+escape(gross_rate(investment_result['gross_irr']))+'</b></div><span>Synthetic illustrative sponsor data</span></div>',unsafe_allow_html=True)
-        st.button('Open investment review →', key='open_'+company.id, width='stretch', on_click=navigate, args=('company', company.id))
+        st.button('View Investment Detail →', key='open_'+company.id, width='stretch', on_click=navigate, args=('company', company.id))
 
 
 def page_heading(title, subtitle, workbook_data=None):

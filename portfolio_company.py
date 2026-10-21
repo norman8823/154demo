@@ -75,6 +75,15 @@ def render_company(company, companies=None):
         valid_ids = {f['id'] for f in analysis_findings(r)}
         st.session_state.selected = requested if requested in valid_ids else next(iter(valid_ids))
         st.session_state.gp_selected_finding = st.session_state.selected
+    # CSS chooses the existing complete report or the concise phone view.
+    # Both share the exact company/route; resizing never changes navigation state.
+    with st.container(key='desktop_company_detail'):
+        _render_desktop_company(company,r,v)
+    from portfolio_mobile_detail import render_mobile_detail
+    render_mobile_detail(company)
+
+
+def _render_desktop_company(company,r,v):
     st.button('← Portfolio Overview', on_click=navigate, args=('overview',))
     st.title(company.name)
     st.caption(company.sector+' · '+v['period_label']+' · Verified prepared review')

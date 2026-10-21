@@ -37,7 +37,7 @@ with sync_playwright() as p:
             route.continue_()
     page.route('**/*', local_only)
     page.goto(URL)
-    expect(page.get_by_role('button', name='Open investment review →', exact=True)).to_have_count(3, timeout=60000)
+    expect(page.get_by_role('button', name='View Investment Detail →', exact=True)).to_have_count(3, timeout=60000)
     check(page)
     boxes = [page.locator('.st-key-gp_company_'+s).bounding_box() for s in ('summit', 'tallis', 'harrow')]
     assert all(boxes)

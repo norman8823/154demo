@@ -9,7 +9,7 @@ def test_overview_uses_prepared_financials_and_explicit_periods():
     for expected in ('Summit Home Services', 'Tallis Brook Accounting', 'Harrow Ridge Environmental', '$3.30M', '$684K', '$9.71M',
                      'September 2026 · monthly', 'FY2026 · annual', '15.2%', '19.7%', '20.8%', 'No combined revenue'):
         assert expected in text
-    assert len([b for b in at.button if b.label == 'Open investment review →']) == 3
+    assert len([b for b in at.button if b.label == 'View Investment Detail →']) == 3
 
 
 def test_excel_preview_shows_workbook_currency_and_percent_formats():

@@ -127,3 +127,19 @@ div[class*="st-key-gp_company_"]:has(.v2-company-head) [data-testid="stVerticalB
 
 .st-key-adaptive_holdings [data-testid="stCheckbox"] label {min-width:36px;min-height:44px;justify-content:center;}
 @media(max-width:1000px){.st-key-adaptive_holdings [class*="st-key-holding_row_"] [data-testid="stColumn"]:first-child {width:40px!important;flex:0 0 40px!important;}}
+
+/* Phone investment detail adds decisions/context without duplicating the card. */
+.st-key-mobile_company_detail {display:none;}
+.mobile-investment-context {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:4px 0;}
+.mobile-investment-context>div {border:1px solid #dce5ed;border-radius:6px;padding:10px;background:#f7faff;min-width:0;}
+.mobile-investment-context small {display:block;font-size:11px;line-height:1.5;color:#60788d;min-height:33px;}
+.mobile-investment-context strong {display:block;font-size:19px;color:#18364a;margin-top:4px;white-space:nowrap;}
+@media(max-width:767px){
+ .st-key-desktop_company_detail {display:none;}
+ .st-key-mobile_company_detail {display:flex;}
+ .st-key-mobile_company_detail [data-testid="stVerticalBlock"] {gap:12px;}
+ .st-key-mobile_company_detail [class*="st-key-mobile_primary_"] {border-top:2px solid #52788f;padding-top:12px;margin-bottom:10px;}
+ .st-key-mobile_company_detail h3 {font-size:18px!important;line-height:1.4!important;}
+ .st-key-mobile_company_detail .prose {font-size:14px;line-height:1.65;}
+ .st-key-mobile_company_detail [data-testid="stExpander"] {margin-bottom:8px;}
+}

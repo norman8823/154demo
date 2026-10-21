@@ -1,0 +1,98 @@
+{
+  "phone_cases": [
+    {
+      "company": "summit",
+      "width": 390,
+      "card_action_and_back": "pass",
+      "original_assessment_and_incremental_context": "pass",
+      "full_report_controls_hidden": true,
+      "no_overflow_or_nested_scrolling": true
+    },
+    {
+      "company": "tallis",
+      "width": 390,
+      "card_action_and_back": "pass",
+      "original_assessment_and_incremental_context": "pass",
+      "full_report_controls_hidden": true,
+      "no_overflow_or_nested_scrolling": true
+    },
+    {
+      "company": "harrow",
+      "width": 390,
+      "card_action_and_back": "pass",
+      "original_assessment_and_incremental_context": "pass",
+      "full_report_controls_hidden": true,
+      "no_overflow_or_nested_scrolling": true
+    },
+    {
+      "company": "summit",
+      "width": 430,
+      "card_action_and_back": "pass",
+      "original_assessment_and_incremental_context": "pass",
+      "full_report_controls_hidden": true,
+      "no_overflow_or_nested_scrolling": true
+    },
+    {
+      "company": "tallis",
+      "width": 430,
+      "card_action_and_back": "pass",
+      "original_assessment_and_incremental_context": "pass",
+      "full_report_controls_hidden": true,
+      "no_overflow_or_nested_scrolling": true
+    },
+    {
+      "company": "harrow",
+      "width": 430,
+      "card_action_and_back": "pass",
+      "original_assessment_and_incremental_context": "pass",
+      "full_report_controls_hidden": true,
+      "no_overflow_or_nested_scrolling": true
+    }
+  ],
+  "desktop_cases": [
+    {
+      "company": "summit",
+      "full_summary_exports_and_evidence": "pass"
+    },
+    {
+      "company": "tallis",
+      "full_summary_exports_and_evidence": "pass"
+    },
+    {
+      "company": "harrow",
+      "full_summary_exports_and_evidence": "pass"
+    }
+  ],
+  "errors": [],
+  "external_requests": [],
+  "phone_deep_link_and_switching": "pass",
+  "task_id": 48,
+  "base_commit": "abd2b327be547cfe9f549302c71f6fb7915dafc0",
+  "phone_breakpoint": "width<=767px",
+  "card_action": "View Investment Detail →",
+  "content_source": "Original approved Review ai_insights: conclusion, assessment, action and management_question. Existing briefing identifies the default lead; a valid finding deep link becomes primary. All accepted findings remain accessible without technical evidence chains.",
+  "investment_context": "Existing illustrative sponsor ledger: invested capital, realized distributions, current equity; valuation date, sponsor/fund, ownership and investment date. No repeated financial-summary or return widgets.",
+  "desktop_preservation": "Complete original Company Detail body moved unchanged into a responsive desktop container. Company selector and company/finding state remain shared.",
+  "screenshots": {
+    "docs/images/mobile-investment-detail/company-card-390.png": "4ffca07edb33209158f40aa4d8fd9d96aae3d0ff57d53083a7a870d0f7e635c8",
+    "docs/images/mobile-investment-detail/summit-390.png": "b916e3fb583c393a5bf0d9b6a1f6cd14671cda27c328601dbc2e6eeb9d2a82cb",
+    "docs/images/mobile-investment-detail/tallis-390.png": "b3b05e1e824e470c829a00355a992b1e51d2723558ec658faf5aee02bbf1141f",
+    "docs/images/mobile-investment-detail/harrow-390.png": "b90fb16dcafadd8eae0dc999e68ef590ea3137459e46c8c7dba0ecf17ac4d9cd",
+    "docs/images/mobile-investment-detail/desktop-complete-1440.png": "609c39e66bd6b07c70ccf9b1ada29f8a5e85f34844ba96f79824c6ebc4123de7"
+  },
+  "focused_tests": "35 passed in51.15s",
+  "new_analyst_inference_calls": 0,
+  "limits": [
+    "Phone presentation is selected responsively at767px and below; tablet/desktop retains the complete report.",
+    "Original financial amounts may appear within a specific prepared finding; there is no repeated operating-summary or MOIC/IRR panel.",
+    "The prepared analytical limitations and synthetic investment status remain applicable."
+  ],
+  "portfolio_regressions": "75 passed in94.54s",
+  "integrity": {
+    "frozen_prepared_runs": "All three verified; zero new model calls",
+    "data_export": "Original six-file ZIP SHA-256 remains b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b (portfolio regression)",
+    "desktop_report_body": "AST-identical original body; only responsive container boundary added",
+    "protected_engine_8501": "Original PID20385 unchanged",
+    "secret_audit": "Exact ten-text-file/five-synthetic-PNG scope, no credential findings"
+  }
+}
