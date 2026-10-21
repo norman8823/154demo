@@ -6,7 +6,7 @@ from openpyxl import load_workbook
 from engine import InputError
 from portfolio_data import load_companies, company_by_id
 from portfolio_ui import shell, overview, footer, render_watchlist, page_heading, workbook_preview_value, render_comparison
-from portfolio_excel import export_portfolio, SHEETS
+from portfolio_excel import export_portfolio, SHEETS, OVERVIEW_HEAD, reference_records
 from portfolio_watchlist import watchlist
 
 st.set_page_config(page_title='Portfolio Intelligence · GP', page_icon='▣', layout='wide', initial_sidebar_state='auto')
@@ -49,18 +49,20 @@ elif page == 'comparison':
     render_comparison(companies,matrix=True)
 elif page == 'excel':
     from portfolio_ui import stats
-    page_heading('One downloadable GP report', 'Portfolio overview · Company comparison · Portfolio watchlist · Source references', workbook_data)
+    page_heading('Excel Reporting', 'Operational review · Company worksheets · Source-linked evidence', workbook_data)
     stats(companies)
-    st.info('Company figures remain separate. The downloadable workbook includes original finding narratives, caveats and source-linked calculations. Existing company reports remain available in each drilldown.')
+    st.info('Use the GP workbook for portfolio review and management follow-up. Company figures retain their original reporting periods. Reporting Output provides numeric rows for copying or mapping into your existing template.')
     st.subheader('Workbook preview')
     book = load_workbook(io.BytesIO(workbook_data), data_only=True)
-    for tab, name in zip(st.tabs(SHEETS), SHEETS):
+    previews=['Portfolio Overview','Company Comparison','Investment Issues','Source References']
+    for tab, name in zip(st.tabs(previews), previews):
         with tab:
             sheet = book[name]
             # Show the actual generated tables; watchlist detail narratives follow
             # its index in Excel and are also available in the portfolio watchlist.
-            end = 5 + (len(companies) if name == SHEETS[0] else (len(companies)*3 if name == SHEETS[1] else (len(watchlist(companies)) if name == SHEETS[2] else sheet.max_row-5)))
-            rows = list(sheet.iter_rows(min_row=5, max_row=end))
+            head=OVERVIEW_HEAD if name=='Portfolio Overview' else 5
+            count=(len(companies) if name=='Portfolio Overview' else (14 if name=='Company Comparison' else (len(watchlist(companies)) if name=='Investment Issues' else len(reference_records(companies)))))
+            rows = list(sheet.iter_rows(min_row=head, max_row=head+count))
             frame = pd.DataFrame([[workbook_preview_value(c) for c in row] for row in rows[1:]], columns=[c.value for c in rows[0]])
             st.dataframe(frame, hide_index=True, width='stretch')
             st.caption(f'{len(frame)} records · Preview reads the generated workbook')
