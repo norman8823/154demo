@@ -135,12 +135,17 @@ def test_data_foundation_page_exposes_approval_distinctions_and_real_preview():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60).run()
     at.button(key='nav_foundation').click().run()
     assert not at.exception
-    assert at.title[0].value=='Data Foundation'
-    assert len(at.dataframe[0].value)==12
-    assert set(at.dataframe[0].value.human_approval_status)=={'not_recorded'}
-    assert any('unresolved classifications' in i.value for i in at.info)
-    at.checkbox(key='foundation_all').check().run()
+    assert at.title[0].value=='AI Workflow Automation Readiness'
+    frame=next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns)
+    assert len(frame)==12
+    assert set(frame['GP Target Metric'])=={'Revenue','Reported EBITDA'}
+    assert any('Human approval: not_recorded' in c.value for c in at.caption)
     at.selectbox(key='foundation_company').set_value('Tallis Brook Accounting').run()
     assert not at.exception
-    assert len(at.dataframe[0].value)==330
-    assert set(at.dataframe[0].value.company_id)=={'tallis'}
+    frame=next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns)
+    assert len(frame)==4
+    assert set(frame.Company)=={'Tallis Brook Accounting'}
+    at.selectbox(key='foundation_scenario').set_value('budget').run()
+    assert not at.exception
+    assert len(next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns))==2
+    assert any('204 unresolved mapping rows' in c.value for c in at.caption)

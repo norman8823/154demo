@@ -12,7 +12,7 @@ from openpyxl import load_workbook
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'artifacts/gp-v3'
+OUT = Path(os.environ.get('COPILOT_GP_ARTIFACT_DIR', ROOT / 'artifacts/gp-v3'))
 OUT.mkdir(parents=True, exist_ok=True)
 URL = os.environ.get('COPILOT_GP_TEST_URL', 'http://127.0.0.1:8502')
 assert urlparse(URL).hostname in ('127.0.0.1', 'localhost')
@@ -147,7 +147,7 @@ with sync_playwright() as p:
     page.wait_for_timeout(250)  # Allow canvas painting after the hidden tab resizes.
     page.screenshot(path=str(OUT/'excel-preview.png'), full_page=True)
     page.get_by_role('button',name='Data Foundation',exact=True).click()
-    expect(page.get_by_role('heading',name='Data Foundation',exact=True)).to_be_visible(timeout=60000)
+    expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
     check(page)
     page.screenshot(path=str(OUT/'data-foundation.png'),full_page=True)
     with page.expect_download() as downloaded:
@@ -177,7 +177,7 @@ with sync_playwright() as p:
     page.screenshot(path=str(OUT/'overview-mobile.png'), full_page=True)
     page.get_by_role('button',name='Expand sidebar',exact=True).click()
     page.get_by_role('button',name='Data Foundation',exact=True).click()
-    expect(page.get_by_role('heading',name='Data Foundation',exact=True)).to_be_visible(timeout=60000)
+    expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
     if sidebar.get_attribute('data-collapsed')=='false':page.get_by_role('button',name='Collapse sidebar',exact=True).click()
     page.wait_for_timeout(350)
     check(page)

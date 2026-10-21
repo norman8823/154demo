@@ -1,0 +1,272 @@
+{
+  "base": "7bd764d3d602a2fe27a4dcbc72780ffb5abe9857",
+  "branch": "feat/ai-workflow-readiness",
+  "harmony_task": 45,
+  "model_id": "monthly_portfolio_operating_review",
+  "model_version": "1.0.0",
+  "assessment": {
+    "score": null,
+    "score_status": "Not Evaluated",
+    "required_slots": 12,
+    "mapped_slots": 12,
+    "verified_slots": 12,
+    "monthly_slots": 8,
+    "coverage": 0.6666666666666666,
+    "issue_groups": 4,
+    "checks": [
+      {
+        "check": "Required metric/scenario mappings at original frequency",
+        "passed": 12,
+        "evaluated": 12
+      },
+      {
+        "check": "Required metric/scenario source observations checked",
+        "passed": 12,
+        "evaluated": 12
+      },
+      {
+        "check": "Mapped slots matching configured period and frequency",
+        "passed": 8,
+        "evaluated": 12
+      }
+    ],
+    "reconciliation_status": "Not Evaluated comprehensively; known source-backed exceptions remain open",
+    "limitation": "No weighted total: comprehensive cross-schedule reconciliation and semantic validation have not been evaluated. This is workflow evidence, not company-wide AI maturity or authorization for unattended automation."
+  },
+  "full_regression": {
+    "passed": 393,
+    "seconds": 248.63
+  },
+  "final_focused_regression": {
+    "passed": 10,
+    "seconds": 22.73
+  },
+  "independent_review": {
+    "agent": "/root/readiness_review",
+    "material_findings": 0,
+    "scope": "Configuration, source-backed mapping/issue adapter, UI, tests and preservation boundaries; read-only."
+  },
+  "visual_correction": "Source references and checked values placed ahead of long filenames in issue evidence table. Final preview restarted before Chrome proof.",
+  "workflow_chrome": {
+    "browser_errors": [],
+    "external_requests": [],
+    "source_issue_deep_link": "pass",
+    "download_and_standalone_consumer": "pass",
+    "mobile_no_document_overflow": "pass"
+  },
+  "v3_chrome": {
+    "companies": {
+      "summit": {
+        "summary": "pass",
+        "evidence": "pass",
+        "return": "pass",
+        "downloads": {
+          "standard": 182182,
+          "custom": 187810
+        }
+      },
+      "tallis": {
+        "summary": "pass",
+        "evidence": "pass",
+        "return": "pass",
+        "downloads": {
+          "standard": 127406,
+          "custom": 132898
+        }
+      },
+      "harrow": {
+        "summary": "pass",
+        "evidence": "pass",
+        "return": "pass",
+        "downloads": {
+          "standard": 195112,
+          "custom": 200524
+        }
+      }
+    },
+    "external_requests": [],
+    "browser_errors": [],
+    "downloaded_issue_chains": [
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_51",
+        "destination": "Source References!A320"
+      },
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_9",
+        "destination": "Source References!A394"
+      },
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_18",
+        "destination": "Source References!A438"
+      },
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_7",
+        "destination": "Source References!A488"
+      },
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_6",
+        "destination": "Source References!A513"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "s4_K40",
+        "destination": "TBA 04 Monthly Trend!K40"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "s7_D9",
+        "destination": "TBA 07 WIP AR Realization!D9"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "s5_B17",
+        "destination": "TBA 05 Adjusted EBITDA!B17"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "s8_F7",
+        "destination": "TBA 08 Client Book!F7"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "calc_2",
+        "destination": "Source References!A677"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_10",
+        "destination": "Source References!A715"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_18",
+        "destination": "Source References!A757"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_2",
+        "destination": "Source References!A789"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_19",
+        "destination": "Source References!A821"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_8",
+        "destination": "Source References!A845"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_26",
+        "destination": "Source References!A876"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_22",
+        "destination": "Source References!A897"
+      }
+    ],
+    "portfolio_download": {
+      "bytes": 311461,
+      "sheets": [
+        "Portfolio Overview",
+        "Company Comparison",
+        "Investment Issues",
+        "Summit Home Services",
+        "Tallis Brook Accounting",
+        "Harrow Ridge Environmental",
+        "Source References",
+        "Source Snapshots",
+        "Reporting Output",
+        "Investment Ledger",
+        "SHS 01 CFO Commentary",
+        "SHS 02 Income Statement",
+        "SHS 03 Branch Results",
+        "SHS 04 Operating Metrics",
+        "SHS 05 AR Aging & Recon",
+        "SHS 06 Monthly Detail",
+        "TBA 01 MP Letter",
+        "TBA 02 Dashboard",
+        "TBA 03 Practice P&L",
+        "TBA 04 Monthly Trend",
+        "TBA 05 Adjusted EBITDA",
+        "TBA 06 People & Utilization",
+        "TBA 07 WIP AR Realization",
+        "TBA 08 Client Book",
+        "HRE 01 Management Discussion",
+        "HRE 02 P&L Summary",
+        "HRE 03 Monthly P&L",
+        "HRE 04 Cash Flow & Capex",
+        "HRE 05 Balance Sheet",
+        "HRE 06 Segment Results",
+        "HRE 07 Operating KPIs",
+        "HRE 08 Fleet Register",
+        "HRE 09 Customers & Contracts",
+        "HRE 10 Adjusted EBITDA"
+      ]
+    },
+    "company_selector_switching": "pass",
+    "deep_link_summary_evidence_regression": "pass",
+    "data_package_download": {
+      "bytes": 60627,
+      "standalone_consumer": "pass",
+      "company_comparisons": 3
+    },
+    "mobile_no_overflow": "pass"
+  },
+  "preservation": {
+    "base": "7bd764d3d602a2fe27a4dcbc72780ffb5abe9857",
+    "pinned_files_verified": 29,
+    "unchanged_protected_modules": [
+      "portfolio_foundation.py",
+      "data_foundation/README.md",
+      "data_foundation/example_consumer.py",
+      "portfolio_investments.py",
+      "demo_investments/ledger.json",
+      "portfolio_excel.py",
+      "portfolio_company.py",
+      "portfolio_dashboard.py",
+      "reports.py"
+    ],
+    "data_package_byte_identical_to_v3": true,
+    "package_sha256": "b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b",
+    "new_analyst_calls": 0,
+    "frozen_branch": "e59d651944fe786e3b7d50735cfbfe0505990748",
+    "v3_branch": "7bd764d3d602a2fe27a4dcbc72780ffb5abe9857"
+  },
+  "limitations": [
+    "No total readiness score without comprehensive reconciliation/semantic evaluation.",
+    "Known issue queue is non-exhaustive; observation groups can overlap.",
+    "No documented human mapping approval or persistent new-cycle mapping reuse.",
+    "Potential downstream workflows are not implemented."
+  ],
+  "secret_audit": {
+    "base": "7bd764d3d602a2fe27a4dcbc72780ffb5abe9857",
+    "candidate_files": 13,
+    "text_files_scanned": 9,
+    "findings": [],
+    "changed_paths": [
+      "data_foundation/models/monthly_portfolio_operating_review.json",
+      "docs/ai-workflow-readiness-verification.json",
+      "docs/ai-workflow-readiness.md",
+      "docs/images/ai-readiness/desktop.png",
+      "docs/images/ai-readiness/issue-operands.png",
+      "docs/images/ai-readiness/mobile.png",
+      "docs/images/ai-readiness/source-details.png",
+      "portfolio_foundation_ui.py",
+      "portfolio_readiness.py",
+      "tests/browser_portfolio.py",
+      "tests/browser_readiness.py",
+      "tests/test_portfolio_foundation.py",
+      "tests/test_portfolio_readiness.py"
+    ],
+    "method": "High-confidence credential patterns plus precise changed-path allowlist and visual inspection of synthetic screenshots. No environment or credential files read."
+  }
+}

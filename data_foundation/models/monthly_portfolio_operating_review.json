@@ -1,0 +1,37 @@
+{
+  "schema_version": "gp-workflow-model-1.0",
+  "model_id": "monthly_portfolio_operating_review",
+  "version": "1.0.0",
+  "name": "Monthly Portfolio Operating Review",
+  "target_period": "2026-09",
+  "period_grain": "month",
+  "selection_policy": "existing_report_adapter_current_totals",
+  "metrics": [
+    {
+      "metric_id": "financial.revenue",
+      "label": "Revenue",
+      "definition": "Reported company revenue, using the existing verified report adapter's selected total; no summation of duplicate presentations or account detail.",
+      "required": true,
+      "scenarios": ["actual", "budget"]
+    },
+    {
+      "metric_id": "financial.ebitda",
+      "label": "Reported EBITDA",
+      "definition": "Reported EBITDA for the source reporting entity; excludes pro forma adjusted EBITDA sensitivities and does not impose a common accounting definition.",
+      "required": true,
+      "scenarios": ["actual", "budget"]
+    }
+  ],
+  "context_fields": [
+    {"field": "company_id", "required": true, "definition": "Stable company registry identifier."},
+    {"field": "entity_name", "required": true, "definition": "Original reporting entity, not an inferred consolidation perimeter."},
+    {"field": "period", "required": true, "definition": "Original reporting period; a different grain cannot satisfy the monthly requirement."},
+    {"field": "period_grain", "required": true, "definition": "Monthly, fiscal-quarter or annual; no annualization or resampling."},
+    {"field": "scenario", "required": true, "definition": "Actual and budget remain separate."},
+    {"field": "currency", "required": true, "definition": "Original currency label; $ is retained without claiming an ISO currency or FX conversion."},
+    {"field": "unit", "required": true, "definition": "Source-supported unit, with original scale preserved separately."},
+    {"field": "source_fact_id", "required": true, "definition": "Version-qualified source identity, joined to workbook/sheet/cell lineage."},
+    {"field": "accounting_basis", "required": false, "definition": "Preserve unknown when the source contract does not establish the basis."}
+  ],
+  "assessment_policy": "Report measured mapping, source and period checks separately. Do not compute a total readiness score without comprehensive validation/reconciliation evidence. Human approval and future-cycle mapping reuse are not inferred."
+}
