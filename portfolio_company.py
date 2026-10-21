@@ -28,8 +28,12 @@ def company_go(view, finding=None):
     if finding is not None:
         params['finding'] = str(finding)
         st.session_state.selected = finding
-    else:
-        params.pop('finding', None)
+        st.session_state.gp_selected_finding = finding
+    elif st.session_state.get('gp_selected_finding') is not None:
+        params['finding'] = str(st.session_state.gp_selected_finding)
+        st.session_state.selected = st.session_state.gp_selected_finding
+    # Preserve an existing finding route for generic evidence actions. Removing
+    # it makes render_company interpret the action as a fresh summary route.
     st.query_params.from_dict(params)
 
 
@@ -67,6 +71,7 @@ def render_company(company):
             requested = None
         valid_ids = {f['id'] for f in analysis_findings(r)}
         st.session_state.selected = requested if requested in valid_ids else next(iter(valid_ids))
+        st.session_state.gp_selected_finding = st.session_state.selected
     st.button('← Portfolio Overview', on_click=navigate, args=('overview',))
     st.title(company.name)
     st.caption(company.sector+' · '+v['period_label']+' · Verified prepared review')
@@ -91,6 +96,9 @@ def render_company(company):
              horizontal=True, key='gp_company_tab')
     views = existing_views()
     if st.session_state.gp_company_tab == 'evidence':
+        if 'selected' not in st.session_state:
+            st.session_state.selected = st.session_state.gp_selected_finding
         views['evidence_view'](r)
+        st.session_state.gp_selected_finding = st.session_state.selected
     else:
         views['overview'](r)

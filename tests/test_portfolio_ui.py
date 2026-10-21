@@ -10,3 +10,13 @@ def test_overview_uses_prepared_financials_and_explicit_periods():
                      'September 2026 · monthly', 'FY2026 · annual', '15.2%', '19.7%', '20.8%', 'No combined revenue'):
         assert expected in text
     assert len([b for b in at.button if b.label == 'Open investment review →']) == 3
+
+
+def test_excel_preview_shows_workbook_currency_and_percent_formats():
+    at = AppTest.from_file(str(ROOT / 'portfolio_app.py'), default_timeout=60).run()
+    at.button(key='nav_excel').click().run()
+    assert not at.exception
+    frame = at.dataframe[0].value
+    assert frame.iloc[0]['Revenue'] == '$3,298,000'
+    assert frame.iloc[0]['EBITDA margin'] == '15.2%'
+    assert frame.iloc[2]['Reporting period'] == 'FY2026 · annual'

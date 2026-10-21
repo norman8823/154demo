@@ -13,7 +13,9 @@ header[data-testid="stHeader"] {background:transparent;height:0;}
 [data-testid="stSidebar"] .stButton button[kind="primary"] {background:#294e65;color:#fff;}
 [data-testid="stSidebar"] [data-testid="stSelectbox"] * {color:#18364a;}
 h1,h2,h3 {color:#18364a;letter-spacing:-.025em;}
-h1 {font-size:2rem!important;} h2 {font-size:1.15rem!important;}
+h1 {font-size:2rem!important;} h2,h3 {font-size:1.15rem!important;}
+[data-testid="stSidebarUserContent"] {padding-top:1.5rem;}
+[data-testid="stVerticalBlock"] {gap:.75rem;}
 p,li {line-height:1.55;}
 .stButton button,.stDownloadButton button {border-radius:6px;min-height:40px;font-weight:600;}
 .stButton button[kind="primary"],.stDownloadButton button[kind="primary"] {background:#183b52;border:0;}
@@ -23,7 +25,7 @@ p,li {line-height:1.55;}
 .gp-breadcrumb {border-bottom:1px solid #dce6ec;padding:0 0 20px;font-size:12px;font-weight:600;color:#527086;}
 .gp-tag {float:right;background:#e9f3f6;color:#27728a;padding:4px 12px;border-radius:20px;font-size:10px;letter-spacing:.06em;}
 .gp-stats {display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0;}
-.gp-stat {border:1px solid #d9e3eb;border-radius:10px;padding:18px 22px;background:white;}
+.gp-stat {border:1px solid #d9e3eb;border-radius:10px;padding:16px 20px;background:white;}
 .gp-stat small,.gp-company small,.gp-kpi small {display:block;color:#647f93;font-size:11px;}
 .gp-stat strong {display:block;font-size:27px;margin:5px 0;color:#18364a;}
 .gp-row {display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1.55fr;align-items:start;gap:16px;}
@@ -34,7 +36,8 @@ p,li {line-height:1.55;}
 .gp-delta {font-size:11px;}.gp-adverse {color:#ad4848;}.gp-favorable {color:#27755a;}
 .gp-focus {border-left:3px solid #bf9449;padding-left:13px;font-size:12px;line-height:1.55;}
 .gp-focus small {display:block;color:#9d722c;font-weight:700;font-size:10px;letter-spacing:.04em;margin-bottom:8px;}
-div[class*="st-key-gp_company_"] {border:1px solid #d9e3eb;border-radius:10px;padding:22px;background:white;margin-bottom:2px;}
+div[class*="st-key-gp_company_"] {border:1px solid #d9e3eb;border-radius:10px;padding:18px 22px;background:white;margin-bottom:2px;}
+div[class*="st-key-gp_company_"] [data-testid="stVerticalBlock"] {gap:.25rem;}
 .gp-guard {background:#edf5f8;border:1px solid #d7e7ee;padding:12px 16px;border-radius:7px;color:#527086;font-size:12px;margin:16px 0 22px;}
 .gp-note {font-size:11px;color:#7890a2;margin:20px 0;}
 [data-testid="stMetric"] {background:white;border:1px solid #dce6ec;border-radius:8px;padding:16px;}
@@ -47,6 +50,7 @@ div[class*="st-key-gp_company_"] {border:1px solid #d9e3eb;border-radius:10px;pa
 [data-testid="stToolbar"] {display:none;} footer {visibility:hidden;}
 @media(max-width:1100px) {.gp-row {grid-template-columns:repeat(3,1fr);}.gp-company {grid-column:1/-1;}.gp-focus {grid-column:1/-1;}}
 @media(max-width:600px) {.block-container {padding:1.5rem 1rem;}.gp-stats {grid-template-columns:1fr;}.gp-row {grid-template-columns:1fr;}.gp-company,.gp-focus {grid-column:auto;}.gp-kpi {border-left:0;padding-left:0;min-height:0;}}
+@media(max-width:800px) {header[data-testid="stHeader"] {height:2.5rem;background:white;} [data-testid="stToolbar"] {display:flex;} .stAppDeployButton,#MainMenu {display:none;} .block-container {padding-top:3.2rem;}}
 </style>'''
 
 
@@ -98,10 +102,20 @@ def company_card(company):
         action.button('Open investment review →', key='open_'+company.id, width='stretch', on_click=navigate, args=('company', company.id))
 
 
-def overview(companies):
+def page_heading(title, subtitle, workbook_data=None):
+    heading, action = st.columns([3, 1])
+    with heading:
+        st.title(title)
+        st.caption(subtitle)
+    if workbook_data:
+        action.download_button('↓ Download Portfolio Excel', workbook_data,
+            file_name='GP_Portfolio_Review_Sep2026_FY2026.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            type='primary', width='stretch', key='gp_download')
+
+
+def overview(companies, workbook_data=None):
     st.markdown('<div class="gp-eyebrow">GP MONITORING / REPORTING CYCLE</div>', unsafe_allow_html=True)
-    st.title('Portfolio Overview')
-    st.caption('Three investments · September 2026 / FY2026 reporting · prepared company analyses')
+    page_heading('Portfolio Overview', 'Three investments · September 2026 / FY2026 reporting · prepared company analyses', workbook_data)
     stats(companies)
     st.subheader('Company performance')
     for company in companies:
@@ -134,7 +148,9 @@ def render_watchlist(companies, compact=False):
             issue, action = st.columns([4, 1])
             issue.markdown('**'+item.company_name+' · '+f['title']+'**')
             issue.caption(item.report_period+' report · '+f['priority'].title()+' · '+f['disposition'].replace('_', ' ').title())
-            issue.write(f['conclusion'])
+            if not compact:
+                with issue:
+                    literal_prose(f['conclusion'])
             action.button('View source evidence →', key=('lead_' if compact else 'watch_')+item.company_id+'_'+str(f['id']),
                           on_click=navigate, args=('company', item.company_id, f['id']), width='stretch')
             if not compact:
@@ -142,11 +158,31 @@ def render_watchlist(companies, compact=False):
                     for label, key in [('Evidence', 'evidence'), ('Financial implication', 'financial_implication'), ('Investment assessment', 'assessment'),
                                        ('Next action', 'action'), ('Management question', 'management_question')]:
                         st.markdown('**'+label+'**')
-                        st.write(f[key])
+                        literal_prose(f[key])
                     st.info(item.presentation['caveat'])
                     st.caption('Source IDs: '+', '.join(f['fact_ids']))
                     for quote in f.get('source_quotes', []):
-                        st.write(quote['quote'])
+                        literal_prose(quote['quote'])
                         st.caption('Original source quote · '+quote['source_id'])
     if compact:
         st.button('Open all portfolio findings →', on_click=navigate, args=('watchlist',))
+
+
+def literal_prose(text):
+    # Dollar signs in source financial prose are currency, never KaTeX math.
+    st.markdown('<div class="prose">'+escape(text).replace('$', '&#36;')+'</div>', unsafe_allow_html=True)
+
+
+def workbook_preview_value(cell):
+    """Honor the generated workbook's currency/percent/pp presentation in UI."""
+    value = cell.value
+    if not isinstance(value, (int, float)):
+        return value
+    fmt = cell.number_format
+    if '%' in fmt:
+        return f'{value:.1%}'
+    if '" pp"' in fmt:
+        return f'{value:+.1f} pp'
+    if '"$"' in fmt:
+        return ('−' if value < 0 else '')+f'${abs(value):,.0f}'
+    return str(value)

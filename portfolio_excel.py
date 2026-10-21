@@ -21,7 +21,7 @@ def literal(ws, row, column, value):
     c = ws.cell(row, column, value if value is not None else 'Unavailable')
     if isinstance(c.value, str):
         c.data_type = 's'
-    c.font = Font(name='Aptos', size=10, color=NAVY)
+    c.font = Font(name='Arial', size=10, color=NAVY)
     c.alignment = Alignment(vertical='top', wrap_text=True)
     return c
 
@@ -32,14 +32,14 @@ def base_sheet(wb, title, headers, widths, description):
     for row, text in [(1, title), (2, 'SYNTHETIC GP REVIEW · Prepared results · For Investment Team Review'), (3, description)]:
         ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=last)
         c = literal(ws, row, 1, text)
-        c.font = Font(name='Aptos', size=22 if row == 1 else 10, bold=row == 1, color=NAVY if row == 1 else MUTED)
+        c.font = Font(name='Arial', size=22 if row == 1 else 10, bold=row == 1, color=NAVY if row == 1 else MUTED)
     ws.row_dimensions[1].height = 34
     ws.row_dimensions[2].height = 22
     ws.row_dimensions[3].height = 46
     for col, (header, width) in enumerate(zip(headers, widths), 1):
         c = literal(ws, 5, col, header)
         c.fill = PatternFill('solid', fgColor=NAVY)
-        c.font = Font(name='Aptos', bold=True, size=10, color='FFFFFF')
+        c.font = Font(name='Arial', bold=True, size=10, color='FFFFFF')
         ws.column_dimensions[get_column_letter(col)].width = width
     ws.row_dimensions[5].height = 32
     ws.sheet_view.showGridLines = False
@@ -71,7 +71,7 @@ def link(cell, sheet, row, label=None):
     if label is not None:
         cell.value = label
         cell.data_type = 's'
-    cell.font = Font(name='Aptos', size=10, color='206482', underline='single')
+    cell.font = Font(name='Arial', size=10, color='206482', underline='single')
 
 
 def export_portfolio(companies):
@@ -148,11 +148,11 @@ def export_portfolio(companies):
         details += [('Original source quote · '+q['source_id'], q['quote']) for q in f.get('source_quotes', [])]
         details += [('Source IDs / calculation operands', ', '.join(item.source_ids))]
         for label, value in details:
-            literal(watch, detail_row, 1, label).font = Font(name='Aptos', bold=True, color=NAVY, size=10)
+            literal(watch, detail_row, 1, label).font = Font(name='Arial', bold=True, color=NAVY, size=10)
             watch.merge_cells(start_row=detail_row, start_column=2, end_row=detail_row, end_column=8)
             c = literal(watch, detail_row, 2, value)
             if label == 'Finding':
-                c.font = Font(name='Aptos', size=13, bold=True, color=NAVY)
+                c.font = Font(name='Arial', size=13, bold=True, color=NAVY)
                 c.fill = PatternFill('solid', fgColor='DCEAF0')
                 link(watch.cell(detail_row, 1), SHEETS[2], row, '↑ Finding index')
             if label.startswith('Source IDs'):

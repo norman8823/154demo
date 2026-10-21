@@ -32,3 +32,6 @@ build/
 
 # Approved, hash-pinned snapshots override developer-global archive ignores.
 !/demo_results/*.json.gz
+
+# Owner-supplied visual references remain local.
+/resources/references/Portfolio_GP_Rollup_UI_References/
