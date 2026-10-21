@@ -44,7 +44,7 @@ def _snapshot(wb,company,source,ordinal,catalog_row):
     facts={(f.get('sheet'),f.get('cell')):f for f in company.review.package['facts']}
     for row in source:
         for original in row:
-            if original.value is None:continue
+            if original.value is None and not original.has_style:continue
             target=ws.cell(original.row,original.column)
             # Workbook style IDs are local; copy components so the destination
             # registers its own font/fill/alignment/format IDs correctly.
@@ -52,6 +52,7 @@ def _snapshot(wb,company,source,ordinal,catalog_row):
             target.border=copy(original.border);target.alignment=copy(original.alignment)
             target.number_format=original.number_format
             target.protection=Protection(locked=True,hidden=False)
+            if original.value is None:continue
             if original.data_type=='f':
                 fact=facts.get((source.title,original.coordinate))
                 if fact is None or 'source_value' not in fact or fact['raw']!=original.value:

@@ -9,7 +9,7 @@ from openpyxl.chart.series import DataPoint
 from openpyxl.chart.label import DataLabelList
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.hyperlink import Hyperlink
-from portfolio_comparison import comparison, COMPARABILITY
+from portfolio_comparison import comparison, metric_operand, COMPARABILITY
 from portfolio_dashboard import workflow_summary
 from portfolio_watchlist import watchlist, source_closure, evidence_for
 
@@ -138,6 +138,8 @@ def write_overview(ws,companies,source_rows):
         for idx,color in enumerate(('173E57','B8CBD9')):
             point=DataPoint(idx=idx);point.graphicalProperties.solidFill=color;point.graphicalProperties.line.noFill=True;chart.series[0].data_points.append(point)
         chart.dataLabels=DataLabelList();chart.dataLabels.showVal=True;chart.dataLabels.dLblPos='outEnd'
+        chart.dataLabels.showLegendKey=False;chart.dataLabels.showCatName=False;chart.dataLabels.showSerName=False
+        chart.dataLabels.showPercent=False;chart.dataLabels.showLeaderLines=False
         chart.dataLabels.numFmt='"$"#,##0'
         ws.add_chart(chart,('A14','E14','I14')[row-43])
     labels=['Company','Reporting period','Revenue','Reported EBITDA','EBITDA budget','EBITDA variance','EBITDA vs budget','EBITDA margin','Issues','Act now','Company review','Source IDs']
@@ -178,6 +180,43 @@ def write_comparison(ws,companies,source_rows):
     for col,c in enumerate(companies,3):
         link(ws.cell(5,col),COMPANY_SHEETS[c.id],1)
         ws.cell(5,col).font=Font(name='Arial',size=10,bold=True,color='FFFFFF',underline='single')
+
+
+def attach_metric_proofs(wb, companies, source_rows):
+    """Numeric comparison links explain reporting arithmetic and exact scenarios."""
+    ws=wb['Source References'];cursor=ws.max_row+5
+    specs=[(7,'revenue','actual'),(8,'revenue','budget'),(9,'revenue','variance_pct'),
+           (10,'ebitda','actual'),(11,'ebitda','budget'),(12,'ebitda','variance'),(13,'ebitda','variance_pct'),
+           (14,'margin','actual'),(15,'margin','budget'),(16,'margin','variance')]
+    for col,c in enumerate(companies,3):
+        values=comparison(c)
+        for matrix_row,key,field in specs:
+            value=getattr(values[key],field)
+            if value is None:
+                wb['Company Comparison'].cell(matrix_row,col).hyperlink=None
+                continue
+            scenarios=('actual','budget') if field.startswith('variance') else (field,)
+            keys=('ebitda','revenue') if key=='margin' else (key,)
+            expression=('(Actual EBITDA / actual revenue − budget EBITDA / budget revenue) × 100; percentage points' if key=='margin' and field=='variance' else
+                        ('EBITDA / revenue' if key=='margin' else ('Actual / budget − 1' if field=='variance_pct' else ('Actual − budget' if field=='variance' else 'Validated '+field+' statement metric'))))
+            start=cursor
+            row_values(ws,start,[c.name,key+' · '+field,'REPORTING METRIC',expression,value,values[key].unit,values['period_label'],
+                                 'Presentation arithmetic over approved statement metrics; not a new analyst finding.','','↑ Comparison'],76)
+            link(ws.cell(start,10),'Company Comparison',matrix_row,column=get_column_letter(col))
+            ws.cell(start,5).number_format=PP if key=='margin' and field=='variance' else (PERCENT if key=='margin' or field=='variance_pct' else MONEY)
+            headers(ws,start+1,['Company','Metric / scenario','Type','Statement definition','Operand value','Unit','Period','Source ID','Open source index',''])
+            cursor=start+2
+            for scenario in scenarios:
+                for operand in keys:
+                    support=metric_operand(c,operand,scenario)
+                    if support is None:raise ValueError('A reporting calculation operand is unavailable.')
+                    amount,unit,definition,ids=support
+                    for sid in ids:
+                        row_values(ws,cursor,[c.name,operand+' · '+scenario,'Approved statement operand',definition,amount,unit,values['period_label'],sid,'Open original evidence →',''],52)
+                        source_link(ws.cell(cursor,9),c.id,[sid],source_rows)
+                        ws.cell(cursor,5).number_format=MONEY;cursor+=1
+            link(wb['Company Comparison'].cell(matrix_row,col),'Source References',start)
+            cursor+=3
 
 
 def write_issues(ws,companies,source_rows):
@@ -270,6 +309,7 @@ def export_portfolio(companies):
     catalog.auto_filter.ref=f'A5:E{5+len(companies)}'
     from portfolio_sources import attach_source_snapshots
     attach_source_snapshots(wb,companies,records,source_rows)
+    attach_metric_proofs(wb,companies,source_rows)
     # Source snapshots keep their original grid; never write navigation into it.
     for name in SHEETS:
         if name not in wb.sheetnames:continue

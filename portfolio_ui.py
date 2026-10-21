@@ -55,8 +55,11 @@ div[class*="st-key-gp_company_"] [data-testid="stVerticalBlock"] {gap:.25rem;}
 
 CSS += '''<style>
 .block-container {max-width:1580px;padding:1.5rem 2.5rem 2rem;}
-[data-testid="stSidebar"] {min-width:215px;max-width:215px;background:#112e42;}
-[data-testid="stSidebarUserContent"] {padding:1.4rem 1.1rem;}
+[data-testid="stSidebar"] {min-width:250px;max-width:250px;background:#112e42;}
+[data-testid="stSidebarUserContent"] {padding:1.4rem 1rem;}
+[data-testid="stSidebar"] .block-container {padding:0;}
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] * {color:#d8e6ee;}
+[data-testid="stSidebar"] .stButton button {white-space:nowrap;}
 .gp-brand {font-size:17px;line-height:1.35;padding:0 0 16px;}
 .gp-breadcrumb {padding-bottom:13px;font-size:11px;}
 .gp-eyebrow {margin-top:12px;}

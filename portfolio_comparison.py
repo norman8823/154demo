@@ -1,7 +1,7 @@
 """Period-aware presentation over the existing verified financial-table adapter."""
 from dataclasses import dataclass
 import math
-from excel_layout import financial_table
+from excel_layout import financial_table, period_label
 
 COMPARABILITY = ('Company figures are presented separately. Summit and Tallis report September monthly results; '
                  'Harrow reports FY2026. No combined revenue, EBITDA or portfolio margin is calculated. '
@@ -60,6 +60,22 @@ def comparison(company):
     result['period_label'] = r.report_period + ' · ' + result['frequency'].lower()
     result['basis'] = ', '.join(sorted({n.get('basis') or 'unknown' for n in records})) or 'unknown'
     return result
+
+
+def metric_operand(company, key, scenario):
+    """Exact current-period/scenario provenance, without prior comparisons."""
+    metric = comparison(company)[key]
+    selected = None
+    for label, value, unit, definition, refs in company.review.financial_rows:
+        parts = label.rsplit(' · ', 3)
+        if len(parts) == 4 and parts[2:] == [scenario, key] and period_label(parts[1]) == metric.period:
+            selected = (value, unit, definition, tuple(refs.split('; ')))
+    expected = getattr(metric, scenario)
+    if expected is None:
+        return None
+    if selected is None or not math.isclose(selected[0], expected, rel_tol=1e-12):
+        raise ValueError('Current metric provenance is unavailable: '+company.id+'/'+key+'/'+scenario)
+    return selected
 
 
 def money(value, currency='$'):
