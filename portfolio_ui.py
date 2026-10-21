@@ -53,6 +53,38 @@ div[class*="st-key-gp_company_"] [data-testid="stVerticalBlock"] {gap:.25rem;}
 @media(max-width:800px) {header[data-testid="stHeader"] {height:2.5rem;background:white;} [data-testid="stToolbar"] {display:flex;} .stAppDeployButton,#MainMenu {display:none;} .block-container {padding-top:3.2rem;}}
 </style>'''
 
+CSS += '''<style>
+.block-container {max-width:1580px;padding:1.5rem 2.5rem 2rem;}
+[data-testid="stSidebar"] {min-width:215px;max-width:215px;background:#112e42;}
+[data-testid="stSidebarUserContent"] {padding:1.4rem 1.1rem;}
+.gp-brand {font-size:17px;line-height:1.35;padding:0 0 16px;}
+.gp-breadcrumb {padding-bottom:13px;font-size:11px;}
+.gp-eyebrow {margin-top:12px;}
+h1 {font-size:1.85rem!important;} h2,h3 {font-size:1.06rem!important;}
+.gp-stats {grid-template-columns:repeat(4,1fr);gap:12px;margin:15px 0 20px;}
+.gp-stat {padding:15px 18px;border-radius:8px;border-color:#e0e7ed;}
+.gp-stat strong {font-size:29px;margin:7px 0;}
+.gp-stat small {font-size:11px;line-height:1.45;}
+.v2-workflow {display:flex;align-items:center;gap:12px;padding:11px 15px;margin:12px 0 6px;background:#f4f7fa;border:1px solid #e4ebf0;border-radius:6px;font-size:11px;color:#678195;flex-wrap:wrap;}
+.v2-workflow b {color:#24485e;font-weight:600;}.v2-workflow span {color:#8b9eac;}
+div[class*="st-key-gp_company_"] {border:1px solid #dce5ec;padding:17px 18px 13px;border-radius:9px;min-width:0;}
+.v2-company-head {display:flex;align-items:start;justify-content:space-between;gap:8px;min-height:44px;}
+.v2-company-head strong {font-size:15px;line-height:1.3;}.v2-company-head small {display:block;color:#708498;font-size:10px;margin-top:5px;}
+.v2-frequency {font-size:9px;white-space:nowrap;color:#506b80;background:#eef3f7;padding:4px 6px;border-radius:4px;}
+.v2-figures {display:grid;grid-template-columns:1.2fr 1.2fr 1fr;gap:10px;margin:12px 0 6px;}
+.v2-figures small {display:block;font-size:9px;color:#6a8194;letter-spacing:.04em;}
+.v2-figures b {font-size:21px;color:#18364a;display:block;margin-top:4px;}
+.v2-variance {font-size:11px;color:#a05f34;background:#fbf5ef;padding:8px 10px;border-radius:5px;}
+.v2-variance span {color:#7f8f9c;}.v2-period {font-size:11px;color:#647b8d;margin-bottom:6px;}
+.v2-rule {height:1px;background:#e2e9ef;margin:12px 0;}
+.gp-guard {margin:12px 0 15px;padding:10px 14px;font-size:11px;}
+.gp-note {font-size:10px;margin:12px 0;}
+.prose {font-size:13px;line-height:1.6;}
+@media(max-width:1100px) {.v2-figures {grid-template-columns:1fr;}.v2-figures>div {display:flex;align-items:center;justify-content:space-between;}.v2-figures b {font-size:18px;}}
+@media(max-width:800px) {.block-container {padding:3.2rem 1rem 2rem;}.gp-stats {grid-template-columns:repeat(2,1fr);}.v2-figures {grid-template-columns:repeat(3,1fr);}.v2-figures>div {display:block;}}
+@media(max-width:420px) {.gp-stats {gap:8px;}.gp-stat {padding:12px;}.gp-stat strong {font-size:24px;}.v2-frequency {font-size:8px;}}
+</style>'''
+
 
 def navigate(page, company=None, finding=None):
     params = {'page': page}
@@ -79,27 +111,25 @@ def shell(page, companies):
 
 
 def stats(companies):
-    frequencies = [comparison(c)['frequency'] for c in companies]
-    items = [('Investments', str(len(companies)), 'Independent portfolio companies'),
-             ('Verified prepared reports', f'{len(companies)} / {len(companies)}', 'Source packages verified; interpretation requires review'),
-             ('Reporting scope', f'{frequencies.count("Monthly")} monthly · {frequencies.count("Annual")} FY', 'Company figures shown separately')]
+    from portfolio_dashboard import workflow_summary
+    summary = workflow_summary(companies)
+    items = [('Reporting coverage', f'{summary["received"]} / {summary["companies"]}', 'Prepared company assessments available'),
+             ('Below EBITDA plan', f'{summary["below_plan"]} / {summary["comparable_budget"]}', 'Each company vs its same-period budget'),
+             ('Accepted investment issues', str(summary['issues']), 'Original findings, including qualified opportunities'),
+             ('Act-now follow-ups', str(summary['act_now']), 'Original analyst disposition · no new risk score')]
     st.markdown('<div class="gp-stats">'+''.join('<div class="gp-stat"><small>'+escape(a)+'</small><strong>'+escape(b)+'</strong><small>'+escape(c)+'</small></div>' for a,b,c in items)+'</div>', unsafe_allow_html=True)
 
 
 def company_card(company):
+    from portfolio_dashboard import ebitda_chart
     v = comparison(company)
-    focus = company.review.package['ai_insights'][0]
-    metric_html = ''
-    for title, key in [('REVENUE', 'revenue'), ('REPORTED EBITDA', 'ebitda'), ('EBITDA MARGIN', 'margin')]:
-        m = v[key]
-        value = percent(m.actual) if key == 'margin' else money(m.actual, m.unit)
-        delta = (percent(m.budget)+' budget' if m.budget is not None else 'Budget unavailable') if key == 'margin' else against_plan(m)
-        color = '' if key == 'margin' or m.variance_pct is None else (' gp-adverse' if m.variance_pct < 0 else ' gp-favorable')
-        metric_html += '<div class="gp-kpi"><small>'+title+'</small><strong>'+escape(value)+'</strong><div class="gp-delta'+color+'">'+escape(delta)+'</div></div>'
+    m = v['ebitda']
     with st.container(key='gp_company_'+company.id):
-        st.markdown('<div class="gp-row"><div class="gp-company"><strong>'+escape(company.name)+'</strong><small>'+escape(company.sector)+'</small><div class="gp-period">'+escape(v['period_label'])+'</div><small>✓ Verified prepared review</small></div>'+metric_html+'<div class="gp-focus"><small>PRIORITY INVESTMENT ISSUE</small>'+escape(focus['title'])+'</div></div>', unsafe_allow_html=True)
-        _, action = st.columns([4, 1.3])
-        action.button('Open investment review →', key='open_'+company.id, width='stretch', on_click=navigate, args=('company', company.id))
+        st.markdown('<div class="v2-company-head"><div><strong>'+escape(company.name)+'</strong><small>'+escape(company.sector)+'</small></div><span class="v2-frequency">'+escape(v['frequency'].upper())+'</span></div><div class="v2-figures"><div><small>REVENUE</small><b>'+escape(money(v['revenue'].actual,v['revenue'].unit))+'</b></div><div><small>REPORTED EBITDA</small><b>'+escape(money(m.actual,m.unit))+'</b></div><div><small>EBITDA MARGIN</small><b>'+percent(v['margin'].actual)+'</b></div></div><div class="v2-rule"></div><div class="v2-period">'+escape(v['period_label'])+' · Reported EBITDA</div>', unsafe_allow_html=True)
+        st.altair_chart(ebitda_chart(company), width='stretch', key='ebitda_chart_'+company.id)
+        delta = (money(m.variance,m.unit)+' / '+against_plan(m)) if m.variance is not None else 'Budget comparison unavailable'
+        st.markdown('<div class="v2-variance">'+escape(delta)+'</div>',unsafe_allow_html=True)
+        st.button('Open investment review →', key='open_'+company.id, width='stretch', on_click=navigate, args=('company', company.id))
 
 
 def page_heading(title, subtitle, workbook_data=None):
@@ -115,12 +145,30 @@ def page_heading(title, subtitle, workbook_data=None):
 
 def overview(companies, workbook_data=None):
     st.markdown('<div class="gp-eyebrow">GP MONITORING / REPORTING CYCLE</div>', unsafe_allow_html=True)
-    page_heading('Portfolio Overview', 'Three investments · September 2026 / FY2026 reporting · prepared company analyses', workbook_data)
+    page_heading('Portfolio Overview', 'Operating performance, investment issues and management follow-up · September 2026 / FY2026', workbook_data)
+    st.markdown('<div class="v2-workflow"><b>01 &nbsp;Company packages ✓</b><span>→</span><b>02 &nbsp;Prepared AI assessments ✓</b><span>→</span><b>03 &nbsp;Portfolio review</b><span>→</span><b>04 &nbsp;Management follow-up</b><span>→</span><b>05 &nbsp;Source-linked Excel</b></div>', unsafe_allow_html=True)
     stats(companies)
-    st.subheader('Company performance')
-    for company in companies:
-        company_card(company)
+    st.subheader('Operating performance')
+    st.caption('Reported EBITDA: Actual vs Budget · Each chart has its own dollar axis and period. Annual and monthly amounts are never pooled.')
+    for column, company in zip(st.columns(len(companies)), companies):
+        with column:
+            company_card(company)
+    render_comparison(companies)
     st.markdown('<div class="gp-guard">'+escape(COMPARABILITY)+'</div>', unsafe_allow_html=True)
+
+
+def render_comparison(companies, matrix=False):
+    import pandas as pd
+    from portfolio_dashboard import operating_rows, comparison_matrix
+    st.subheader('Company comparison')
+    st.caption('Review source-period performance. Sort by a column heading; open a company above for findings and evidence.')
+    if matrix:
+        st.dataframe(pd.DataFrame(comparison_matrix(companies)), hide_index=True, width='stretch')
+    else:
+        st.dataframe(pd.DataFrame(operating_rows(companies)).drop(columns=['Company ID']), hide_index=True, width='stretch',
+                     column_config={'Revenue':st.column_config.NumberColumn(format='dollar'), 'Reported EBITDA':st.column_config.NumberColumn(format='dollar'),
+                        'EBITDA budget':st.column_config.NumberColumn(format='dollar'), 'EBITDA margin':st.column_config.NumberColumn(format='percent'),
+                        'EBITDA vs budget':st.column_config.NumberColumn(format='percent'), 'Revenue vs budget':st.column_config.NumberColumn(format='percent')})
 
 
 def footer():
