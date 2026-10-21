@@ -128,8 +128,9 @@ def test_mapping_filters_detail_state_and_original_finding_navigation():
     at.selectbox(key='foundation_scenario').set_value('budget').run()
     assert not at.exception
     frame=next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns)
-    assert len(frame)==1 and frame.iloc[0]['Standardized Value']=='$ 10,895,000'
-    assert '2026-FY · annual · budget'==frame.iloc[0]['Period']
+    assert len(frame)==1 and frame.iloc[0]['Standardized Value']=='$10,895,000'
+    assert '2026-FY · annual'==frame.iloc[0]['Period']
+    assert frame.iloc[0]['Scenario']=='budget'
     assert frame.iloc[0]['Status']=='Period review required'
     assert "'P&L Summary'!G34" in at.selectbox(key='foundation_mapping').options[0]
     at.selectbox(key='foundation_company').set_value('Tallis Brook Accounting').run()

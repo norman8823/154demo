@@ -9,7 +9,7 @@ import zipfile
 from playwright.sync_api import sync_playwright, expect
 
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'artifacts/ai-readiness'
+OUT=Path(os.environ.get('COPILOT_READINESS_ARTIFACT_DIR',ROOT/'artifacts/ai-readiness'))
 OUT.mkdir(parents=True,exist_ok=True)
 receipt={'browser_errors':[],'external_requests':[]}
 
@@ -23,7 +23,7 @@ def check(page):
 
 with sync_playwright() as p:
     browser=p.chromium.launch(channel='chrome',headless=True)
-    page=browser.new_page(viewport={'width':1510,'height':1620},accept_downloads=True)
+    page=browser.new_page(viewport={'width':1510,'height':1700},accept_downloads=True)
     page.on('pageerror',lambda e:receipt['browser_errors'].append(str(e)))
     def route_local(route):
         if urlparse(route.request.url).hostname not in ('127.0.0.1','localhost'):
@@ -37,10 +37,14 @@ with sync_playwright() as p:
     expect(page.get_by_text('67%',exact=True)).to_be_visible()
     expect(page.get_by_text('Not Evaluated',exact=True)).to_be_visible()
     check(page)
+    page.wait_for_timeout(450)  # Native dataframe canvas paints after script completion.
     page.screenshot(path=str(OUT/'ai-workflow-readiness-desktop.png'),full_page=True)
-    page.get_by_text('Inspect a mapping and its source evidence',exact=True).click()
     expect(page.get_by_text('Original company input',exact=True)).to_be_visible()
+    expect(page.get_by_text('Normalization & transformation',exact=True)).to_be_visible()
     expect(page.get_by_text('GP-standardized output',exact=True)).to_be_visible()
+    assert page.locator('.foundation-kpi').count()==3
+    # Presentation is scoped: investment pages must lose the foundation styles.
+    assert page.locator('.foundation-detail').count()==3
     page.wait_for_timeout(350)
     page.screenshot(path=str(OUT/'ai-workflow-readiness-source-details.png'),full_page=True)
     page.get_by_text('Inspect a mapping and its source evidence',exact=True).click()
@@ -55,6 +59,7 @@ with sync_playwright() as p:
     expect(page.get_by_role('heading',name='Summit Home Services',exact=True)).to_be_visible(timeout=60000)
     check(page)
     assert 'company=summit' in page.url and 'finding=10004' in page.url
+    assert page.locator('.foundation-kpis').count()==0
     receipt['source_issue_deep_link']='pass'
     page.get_by_role('button',name='Data Foundation',exact=True).click()
     expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
@@ -75,7 +80,9 @@ with sync_playwright() as p:
     page.wait_for_timeout(350)
     if sidebar.get_attribute('data-collapsed')=='false':page.get_by_role('button',name='Collapse sidebar',exact=True).click()
     page.wait_for_timeout(350)
+    page.locator('.st-key-foundation_page').evaluate('(e)=>{for(let p=e.parentElement;p;p=p.parentElement)p.scrollTop=0;}')
     check(page)
+    assert page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True).bounding_box()['y']>=60
     page.screenshot(path=str(OUT/'ai-workflow-readiness-mobile.png'),full_page=True)
     receipt['mobile_no_document_overflow']='pass'
     assert receipt['browser_errors']==[]
