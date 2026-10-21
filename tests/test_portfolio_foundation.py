@@ -136,16 +136,16 @@ def test_data_foundation_page_exposes_approval_distinctions_and_real_preview():
     at.button(key='nav_foundation').click().run()
     assert not at.exception
     assert at.title[0].value=='AI Workflow Automation Readiness'
-    frame=next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns)
-    assert len(frame)==12
-    assert set(frame['GP Target Metric'])=={'Revenue','Reported EBITDA'}
+    table=next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value)
+    assert table.count('<tr>')==13
+    assert 'Revenue' in table and 'Reported EBITDA' in table
     assert any('Human approval: not_recorded' in c.value for c in at.caption)
     at.selectbox(key='foundation_company').set_value('Tallis Brook Accounting').run()
     assert not at.exception
-    frame=next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns)
-    assert len(frame)==4
-    assert set(frame.Company)=={'Tallis Brook Accounting'}
+    table=next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value)
+    assert table.count('<tr>')==5
+    assert 'Tallis Brook Accounting' in table and 'Harrow Ridge Environmental' not in table
     at.selectbox(key='foundation_scenario').set_value('budget').run()
     assert not at.exception
-    assert len(next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns))==2
+    assert next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value).count('<tr>')==3
     assert any('204 unresolved mapping rows' in c.value for c in at.caption)

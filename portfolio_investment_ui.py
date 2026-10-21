@@ -44,5 +44,6 @@ def company_investment(company):
         literal_prose(f'Invested {money(result["invested_capital"])} · Realized {money(result["realized_proceeds"])} · Ownership {investment.ownership:.1%} · Valuation {investment.valuation_date}')
         literal_prose(f'Illustrative enterprise value {money(investment.enterprise_value)} − gross debt {money(investment.gross_debt)} + cash {money(investment.cash)} = total common equity {money(investment.total_common_equity)}. Sponsor equity {money(investment.current_equity_value)}.')
         literal_prose(investment.assumptions)
-        st.dataframe(pd.DataFrame([{'Date':f.date.isoformat(),'Type':f.kind,'Sponsor USD':f.amount,'Description':f.description} for f in investment.return_cash_flows]),hide_index=True,width='stretch',column_config={'Sponsor USD':st.column_config.NumberColumn(format='dollar')})
+        from portfolio_tables import responsive_table
+        responsive_table(pd.DataFrame([{'Date':f.date.isoformat(),'Type':f.kind,'Sponsor USD':f.amount,'Description':f.description} for f in investment.return_cash_flows]),key='investment_flows_'+company.id,formatters={'Sponsor USD':lambda n:f'${n:,.0f}'})
         st.caption(result['irr_detail']+' · Ledger SHA-256 '+investment.ledger_sha256)

@@ -6,6 +6,7 @@ import pandas as pd
 import streamlit as st
 from portfolio_foundation import export_foundation
 from portfolio_readiness import workflow_readiness
+from portfolio_tables import responsive_table,json_records
 
 
 @st.cache_data(show_spinner=False)
@@ -78,10 +79,8 @@ def _render_mapping(companies,view):
             'Period':r['period']+' · '+r['period_grain'],'Scenario':r['scenario'],
             'Standardized Value':_value(r),'Status':r['status']} for r in rows]
     frame=pd.DataFrame(table,columns=['Company','Original Source','GP Target Metric','Period','Scenario','Standardized Value','Status'])
-    styled=frame.style.map(lambda value:'background-color:#fff0cf;color:#86520a' if value=='Period review required' else 'background-color:#e1f4ec;color:#1b654c' if value=='Source checked · auto-mapped' else '',subset=['Status'])
-    st.dataframe(styled,hide_index=True,width='stretch',height=min(218,38+30*len(rows)),row_height=30,
-                 column_config={'Company':st.column_config.TextColumn(width='medium'),'Status':st.column_config.TextColumn(width='medium')})
-    st.caption(f"{len(rows)} mappings · Actuals first, budgets below · Harrow remains annual; no pooled financial total.")
+    responsive_table(frame,key='foundation_records',page_size=12,details=False,css_class='gp-mappings')
+    st.caption(f"{len(rows)} mappings · All filtered records shown · Harrow remains annual; no pooled financial total.")
     if rows:
         with st.expander('Inspect a mapping and its source evidence',expanded=True):
             by_id={r['fact_key']:r for r in rows}
@@ -135,7 +134,7 @@ def _render_issues(companies,all_issues):
                                      'Original value / formula':str(e.get('Original value / formula',e.get('original_value'))),
                                      'Mapping / check':e.get('Check / use',e.get('mapping_status'))})
                 st.caption('Source workbook: '+str(issue['evidence'][0].get('File',issue['evidence'][0].get('workbook'))))
-                st.dataframe(pd.DataFrame(evidence),hide_index=True,width='stretch',height=min(290,38+28*len(evidence)),row_height=28)
+                responsive_table(pd.DataFrame(evidence),key='issue_records_'+issue['id'],page_size=10,details=True)
                 if issue['finding_id'] is not None:
                     st.button('Open original finding & evidence',key='foundation_issue_'+issue['id'],on_click=navigate,args=('company',company.id,issue['finding_id']))
     st.caption('Known review groups, not a complete audit. Overlapping groups are not additive observation counts.')
@@ -161,9 +160,9 @@ def _render_methodology(view):
     st.markdown('<div id="foundation-model"></div>',unsafe_allow_html=True)
     with st.expander('GP data model and assessment methodology'):
         st.caption('JSON configuration · '+model['model_id']+' · version '+model['version']+' · requested '+model['target_period']+' / '+model['period_grain'])
-        st.dataframe(pd.DataFrame([{'GP target':m['label'],'Stable ID':m['metric_id'],'Required':m['required'],'Scenarios':', '.join(m['scenarios']),'Definition':m['definition']} for m in model['metrics']]),hide_index=True,width='stretch')
-        st.dataframe(pd.DataFrame(a['checks']),hide_index=True,width='stretch')
+        responsive_table(pd.DataFrame([{'GP target':m['label'],'Stable ID':m['metric_id'],'Required':m['required'],'Scenarios':', '.join(m['scenarios']),'Definition':m['definition']} for m in model['metrics']]),key='foundation_model')
+        responsive_table(pd.DataFrame(a['checks']),key='foundation_checks')
         literal_prose(a['limitation'])
         st.caption('One slot = company × required metric × scenario. Coverage requires the configured period and frequency, accepted mapping, checked numeric source and required context. Accounting basis is optional; unknowns and original currency labels remain unchanged.')
         st.caption('Source verification, automatic mapping acceptance and documented human approval are separate. Human mapping approval: not recorded. No total readiness score is awarded for untested capabilities.')
-        st.json(model,expanded=False)
+        json_records(model,key='foundation_model_json')

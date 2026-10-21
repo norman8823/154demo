@@ -16,7 +16,6 @@ def test_excel_preview_shows_workbook_currency_and_percent_formats():
     at = AppTest.from_file(str(ROOT / 'portfolio_app.py'), default_timeout=60).run()
     at.button(key='nav_excel').click().run()
     assert not at.exception
-    frame = at.dataframe[0].value
-    assert frame.iloc[0]['Revenue'] == '$3,298,000'
-    assert frame.iloc[0]['EBITDA margin'] == '15.2%'
-    assert frame.iloc[2]['Reporting period'] == 'FY2026 · annual'
+    from html import unescape
+    table='\n'.join(unescape(m.value) for m in at.markdown if '<table' in m.value)
+    for value in ('$3,298,000','15.2%','FY2026 · annual'):assert value in table

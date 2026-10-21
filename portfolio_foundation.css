@@ -66,6 +66,9 @@
 .foundation-uses strong {display:block;color:#27466c;font-size:10px;}
 .st-key-foundation_page .stDownloadButton button {background:#1762ce!important;color:white;min-height:34px;font-size:11px;border-radius:4px;}
 .st-key-foundation_page .stButton button {min-height:32px;font-size:11px;}
+.st-key-foundation_page .gp-table {font-size:12px;}
+.st-key-foundation_page .gp-table th,.st-key-foundation_page .gp-table td {padding:9px 8px;}
 .stApp:has(.st-key-foundation_page) .gp-note {font-size:9px;margin-top:7px;}
 @media(max-width:800px){.stApp:has(.st-key-foundation_page) .block-container {padding:72px 14px 20px;}.foundation-detail-grid {grid-template-columns:1fr;}.foundation-detail+.foundation-detail {border-left:0;border-top:1px solid #e2eaf3;}.foundation-scope {flex-wrap:wrap;}.foundation-scope a {margin-left:31px;}.foundation-kpi-head {flex-wrap:wrap;gap:4px;}.foundation-kpi-value {font-size:27px;}.foundation-kpi-value.partial {font-size:21px;}}
 @media(max-width:600px){.foundation-kpis {grid-template-columns:1fr;}.foundation-kpi {min-height:0;padding:12px 14px;}.foundation-kpi-head {flex-wrap:nowrap;}.foundation-demo {float:none;}.st-key-foundation_page h1 {font-size:25px!important;}.foundation-files {font-size:10px;}}
+@media(max-width:900px){.st-key-foundation_page .stButton button,.st-key-foundation_page .stDownloadButton button {min-height:44px;font-size:13px;}.st-key-foundation_page .react-aria-ComboBox [role="group"] {min-height:42px;height:42px;}.st-key-foundation_page .react-aria-ComboBox input {font-size:13px;}.foundation-detail dl,.foundation-files,.foundation-export-copy,.foundation-uses {font-size:12px;}.st-key-foundation_page [data-testid="stCaptionContainer"] p {font-size:12px;}.st-key-foundation_page .gp-table td {font-size:13px;padding:10px 12px;}}

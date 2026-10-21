@@ -17,6 +17,7 @@ from package_analysis import analysis_findings
 from reports import export_report
 from portfolio_comparison import comparison
 from portfolio_ui import navigate, company_selector
+from portfolio_tables import CompanyPresentation
 
 UI_FUNCTIONS = frozenset({'download', 'prose', 'readiness', 'money', 'overview', 'evidence_view'})
 
@@ -44,7 +45,7 @@ def existing_views():
     definitions = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in UI_FUNCTIONS]
     if {d.name for d in definitions} != UI_FUNCTIONS:
         raise ValueError('Frozen company presentation contract changed.')
-    namespace = dict(st=st, pd=pd, escape=escape, NOT_AVAILABLE=NOT_AVAILABLE, company_name=company_name,
+    namespace = dict(st=CompanyPresentation(), pd=pd, escape=escape, NOT_AVAILABLE=NOT_AVAILABLE, company_name=company_name,
                      present=present, executive_money=executive_money, pp=pp, finding_html=finding_html,
                      analysis_findings=analysis_findings, go=company_go)
     exec(compile(ast.Module(body=definitions, type_ignores=[]), str(path), 'exec'), namespace)

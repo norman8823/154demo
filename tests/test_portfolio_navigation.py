@@ -26,8 +26,8 @@ def test_all_company_summary_evidence_exports_and_return(slug, monkeypatch):
             assert book['Partner Review']['C16'].data_type == 'f'
     next(b for b in at.button if b.label.startswith('View Evidence')).click().run()
     assert not at.exception
-    assert any('See where every conclusion' in t.value for t in at.title)
-    assert at.dataframe
+    assert any('See where every conclusion' in t.value for t in at.subheader)
+    assert any('<table' in m.value and 'Fact ID' in m.value for m in at.markdown)
     next(b for b in at.button if b.label == '← Portfolio Overview').click().run()
     assert not at.exception
     assert at.title[0].value == 'Portfolio Overview'

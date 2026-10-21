@@ -140,10 +140,12 @@ with sync_playwright() as p:
     page.get_by_role('button', name='Excel Reports', exact=True).click()
     expect(page.get_by_role('heading', name='Workbook preview', exact=True)).to_be_visible(timeout=60000)
     for name in ['Portfolio Overview','Company Comparison','Investment Issues','Source References']:
-        page.get_by_role('tab', name=name, exact=True).click()
+        page.get_by_role('combobox',name='Worksheet preview',exact=True).click()
+        page.get_by_role('option',name=name,exact=True).click()
         check(page)
-    page.get_by_role('tab', name='Portfolio Overview', exact=True).click()
-    page.wait_for_function("Array.from(document.querySelectorAll('[data-testid=stDataFrame]')).some(e=>e.checkVisibility() && e.getBoundingClientRect().width>600)")
+    page.get_by_role('combobox',name='Worksheet preview',exact=True).click()
+    page.get_by_role('option',name='Portfolio Overview',exact=True).click()
+    page.wait_for_function("Array.from(document.querySelectorAll('.gp-table')).some(e=>e.checkVisibility() && e.getBoundingClientRect().width>600)")
     page.wait_for_timeout(250)  # Allow canvas painting after the hidden tab resizes.
     page.screenshot(path=str(OUT/'excel-preview.png'), full_page=True)
     page.get_by_role('button',name='Data Foundation',exact=True).click()

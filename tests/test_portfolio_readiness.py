@@ -127,11 +127,10 @@ def test_mapping_filters_detail_state_and_original_finding_navigation():
     at.selectbox(key='foundation_metric').set_value('Reported EBITDA').run()
     at.selectbox(key='foundation_scenario').set_value('budget').run()
     assert not at.exception
-    frame=next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns)
-    assert len(frame)==1 and frame.iloc[0]['Standardized Value']=='$10,895,000'
-    assert '2026-FY · annual'==frame.iloc[0]['Period']
-    assert frame.iloc[0]['Scenario']=='budget'
-    assert frame.iloc[0]['Status']=='Period review required'
+    from html import unescape
+    table=unescape(next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value))
+    assert table.count('<tr>')==2 and '$10,895,000' in table
+    for value in ('2026-FY · annual','budget','Period review required'):assert value in table
     assert "'P&L Summary'!G34" in at.selectbox(key='foundation_mapping').options[0]
     at.selectbox(key='foundation_company').set_value('Tallis Brook Accounting').run()
     assert not at.exception
@@ -139,7 +138,7 @@ def test_mapping_filters_detail_state_and_original_finding_navigation():
     assert any('Entity: TALLIS BROOK ACCOUNTING GROUP' in c.value for c in at.caption)
     at.selectbox(key='foundation_period').set_value('2026-FY').run()
     assert not at.exception
-    assert len(next(d.value for d in at.dataframe if 'GP Target Metric' in d.value.columns))==0
+    assert any('No records match' in m.value for m in at.markdown)
     at.button(key='foundation_issue_summit:finding:10004').click().run()
     assert not at.exception
     assert at.query_params['company']=='summit' and at.query_params['finding']=='10004'
