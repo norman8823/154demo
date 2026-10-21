@@ -1,0 +1,4 @@
+# Preserve approved synthetic inputs and snapshots byte-for-byte across checkouts.
+inputs/*.csv -text
+*.xlsx binary
+*.json.gz binary

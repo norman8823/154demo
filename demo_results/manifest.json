@@ -1,0 +1,532 @@
+{
+  "format": 1,
+  "purpose": "Approved synthetic company development checkpoint; prepared results, not new inference or analyst inputs.",
+  "sanitization": "Only developer-local model_source paths replaced with local configuration (path omitted). No findings, figures, tool traces, tokens or costs changed.",
+  "source_sha256": {
+    "engine.py": "3bbb39d977664b5b91e6cdee90ac65ef364830600043040d5468296cedb0b97a",
+    "ingestion.py": "f861ee83c24542db8957a367bc5078bf848274005c478e85608c8f853600c393",
+    "financial_analysis.py": "bc6dafb660eb36b4646be350dc36a7e1d0360a05ff832aecbc5fbba8dcf3bf96",
+    "package_reader.py": "e2c335c7676877c7e45d7290acf391f61e3cedf6125e08417289f2d748d3c234",
+    "package_analysis.py": "8dac2a41861a5961b6712e67ea449bde013b21997599e74331f03309a7361947",
+    "ai_evidence.py": "17015b7188bd31892c46e1b32590f44eea6a3396ecae125bef9f1a7b690c8e59",
+    "investment_output.py": "d0b134469c05d8cf2d1bd64a196322f988cbf5b075a3f1f33f4aeb6dd34df9fc",
+    "executive.py": "94dd5fa8563c87a2959bae31df9d5922cb249012d86793ca89fe3da6b4511bcf",
+    "reports.py": "4a7b2a08b9fdc4294b30057b73f99bcf7c6b6571ed498ea2f52596434928894c",
+    "excel_layout.py": "8e2514de19042da1c228318398639e18ab0643babf18ab601881f9b53976e682",
+    "ai_runtime.py": "fe45733fac363788f010d71851dec4b0c65f6de940d33f7c6f97faa9ee6fffb7",
+    "report_cache.py": "de55bf91773998cee9433e79eb1ca171d254998daa735cb8a29c98223842aae2",
+    "investigation.py": "daf7eee64b6e81ab12b341f56a8331ac2086e5f54e358b00866a754ff60bc800",
+    "investigation_math.py": "4bc0c930ea0c3c2e904911547959b901325053f9f62c7d13bd4a424d2e5f585a",
+    "company_context.py": "71c753c3ef8e8d0e56a1eafb92deb72be037b0ffcf81415cfe405945171bb291",
+    "skill_engine.py": "2f3cc7dcc8cfd58e85ee6b76ec706f9a79085b4d678f39bf600de6fce5621545",
+    "skill_tools.py": "37984fb497d70e66c274c167d74837f0962c81097fb80f36b479a89914522fc0",
+    "skill_output.py": "a6501c2f2a681150615b9e55652140ce7dd05a7be26ffc86e494619c4bfedbc6",
+    "task_budget.py": "665c1179dbc8f118dd7e80dbe2358c61f0b7fc4899f3297a949a974440b1900b",
+    "analyst_ai.py": "27663841d86bcd032d23f3c68ece93950da139f01eba23a59c97ccfa33009f70",
+    "mapping_ai.py": "40c28179d9a701ae2afbeb8710ba267dc1a7faf4552189333489d14c8023a345",
+    "app.py": "110035da92ad018a676de6d743a97bf6d71dc32f5004f8044b5c0dfb9fcfa8d6",
+    "scripts/run_skill_demo.sh": "73b3bd18a14c8c9e2976845ca9270a3aecb41b34615cb4005a3e2ad80b7348e8"
+  },
+  "runs": [
+    {
+      "run": "harrow-17-final",
+      "workbook": "demo_workbooks/Harrow_Ridge_Environmental_FY2026.xlsx",
+      "workbook_sha256": "bdd9c427e57f4c55fa4a135a0126bd25f5fbdae5781b7c192067bbb937788efb",
+      "snapshot": "harrow-17-final.json.gz",
+      "snapshot_sha256": "09c023af3b6b5fbd4ffe844994227bdc949b2449aedeea2f7e790dac6df89d80",
+      "uncompressed_bytes": 3270183,
+      "status": "completed",
+      "fresh_runtime_seconds": 570.8685058748815,
+      "measurement": {
+        "input_tokens": 295501,
+        "output_tokens": 44677,
+        "cached_input_tokens": 44461,
+        "reasoning_tokens": 33944,
+        "estimated_usd": 0.05416236,
+        "usage_complete": true
+      },
+      "model": "gpt-6-luna",
+      "methodology_identity": {
+        "engine": "skill-analyst-4",
+        "methodology": "pe-investment-analyst-v2",
+        "tools": "workbook-tools-2",
+        "schema": "skill-output-4",
+        "reasoning_effort": "high",
+        "resources": {
+          "SKILL.md": "1031c15918f8adbf14badb085fd95662a2456e2be543ecd1570a49bef24a83a3",
+          "references/INVESTMENT_LENSES.md": "e395dbae9ea67ec97d51f204ed06664466a9540b9831d8406a02c4c823491fc6",
+          "NOTICE.md": "c561101ebbd7ff5e81d74e9ddffa34c2efb8aa13a4d37da1537825c2cc252930"
+        },
+        "limits": {
+          "rounds": 14,
+          "tool_calls": 160,
+          "seconds": 900,
+          "output_tokens": 32000
+        },
+        "workbook_limits": {
+          "upload_bytes": 8000000,
+          "expanded_bytes": 32000000,
+          "zip_entries": 500,
+          "sheets": 30,
+          "rows": 2000,
+          "columns": 80,
+          "cells": 30000,
+          "grid_cells": 120000,
+          "text_chars": 8000,
+          "page_cells": 500,
+          "page_bytes": 36000,
+          "formula_steps": 100000
+        }
+      },
+      "pricing": {
+        "model": "gpt-6-luna",
+        "model_source": "local configuration (path omitted)",
+        "cache_rates": [
+          0.01,
+          0.125
+        ],
+        "rates": [
+          0.1,
+          0.5
+        ],
+        "limit": 0.25,
+        "timeout": 300.0,
+        "retries": 0
+      },
+      "validation": {
+        "status": "completed",
+        "fresh_provider_run": true,
+        "successful": true,
+        "numeric_facts_recomputed": 2190,
+        "calculations_recomputed": 43,
+        "cited_numeric_ids": 34,
+        "cited_text_ids": 10,
+        "source_errors": {},
+        "coverage": [
+          {
+            "sheet": "Management Discussion",
+            "total": 16,
+            "read": 16
+          },
+          {
+            "sheet": "P&L Summary",
+            "total": 336,
+            "read": 336
+          },
+          {
+            "sheet": "Monthly P&L",
+            "total": 1399,
+            "read": 1399
+          },
+          {
+            "sheet": "Cash Flow & Capex",
+            "total": 139,
+            "read": 139
+          },
+          {
+            "sheet": "Balance Sheet",
+            "total": 107,
+            "read": 107
+          },
+          {
+            "sheet": "Segment Results",
+            "total": 156,
+            "read": 156
+          },
+          {
+            "sheet": "Operating KPIs",
+            "total": 301,
+            "read": 301
+          },
+          {
+            "sheet": "Fleet Register",
+            "total": 92,
+            "read": 92
+          },
+          {
+            "sheet": "Customers & Contracts",
+            "total": 96,
+            "read": 96
+          },
+          {
+            "sheet": "Adjusted EBITDA",
+            "total": 23,
+            "read": 23
+          }
+        ],
+        "excel_sheets": {
+          "standard": [
+            "Executive Summary",
+            "Financial Performance",
+            "Investment Summary",
+            "Findings",
+            "Source Evidence",
+            "Data Quality",
+            "Extracted Detail",
+            "Exceptions",
+            "Analyst Execution"
+          ],
+          "custom": [
+            "Partner Review",
+            "Template Guide",
+            "Executive Summary",
+            "Financial Performance",
+            "Investment Summary",
+            "Findings",
+            "Source Evidence",
+            "Data Quality",
+            "Extracted Detail",
+            "Exceptions",
+            "Analyst Execution"
+          ]
+        },
+        "new_model_calls": 0,
+        "narrative_assurance": false
+      },
+      "quality_review": {
+        "status": "complete_with_analytical_limitations",
+        "demo_ready": true,
+        "review_basis": "Independent post-inference workbook and preserved standalone comparison; no evaluator material entered runtime.",
+        "material_numerical_errors_found": [],
+        "detected": [
+          "Full5.7m/12.2% disclosed next-fiscal-year renewal subtotal includes endpoint;228800 annual price-only scenario",
+          "2.3m CFO less capex/23.7% conversion and negative0.7m after principal;7.3m gross economic deployment separated from repayments; net debt+2m and5.11x reported EBITDA",
+          "South22.2% unavailable,5.9pp downtime increase and33.9% maintenance increase;410k rentals and648k EBITDA budget variance",
+          "1.145m questioned commodity/rental addbacks and10.312m fee-only earnings sensitivity",
+          "East119292 quarter unit-cost/tonnage proxy distinguished from126k sequential EBITDA change",
+          "North4.1% physical productivity versus14.1% revenue/route-day;1.24m annualized wins with realization caveats"
+        ],
+        "remaining_material_gaps": [
+          "No South replacement/rebuild funding scenario; embedded-text replacement unit cost is not a typed monetary input under current calculation rules",
+          "No partial-year171600 repricing scenario",
+          "No independent commodity normalization reconstruction from the textual118/ton benchmark; limited separate recycling margin/cash analysis",
+          "North capital consumption and customer growth are not connected to returns on growth",
+          "Signed-value and x-times wording remains awkward; conclusions still require sponsor review"
+        ],
+        "narrative_assurance": false
+      }
+    },
+    {
+      "run": "summit-05-final",
+      "workbook": "demo_workbooks/Summit_Home_Services_Sep2026 (1).xlsx",
+      "workbook_sha256": "52c66cf2c5b95fbfd68b4cbafcffd2d1c1fd4877cbc16a8fec75ff4eb90cbaf0",
+      "snapshot": "summit-05-final.json.gz",
+      "snapshot_sha256": "08b6b23e402e49045cc2eeb25c8790b4561df38683640ec6654cc592a0b4b7cd",
+      "uncompressed_bytes": 2795261,
+      "status": "completed",
+      "fresh_runtime_seconds": 457.7082643751055,
+      "measurement": {
+        "input_tokens": 296967,
+        "output_tokens": 46204,
+        "cached_input_tokens": 63213,
+        "reasoning_tokens": 35969,
+        "estimated_usd": 0.052950605000000005,
+        "usage_complete": true
+      },
+      "model": "gpt-6-luna",
+      "methodology_identity": {
+        "engine": "skill-analyst-4",
+        "methodology": "pe-investment-analyst-v2",
+        "tools": "workbook-tools-2",
+        "schema": "skill-output-4",
+        "reasoning_effort": "high",
+        "resources": {
+          "SKILL.md": "1031c15918f8adbf14badb085fd95662a2456e2be543ecd1570a49bef24a83a3",
+          "references/INVESTMENT_LENSES.md": "e395dbae9ea67ec97d51f204ed06664466a9540b9831d8406a02c4c823491fc6",
+          "NOTICE.md": "c561101ebbd7ff5e81d74e9ddffa34c2efb8aa13a4d37da1537825c2cc252930"
+        },
+        "limits": {
+          "rounds": 14,
+          "tool_calls": 160,
+          "seconds": 900,
+          "output_tokens": 32000
+        },
+        "workbook_limits": {
+          "upload_bytes": 8000000,
+          "expanded_bytes": 32000000,
+          "zip_entries": 500,
+          "sheets": 30,
+          "rows": 2000,
+          "columns": 80,
+          "cells": 30000,
+          "grid_cells": 120000,
+          "text_chars": 8000,
+          "page_cells": 500,
+          "page_bytes": 36000,
+          "formula_steps": 100000
+        }
+      },
+      "pricing": {
+        "model": "gpt-6-luna",
+        "model_source": "local configuration (path omitted)",
+        "cache_rates": [
+          0.01,
+          0.125
+        ],
+        "rates": [
+          0.1,
+          0.5
+        ],
+        "limit": 0.25,
+        "timeout": 300.0,
+        "retries": 0
+      },
+      "validation": {
+        "status": "completed",
+        "fresh_provider_run": true,
+        "successful": true,
+        "numeric_facts_recomputed": 1196,
+        "calculations_recomputed": 53,
+        "cited_numeric_ids": 30,
+        "cited_text_ids": 5,
+        "source_errors": {},
+        "coverage": [
+          {
+            "sheet": "CFO Commentary",
+            "total": 14,
+            "read": 14
+          },
+          {
+            "sheet": "Income Statement",
+            "total": 488,
+            "read": 488
+          },
+          {
+            "sheet": "Branch Results",
+            "total": 118,
+            "read": 118
+          },
+          {
+            "sheet": "Operating Metrics",
+            "total": 205,
+            "read": 205
+          },
+          {
+            "sheet": "AR Aging & Recon",
+            "total": 124,
+            "read": 124
+          },
+          {
+            "sheet": "Monthly Detail",
+            "total": 456,
+            "read": 456
+          }
+        ],
+        "excel_sheets": {
+          "standard": [
+            "Executive Summary",
+            "Financial Performance",
+            "Investment Summary",
+            "Findings",
+            "Source Evidence",
+            "Data Quality",
+            "Extracted Detail",
+            "Exceptions",
+            "Analyst Execution"
+          ],
+          "custom": [
+            "Partner Review",
+            "Template Guide",
+            "Executive Summary",
+            "Financial Performance",
+            "Investment Summary",
+            "Findings",
+            "Source Evidence",
+            "Data Quality",
+            "Extracted Detail",
+            "Exceptions",
+            "Analyst Execution"
+          ]
+        },
+        "new_model_calls": 0,
+        "narrative_assurance": false
+      },
+      "quality_review": {
+        "status": "complete_with_analytical_limitations",
+        "demo_ready": true,
+        "review_basis": "Independent post-inference workbook/evaluation comparison; comparator findings never supplied to runtime.",
+        "material_numerical_errors_found": [],
+        "detected": [
+          "YTD427k EBITDA miss versus863k overtime/equipment cost overruns; excludes double counting with total miss; ticket/backlog changes quantified",
+          "Oldest AR364k versus118k June, builder80.2% concentration; DSO+6.1days and zero GL difference; not claimed as credit loss",
+          "9874 monthly eligibility events and7755renewals=78.5%; activebase-4versusAugust contradicts record claim;9.9% revenue growth preserved",
+          "Lakeshore149k pre-corporate contribution gap and15.5pp margin gap, callback+3.3pp and utilization-7.2pp to unweighted peers",
+          "47k branch/company EBITDA difference traced to equal cost-of-services schedule difference without claiming root cause"
+        ],
+        "remaining_material_gaps": [
+          "No invoice-level collectibility or expected-loss evidence, absent from workbook",
+          "No cohort revenue/pricing/cancellation data to quantify retention revenue loss",
+          "No funded branch recovery or staffing-cost scenario; timing/mix/price causes not isolated",
+          "No full comparable-perimeter organic bridge; detailed cost pressure is not a complete causal earnings bridge"
+        ],
+        "narrative_assurance": false
+      }
+    },
+    {
+      "run": "tallis-05-final",
+      "workbook": "demo_workbooks/Tallis_Brook_Accounting_Sep2026.xlsx",
+      "workbook_sha256": "197be0d0e0a34273206d61c47df3f63fbb22fca468a2d9c4fc497d030c49cd9b",
+      "snapshot": "tallis-05-final.json.gz",
+      "snapshot_sha256": "10661e13953cbb6dd46e7e7094256496dd2dc232925edf3f47975b049786b2a0",
+      "uncompressed_bytes": 1853209,
+      "status": "completed",
+      "fresh_runtime_seconds": 401.8519142498262,
+      "measurement": {
+        "input_tokens": 183747,
+        "output_tokens": 41255,
+        "cached_input_tokens": 34570,
+        "reasoning_tokens": 32945,
+        "estimated_usd": 0.039617925,
+        "usage_complete": true
+      },
+      "model": "gpt-6-luna",
+      "methodology_identity": {
+        "engine": "skill-analyst-4",
+        "methodology": "pe-investment-analyst-v2",
+        "tools": "workbook-tools-2",
+        "schema": "skill-output-4",
+        "reasoning_effort": "high",
+        "resources": {
+          "SKILL.md": "1031c15918f8adbf14badb085fd95662a2456e2be543ecd1570a49bef24a83a3",
+          "references/INVESTMENT_LENSES.md": "e395dbae9ea67ec97d51f204ed06664466a9540b9831d8406a02c4c823491fc6",
+          "NOTICE.md": "c561101ebbd7ff5e81d74e9ddffa34c2efb8aa13a4d37da1537825c2cc252930"
+        },
+        "limits": {
+          "rounds": 14,
+          "tool_calls": 160,
+          "seconds": 900,
+          "output_tokens": 32000
+        },
+        "workbook_limits": {
+          "upload_bytes": 8000000,
+          "expanded_bytes": 32000000,
+          "zip_entries": 500,
+          "sheets": 30,
+          "rows": 2000,
+          "columns": 80,
+          "cells": 30000,
+          "grid_cells": 120000,
+          "text_chars": 8000,
+          "page_cells": 500,
+          "page_bytes": 36000,
+          "formula_steps": 100000
+        }
+      },
+      "pricing": {
+        "model": "gpt-6-luna",
+        "model_source": "local configuration (path omitted)",
+        "cache_rates": [
+          0.01,
+          0.125
+        ],
+        "rates": [
+          0.1,
+          0.5
+        ],
+        "limit": 0.25,
+        "timeout": 300.0,
+        "retries": 0
+      },
+      "validation": {
+        "status": "completed",
+        "fresh_provider_run": true,
+        "successful": true,
+        "numeric_facts_recomputed": 937,
+        "calculations_recomputed": 43,
+        "cited_numeric_ids": 43,
+        "cited_text_ids": 8,
+        "source_errors": {},
+        "coverage": [
+          {
+            "sheet": "MP Letter",
+            "total": 9,
+            "read": 9
+          },
+          {
+            "sheet": "Dashboard",
+            "total": 45,
+            "read": 45
+          },
+          {
+            "sheet": "Practice P&L",
+            "total": 275,
+            "read": 275
+          },
+          {
+            "sheet": "Monthly Trend",
+            "total": 384,
+            "read": 384
+          },
+          {
+            "sheet": "Adjusted EBITDA",
+            "total": 62,
+            "read": 62
+          },
+          {
+            "sheet": "People & Utilization",
+            "total": 210,
+            "read": 210
+          },
+          {
+            "sheet": "WIP AR Realization",
+            "total": 128,
+            "read": 128
+          },
+          {
+            "sheet": "Client Book",
+            "total": 158,
+            "read": 158
+          }
+        ],
+        "excel_sheets": {
+          "standard": [
+            "Executive Summary",
+            "Financial Performance",
+            "Investment Summary",
+            "Findings",
+            "Source Evidence",
+            "Data Quality",
+            "Extracted Detail",
+            "Exceptions",
+            "Analyst Execution"
+          ],
+          "custom": [
+            "Partner Review",
+            "Template Guide",
+            "Executive Summary",
+            "Financial Performance",
+            "Investment Summary",
+            "Findings",
+            "Source Evidence",
+            "Data Quality",
+            "Extracted Detail",
+            "Exceptions",
+            "Analyst Execution"
+          ]
+        },
+        "new_model_calls": 0,
+        "narrative_assurance": false
+      },
+      "quality_review": {
+        "status": "complete_with_analytical_limitations",
+        "demo_ready": true,
+        "review_basis": "Independent post-inference workbook/evaluation comparison; comparator findings never supplied to runtime.",
+        "material_numerical_errors_found": [],
+        "detected": [
+          "YTD EBITDA3.916548m versus5.311831m budget;1.395283m adverse bridge",
+          "LTM adjusted7.941215m versus5.180548m reported;1.825667m pre-acquisition/future-compensation categories challenged;6.115548m illustrative alternative",
+          "Redfern76% realization versus88% firm;555100 over90-day WIP,153.1days lockup versus91.2 firm,412k write-downs",
+          "Ashcombe98of610lost;83.9% client-count retention versus94.0% firm;634k listed relationship historical fees explicitly a subtotal, not forecast loss",
+          "Acquisition perimeter separates69.7% YTD headline from5.6% legacy-month growth;45.1% acquired share of September revenue"
+        ],
+        "remaining_material_gaps": [
+          "Aged WIP scope could state the over90-day threshold more clearly; does not separately isolate over120-day WIP or aged AR",
+          "Limited staffing/utilization/rate driver analysis despite people schedule",
+          "Compensation overrun is a subset of direct costs; narrative lists both pressure points and they must not be added again",
+          "No engagement-level collectibility, full comparable YTD organic bridge, or forecast; these inputs are absent"
+        ],
+        "narrative_assurance": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "recorded_before_pipeline": true,
+  "A": {
+    "company": "Northstar Components",
+    "period": "2027-04",
+    "basis": "accrual",
+    "currency": "USD",
+    "scale": 1000,
+    "revenue": 1000000,
+    "budget_revenue": 1000000,
+    "prior_revenue": 900000,
+    "prior_year_revenue": 830000,
+    "cogs": 500000,
+    "gross_profit": 500000,
+    "gross_margin": 0.5,
+    "budget_gross_margin": 0.54,
+    "prior_gross_margin": 0.5222222222222223,
+    "operating_expenses": 180000,
+    "ebitda": 320000,
+    "budget_ebitda": 370000,
+    "prior_ebitda": 315000,
+    "net_income": 270000
+  },
+  "B": {
+    "company": "Harbor Field Services",
+    "period": "2027-02",
+    "basis": "cash",
+    "currency": "USD",
+    "scale": 1,
+    "revenue": 400000,
+    "prior_revenue": 350000,
+    "cogs": 200000,
+    "gross_profit": 200000,
+    "gross_margin": 0.5,
+    "operating_expenses": 92000,
+    "net_income": 94000,
+    "ebitda": 118000,
+    "prior_ebitda": 102000,
+    "ambiguous_account": "Mobilization reserve",
+    "confirmed_category": "operating_expenses"
+  }
+}

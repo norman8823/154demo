@@ -1,0 +1,11 @@
+{
+  "revenue": 620000,
+  "ebitda": 85000,
+  "ebitda_gap": -25000,
+  "over90": 40000,
+  "over90_share": 0.2,
+  "renewal_start": 0.95,
+  "renewal_end": 0.82,
+  "prior_contract_max": 1100,
+  "current_contracts": 1000
+}
