@@ -1,5 +1,6 @@
 """Synthetic ledger supporting schedules, separate from source-verified sheets."""
 import math
+from openpyxl.styles import Alignment
 from portfolio_investments import investments_for, investment_summary, NOTICE, METHOD
 
 
@@ -14,13 +15,14 @@ def attach_investment_excel(wb,companies):
         row_values(ws,row,[name]+[summary[k] for k in ('invested_capital','realized_proceeds','current_equity_value','total_value','gross_moic','gross_irr','valuation_date')]+[summary['irr_detail'],'See supporting schedules'],62)
         for col in range(2,6):ws.cell(row,col).number_format=MONEY
         ws.cell(row,6).number_format='0.00"x"';ws.cell(row,7).number_format='0.00%'
+        for col in (6,7,8):ws.cell(row,col).alignment=Alignment(horizontal='center',vertical='top',wrap_text=True)
     narrative(ws,11,'Definitions','Invested = absolute contributions; total value = realized + current unrealized equity; MOIC = total value / invested. Terminal fair value is included once for dated IRR and is not a realized distribution.',10)
     narrative(ws,12,'Valuation bridge','Common equity = max(0, illustrative enterprise value − illustrative gross debt + illustrative cash); sponsor equity = common equity × ownership. Cash flows are already sponsor amounts; do not apply ownership twice.',10)
     narrative(ws,13,'IRR method','ACT/365: solve sum(CF / (1+r)^(days/365)) = 0. Log-rate bracketing/bisection; same-day netting. Only one negative-to-positive sign change certifies uniqueness. Non-conventional/undefined results are unavailable. No fees, carry, LP accounting or net returns.',10)
     narrative(ws,14,'Ledger provenance','demo_investments/ledger.json · schema illustrative-investments-1.0 · SHA-256 '+investments[0].ledger_sha256+' · Not a company workbook source.',10)
 
     def schedule(start,flows,rate,label):
-        narrative(ws,start,'Dated return schedule',label+' · Terminal value is unrealized, not a cash distribution. PV columns are transparent supporting calculations at the displayed gross IRR.',10)
+        narrative(ws,start,'Dated return schedule',label+' · Terminal value is unrealized, not a cash distribution. PV columns use the full-precision stored gross IRR; the headline display is rounded.',10)
         headers(ws,start+1,['Date','Company / investment','Cash-flow type','Signed sponsor USD','Actual days','Days / 365','Discount factor','Signed present value','Description','Calculation definition'])
         origin=min(f.date for name,f in flows);pvs=[]
         for row,(name,f) in enumerate(sorted(flows,key=lambda item:item[1].date),start+2):
@@ -28,8 +30,10 @@ def attach_investment_excel(wb,companies):
             factor=(1+rate)**(-years) if rate is not None else None
             pv=f.amount*factor if factor is not None else None
             if pv is not None:pvs.append(pv)
-            row_values(ws,row,[f.date,name,f.kind,f.amount,days,years,factor,pv,f.description,'PV = signed amount × (1 + displayed IRR)^(-actual days / 365)'],56)
-            ws.cell(row,1).number_format='yyyy-mm-dd';ws.cell(row,4).number_format=MONEY;ws.cell(row,6).number_format='0.000000';ws.cell(row,7).number_format='0.000000000';ws.cell(row,8).number_format='0.000000;[Red](0.000000)'
+            row_values(ws,row,[f.date,name,f.kind,f.amount,days,years,factor,pv,f.description,'PV = signed amount × (1 + full-precision stored IRR)^(-actual days / 365)'],56)
+            ws.cell(row,1).number_format='yyyy-mm-dd';ws.cell(row,1).alignment=Alignment(horizontal='center',vertical='top')
+            for col in (2,3,9,10):ws.cell(row,col).alignment=Alignment(horizontal='left',vertical='top',wrap_text=True,indent=1)
+            ws.cell(row,4).number_format=MONEY;ws.cell(row,6).number_format='0.000000';ws.cell(row,7).number_format='0.000000000';ws.cell(row,8).number_format='#,##0.000000;[Red](#,##0.000000)'
         end=start+2+len(flows)
         row_values(ws,end,['NPV residual at displayed IRR','','','','','','',math.fsum(pvs) if rate is not None else None,'Approximately zero when a finite IRR is available','Supporting values are computed snapshots; no live worksheet formulas.'],48)
         ws.cell(end,8).number_format='0.000000;[Red](0.000000)'

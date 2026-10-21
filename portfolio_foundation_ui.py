@@ -34,8 +34,8 @@ def render_foundation(companies):
     options=['All companies']+[c.name for c in companies]
     selected=st.selectbox('Preview company',options,key='foundation_company')
     rows=[r for r in facts if (show_all or r['comparison_selected']) and (selected=='All companies' or r['company_name']==selected)]
-    columns=['company_id','metric_id','metric_definition','period','period_grain','scenario','value','unit','currency','accounting_basis','source_fact_id','workbook_reference','verification_status','mapping_status','human_approval_status']
-    st.dataframe(pd.DataFrame(rows,columns=columns),hide_index=True,width='stretch')
+    columns=['company_id','metric_id','period','period_grain','scenario','value','unit','currency','accounting_basis','source_fact_id','workbook_reference','verification_status','human_approval_status','mapping_status','metric_definition']
+    st.dataframe(pd.DataFrame(rows,columns=columns),hide_index=True,width='stretch',column_config={'metric_definition':st.column_config.TextColumn('Metric definition',width='large')})
     st.caption(str(len(rows))+' preview records · Download always contains the full three-company package. Monthly, fiscal-quarter and annual records are never pooled.')
     with st.expander('Source lineage and package quality'):
         st.dataframe(pd.DataFrame(lineage[:12]),hide_index=True,width='stretch')

@@ -182,12 +182,17 @@ def render_comparison(companies, matrix=False):
     if matrix:
         st.dataframe(pd.DataFrame(comparison_matrix(companies)), hide_index=True, width='stretch')
     else:
-        st.dataframe(pd.DataFrame(operating_rows(companies)).drop(columns=['Company ID']), hide_index=True, width='stretch',
+        frame=pd.DataFrame(operating_rows(companies)).drop(columns=['Company ID'])
+        priority=['Company','Invested capital (illustrative)','Current equity (illustrative)','Gross MOIC (illustrative)','Gross IRR (illustrative)','Reporting period','Revenue','Reported EBITDA','EBITDA vs budget']
+        frame=frame[priority+[c for c in frame.columns if c not in priority]]
+        st.dataframe(frame, hide_index=True, width='stretch',
                      column_config={'Revenue':st.column_config.NumberColumn(format='dollar'), 'Reported EBITDA':st.column_config.NumberColumn(format='dollar'),
                         'EBITDA budget':st.column_config.NumberColumn(format='dollar'), 'EBITDA margin':st.column_config.NumberColumn(format='percent'),
                         'EBITDA vs budget':st.column_config.NumberColumn(format='percent'), 'Revenue vs budget':st.column_config.NumberColumn(format='percent'),
-                        'Invested capital (illustrative)':st.column_config.NumberColumn(format='dollar'), 'Current equity (illustrative)':st.column_config.NumberColumn(format='dollar'),
-                        'Gross MOIC (illustrative)':st.column_config.NumberColumn(format='%.2fx'), 'Gross IRR (illustrative)':st.column_config.NumberColumn(format='percent')})
+                        'Invested capital (illustrative)':st.column_config.NumberColumn('Invested capital',format='dollar',help='Synthetic illustrative cumulative sponsor contributions; USD.'),
+                        'Current equity (illustrative)':st.column_config.NumberColumn('Current equity',format='dollar',help='Synthetic illustrative unrealized sponsor equity as of September 30, 2026; USD.'),
+                        'Gross MOIC (illustrative)':st.column_config.NumberColumn('Gross MOIC',format='%.2fx',help='Synthetic illustrative realized plus unrealized value divided by paid-in capital.'),
+                        'Gross IRR (illustrative)':st.column_config.NumberColumn('Gross IRR',format='percent',help='Synthetic illustrative gross sponsor IRR; ACT/365 dated cash flows including terminal equity.')})
 
 
 def footer():

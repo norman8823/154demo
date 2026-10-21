@@ -3,13 +3,16 @@ import io
 import json
 import os
 import re
+import subprocess
+import sys
+import zipfile
 from pathlib import Path
 from urllib.parse import urlparse
 from openpyxl import load_workbook
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'artifacts/gp-v2'
+OUT = ROOT / 'artifacts/gp-v3'
 OUT.mkdir(parents=True, exist_ok=True)
 URL = os.environ.get('COPILOT_GP_TEST_URL', 'http://127.0.0.1:8502')
 assert urlparse(URL).hostname in ('127.0.0.1', 'localhost')
@@ -41,13 +44,23 @@ with sync_playwright() as p:
     assert max(b['width'] for b in boxes) - min(b['width'] for b in boxes) < 2
     assert max(b['height'] for b in boxes) - min(b['height'] for b in boxes) < 3
     page.screenshot(path=str(OUT/'overview-final.png'), full_page=True)
+    expect(page.get_by_text('$82.00M',exact=True)).to_be_visible()
+    expect(page.get_by_text('10.95%',exact=True)).to_be_visible()
+    page.get_by_text('Illustrative investment values and valuation context',exact=True).click()
+    page.wait_for_timeout(300)
+    check(page)
+    page.screenshot(path=str(OUT/'overview-investment-chart.png'),full_page=True)
+    page.get_by_text('Illustrative investment values and valuation context',exact=True).click()
     with page.expect_download() as downloaded:
         page.get_by_role('button', name='↓ Download Portfolio Excel', exact=True).click()
     path = OUT/'portfolio-browser.xlsx'
     downloaded.value.save_as(path)
     gp = load_workbook(path)
     assert gp.sheetnames[:9] == ['Portfolio Overview', 'Company Comparison', 'Investment Issues', 'Summit Home Services', 'Tallis Brook Accounting', 'Harrow Ridge Environmental', 'Source References', 'Source Snapshots', 'Reporting Output']
-    assert len(gp.sheetnames)==33
+    assert len(gp.sheetnames)==34 and 'Investment Ledger' in gp.sheetnames
+    assert gp['Investment Ledger']['D9'].value==82000000
+    assert gp['Investment Ledger']['B9'].value==58000000
+    assert gp['Investment Ledger']['F9'].value==1.5
     def follow(cell):
         assert cell.hyperlink.target is None
         sheet,coordinate=re.fullmatch(r"'((?:[^']|'')+)'!([A-Z]+\d+)",cell.hyperlink.location).groups()
@@ -129,6 +142,23 @@ with sync_playwright() as p:
     page.wait_for_function("Array.from(document.querySelectorAll('[data-testid=stDataFrame]')).some(e=>e.checkVisibility() && e.getBoundingClientRect().width>600)")
     page.wait_for_timeout(250)  # Allow canvas painting after the hidden tab resizes.
     page.screenshot(path=str(OUT/'excel-preview.png'), full_page=True)
+    page.get_by_role('button',name='Data Foundation',exact=True).click()
+    expect(page.get_by_role('heading',name='Data Foundation',exact=True)).to_be_visible(timeout=60000)
+    check(page)
+    page.screenshot(path=str(OUT/'data-foundation.png'),full_page=True)
+    with page.expect_download() as downloaded:
+        page.get_by_role('button',name='↓ Download AI-ready data package',exact=True).click()
+    package_path=OUT/'AI_Ready_Operating_Data_browser.zip';downloaded.value.save_as(package_path)
+    consumer=OUT/'browser-consumer';consumer.mkdir(exist_ok=True)
+    with zipfile.ZipFile(package_path) as archive:
+        assert set(archive.namelist())=={'financial_facts.csv','metric_definitions.json','source_lineage.csv','quality_report.json','example_consumer.py','README.md'}
+        archive.extractall(consumer)
+    output=subprocess.run([sys.executable,'-I','-S',str(consumer/'example_consumer.py')],cwd=consumer,env={'PATH':os.defpath},check=True,capture_output=True,text=True,timeout=30)
+    independent=json.loads(output.stdout)
+    assert len(independent['comparison'])==3
+    assert next(c for c in independent['comparison'] if c['company_id']=='harrow')['period']=='2026-FY'
+    (OUT/'browser-independent-consumer.json').write_text(output.stdout)
+    results['data_package_download']={'bytes':package_path.stat().st_size,'standalone_consumer':'pass','company_comparisons':3}
     page.get_by_role('button', name='Portfolio Overview', exact=True).click()
     expect(page.get_by_role('heading', name='Portfolio Overview', exact=True)).to_be_visible(timeout=60000)
     check(page)
@@ -141,6 +171,13 @@ with sync_playwright() as p:
     expect(sidebar).to_have_attribute('data-collapsed', 'true')
     check(page)
     page.screenshot(path=str(OUT/'overview-mobile.png'), full_page=True)
+    page.get_by_role('button',name='Expand sidebar',exact=True).click()
+    page.get_by_role('button',name='Data Foundation',exact=True).click()
+    expect(page.get_by_role('heading',name='Data Foundation',exact=True)).to_be_visible(timeout=60000)
+    if sidebar.get_attribute('data-collapsed')=='false':page.get_by_role('button',name='Collapse sidebar',exact=True).click()
+    page.wait_for_timeout(350)
+    check(page)
+    page.screenshot(path=str(OUT/'data-foundation-mobile.png'),full_page=True)
     results['mobile_no_overflow'] = 'pass'
     assert not results['browser_errors'], results['browser_errors']
     assert not any('openai' in u for u in results['external_requests'])
