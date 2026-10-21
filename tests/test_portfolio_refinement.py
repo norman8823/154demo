@@ -92,7 +92,7 @@ def test_branding_and_contextual_company_selection():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60).run()
     assert not at.exception
     html='\n'.join(m.value for m in at.markdown)
-    for text in ['154 Partners','Portfolio Reporting Copilot','Concept developed for 154 Partners by NL Intelligence']:assert text in html
+    for text in ['154 Partners','Portfolio Reporting Copilot','by NL Intelligence']:assert text in html
     assert not any(s.key=='gp_sidebar_company' for s in at.selectbox)
     assert not any(e.label=='Illustrative investment values and valuation context' for e in at.expander)
     at.button(key='nav_company').click().run()

@@ -99,6 +99,13 @@ class CompanyPresentation:
     def __getattr__(self,name):
         return getattr(st,name)
 
+    def caption(self,value,**kwargs):
+        # Routine provider/cache telemetry is not product copy. Detailed records
+        # remain available in the source audit and unchanged Excel reports.
+        if any(term in str(value).lower() for term in ('no new model request','0 model calls','current inference')):
+            return None
+        return st.caption(value,**kwargs)
+
     def title(self,value,**kwargs):
         # The portfolio shell already supplies the company H1.
         return st.subheader(value)

@@ -33,7 +33,7 @@ def render_holdings(companies,investment_results=None):
         investment_results={i.company_id:investment_summary([i]) for i in investments_for(companies)}
     if set(ids)-investment_results.keys():raise ValueError('Missing company investment presentation.')
     st.subheader('Portfolio Holdings & Performance')
-    st.caption('Operating financials retain their original periods. Actual / Budget charts use separate company axes. Gross MOIC and IRR are synthetic illustrative sponsor data, before fees and carry.')
+    st.caption('Reported EBITDA · Actual vs Budget · Company-specific reporting periods and axes. Illustrative sponsor returns are gross, before fees and carry.')
     selected=companies
     if len(companies)>3:
         current=selected_holdings(ids,st.session_state.get('gp_holding_selected'))

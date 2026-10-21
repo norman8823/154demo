@@ -39,7 +39,9 @@ with sync_playwright() as p:
     page.goto(URL)
     expect(page.get_by_role('button', name='View Investment Detail →', exact=True)).to_have_count(3, timeout=60000)
     check(page)
-    boxes = [page.locator('.st-key-gp_company_'+s).bounding_box() for s in ('summit', 'tallis', 'harrow')]
+    page.wait_for_function("[...document.querySelectorAll('.st-key-operating_cards [class*=\"st-key-gp_company_\"]')].filter(e=>e.getBoundingClientRect().height>450).length===3",timeout=60000)
+    page.wait_for_timeout(250)
+    boxes = page.locator('.st-key-operating_cards [class*=\"st-key-gp_company_\"]').evaluate_all('(es)=>es.map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height}))')
     assert all(boxes)
     assert max(b['width'] for b in boxes) - min(b['width'] for b in boxes) < 2
     assert max(b['height'] for b in boxes) - min(b['height'] for b in boxes) < 3
@@ -74,7 +76,7 @@ with sync_playwright() as p:
         page.locator('.st-key-open_'+slug+' button').click()
         expect(page.get_by_role('heading', name='Investment Summary', exact=True)).to_be_visible(timeout=60000)
         check(page)
-        page.locator('summary').filter(has_text='Synthetic illustrative investment').click()
+        page.locator('.st-key-desktop_company_detail summary').filter(has_text='Investment context').click()
         page.wait_for_timeout(400)  # Native expander animation must finish before capturing details.
         expect(page.get_by_text('Illustrative enterprise value ',exact=False)).to_be_visible()
         assert page.locator('.katex').count()==0

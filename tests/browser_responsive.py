@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright,expect
 
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'artifacts/mobile-investment-detail/responsive';OUT.mkdir(parents=True,exist_ok=True)
+OUT=ROOT/'artifacts/premium-polish/responsive';OUT.mkdir(parents=True,exist_ok=True)
 ROUTES={'overview':'overview','foundation':'foundation','issues':'issues','summit':'company&company=summit','tallis':'company&company=tallis','harrow':'company&company=harrow','excel':'excel'}
 receipt={'viewports':[],'external_requests':[],'errors':[]}
 
@@ -46,7 +46,7 @@ def audit(page,label,width):
 
 
 def wheel_check(page,label,width):
-    table=page.locator('.st-key-gp_company_summit') if label=='overview' else page.locator('.gp-table-wrap').first
+    table=page.locator('.st-key-gp_company_summit') if label=='overview' else page.locator('.catalog-source-grid')
     table.scroll_into_view_if_needed()
     offset='(e)=>{let n=0;for(let p=e.parentElement;p;p=p.parentElement)n+=p.scrollTop;return n;}'
     before=table.evaluate(offset)

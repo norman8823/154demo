@@ -34,14 +34,14 @@ def render_foundation(companies):
     st.markdown('<style>'+Path(__file__).with_name('portfolio_foundation.css').read_text()+'</style>',unsafe_allow_html=True)
     view=workflow_readiness(companies)
     with st.container(key='foundation_page'):
-        title,badge=st.columns([5,1])
+        title,badge=st.columns([4.5,1.5])
         with title:
             st.title('AI Workflow Automation Readiness')
             st.markdown('<div class="foundation-subtitle">'+escape(view['model']['name'])+'</div>',unsafe_allow_html=True)
-        badge.markdown('<span class="foundation-demo">ⓘ &nbsp; Synthetic Demo Data</span>',unsafe_allow_html=True)
-        st.markdown('<div class="foundation-intro">Different company reports map to common financial definitions, with source checks and reusable structured output for other workflows.</div>',unsafe_allow_html=True)
+        badge.markdown('<span class="foundation-demo">Product Demo · Synthetic Data</span>',unsafe_allow_html=True)
+        st.markdown('<div class="foundation-intro">Company reporting packages → Common financial definitions → Reusable structured data.</div>',unsafe_allow_html=True)
         _render_summary(view)
-        st.markdown('<div class="foundation-scope"><span class="foundation-scope-icon">i</span><div><strong>Scope: '+escape(view['model']['name'])+'</strong>Measured mapping coverage and source verification for this workflow; no company-wide AI maturity score.</div><a href="#foundation-model">View workflow configuration &nbsp; →</a></div>',unsafe_allow_html=True)
+        st.markdown('<div class="foundation-scope"><span class="foundation-scope-icon">i</span><div><strong>Scope: '+escape(view['model']['name'])+'</strong>Mapping, source verification and reporting-frequency checks for this workflow.</div><a href="#foundation-model">View workflow configuration &nbsp; →</a></div>',unsafe_allow_html=True)
         with st.container(key='foundation_mapping_panel'):
             _render_mapping(companies,view)
         issues,export=st.columns([1.65,1],gap='small')
@@ -67,8 +67,8 @@ def _render_mapping(companies,view):
     entries=catalog_entries(view['facts'],view['lineage'],view['model'])
     index={e['metric_id']:e for e in entries}
     st.subheader('Data Catalog & Dictionary')
-    st.caption('Data Foundation: the broader reusable asset. Monthly Portfolio Operating Review: one workflow requesting Revenue and Reported EBITDA actual / budget at monthly frequency.')
-    st.markdown('<div class="foundation-flow"><div><strong>Company Inputs</strong><span>Summit · Tallis · Harrow</span>Different reporting packages, worksheets and labels; original extraction evidence retained.</div><div><strong>Standardization &amp; Validation</strong><span>GP dictionary + source mappings</span>Periods, scenarios, units, source checks and unresolved classifications remain explicit.</div><div><strong>Structured Data</strong><span>'+format(len(view['facts']),',')+' normalized observations</span>Versioned CSV / JSON, original provenance and independent downstream reuse.</div></div>',unsafe_allow_html=True)
+    st.caption('Explore a financial definition, compare company reporting conventions and inspect the source-to-output mapping.')
+    st.markdown('<div class="foundation-flow"><div><strong>01 &nbsp; Company inputs</strong><span>Summit · Tallis · Harrow</span>Different reporting packages, worksheet structures and financial labels.</div><div><strong>02 &nbsp; Standardize &amp; validate</strong><span>GP dictionary + source mappings</span>Canonical metrics, source mappings, period conventions and verification.</div><div><strong>03 &nbsp; Reusable structured data</strong><span>'+format(len(view['facts']),',')+' normalized observations</span>Versioned CSV / JSON with original provenance for independent reuse.</div></div>',unsafe_allow_html=True)
     identity=st.selectbox('Data element',list(index),format_func=lambda k:index[k]['label']+' · '+str(index[k]['observations'])+' observations',key='foundation_metric')
     entry=index[identity]
     with st.expander('Browse catalog · '+str(len(entries))+' data elements'):
@@ -80,7 +80,8 @@ def _render_mapping(companies,view):
         latest='; '.join(GRAINS.get(g,g)+': '+periods[-1] for g,periods in entry['periods'].items())
         st.markdown(_fields([('Retained units / currency',', '.join(entry['units'])+' / '+', '.join(entry['currencies'])),('Source scaling',', '.join(entry['scales'])+' ×; retained sign adjustments shown in source detail'),('Measurement basis','; '.join(entry['basis'])),('Most recent period by grain',latest),('Data owner',entry['owner']),('Expected delivery / refresh cadence',entry['refresh_cadence']),('Approval authority',entry['approval_authority']),('Source lineage',str(entry['lineage_available'])+'/'+str(entry['observations'])+' records'),('Source packages','; '.join(entry['packages']))]),unsafe_allow_html=True)
         st.caption('Reporting frequency describes the package; measurement basis describes the observation. Neither establishes a delivery schedule. Original unit tags are retained, including unknowns; unmapped supporting measures have no common approved unit or meaning. No LTM, YTD or annualization is inferred from monthly grain.')
-    sources=[]
+    sources=[];source_records=[]
+    origins={r['fact_key']:r for r in view['lineage']}
     for company in companies:
         own=[r for r in entry['rows'] if r['company_id']==company.id]
         if not own:continue
@@ -89,8 +90,32 @@ def _render_mapping(companies,view):
         headline=[r for r in view['facts'] if r['company_id']==company.id and r['comparison_selected']]
         frequency=', '.join(sorted({GRAINS.get(r['period_grain'],r['period_grain']) for r in headline}))
         bases=sorted({GRAINS.get(r['period_grain'],r['period_grain']) for r in own})
-        sources.append({'Company':company.name,'Reported as':'; '.join(labels),'Reporting conventions':frequency+' package · observations: '+', '.join(bases)})
-    responsive_table(pd.DataFrame(sources),key='foundation_sources',page_size=3,details=False,css_class='gp-catalog-sources')
+        example=next(iter(selected),None)
+        origin=origins[example['fact_key']] if example else None
+        source_location=origin['source_reference']+' · actual' if origin else str(len(own))+' source observations · inspect below'
+        source_sheets=', '.join(sorted({origins[r['fact_key']]['source_sheet'] for r in own}))
+        source_records.append({'Company':company.name,'Reported as':'; '.join(labels),'Reporting conventions':frequency+' package · observations: '+', '.join(bases)})
+        shown_labels='; '.join(labels[:2])+(' · +'+str(len(labels)-2)+' more labels' if len(labels)>2 else '')
+        sources.append('<div class="catalog-company-source"><h4>'+escape(company.name)+'</h4><div class="catalog-source-label">'+escape(shown_labels)+'</div><small>REPORTING CONVENTIONS</small><p>'+escape(frequency+' package · '+', '.join(bases)+' observations')+'</p><small>SOURCE LOCATION</small><p>'+escape(source_location)+'</p><span>'+escape(source_sheets)+'</span></div>')
+    st.markdown('<div class="catalog-source-grid">'+''.join(sources)+'</div>',unsafe_allow_html=True)
+    with st.expander('Company source index & CSV'):
+        responsive_table(pd.DataFrame(source_records),key='foundation_sources',page_size=3,details=False,css_class='gp-catalog-sources')
+    linked=catalog_linked_issues(entry,view)
+    with st.container(key='catalog_workflow_context'):
+        usage,gaps=st.columns([1.15,1])
+        with usage:
+            st.markdown('**Workflow usage**')
+            target=next((m for m in view['model']['metrics'] if m['metric_id']==identity),None)
+            if target:
+                st.caption(view['model']['name']+' · '+('Required' if target['required'] else 'Optional')+' · '+', '.join(target['scenarios']))
+                st.caption('Requested '+view['model']['target_period']+' / '+view['model']['period_grain']+'. Original source frequencies remain distinct.')
+            else:
+                st.caption('Supporting data asset · Not requested by the configured monthly workflow. Retained for independent reuse; additional workflow validation is not established.')
+        with gaps:
+            st.markdown('**Known linked gaps**')
+            if linked:
+                for issue in linked:st.markdown('<div class="catalog-linked-issue">'+_badge(issue['status'])+' <a href="#foundation-data-issues">'+escape(issue['company_name']+' · '+issue['title'])+'</a></div>',unsafe_allow_html=True)
+            else:st.caption('No known review group is linked to this element’s source records. Comprehensive reconciliation is not established.')
     st.caption(f"{entry['observations']} observations · {entry['accepted']} accepted automatic mappings · {entry['verified']} numeric source checks · Human approval: not recorded")
     with st.expander('Inspect company mapping and source evidence',expanded=True):
         company_filter,scenario_filter,period_filter=st.columns([2,1,1.4])
@@ -109,6 +134,15 @@ def _render_mapping(companies,view):
             if st.session_state.get('foundation_mapping') not in by_id:st.session_state.foundation_mapping=next(iter(by_id))
             fact=st.selectbox('Mapping source',list(by_id),format_func=lambda key:by_id[key]['company_name']+' · '+by_id[key]['source_label']+' · '+by_id[key]['period']+' · '+by_id[key]['scenario']+' · '+by_id[key]['workbook_reference'],key='foundation_mapping')
             _render_detail(catalog_detail(by_id[fact],view['lineage'],view['model']))
+
+
+def catalog_linked_issues(entry,view):
+    """Presentation-only association via original company/source coordinates."""
+    references={company:{r['workbook_reference'] for r in entry['rows'] if r['company_id']==company}
+                for company in {r['company_id'] for r in entry['rows']}}
+    return [issue for issue in view['issues'] if any(
+        evidence.get('Reference',evidence.get('reference')) in references.get(issue['company_id'],set())
+        for evidence in issue['evidence'])]
 
 
 def _render_detail(row):
@@ -133,6 +167,7 @@ def _render_detail(row):
 
 def _render_issues(companies,all_issues):
     from portfolio_ui import literal_prose,navigate
+    st.markdown('<div id="foundation-data-issues"></div>',unsafe_allow_html=True)
     st.subheader('Data Issues')
     st.caption('Mapping ambiguities, reconciliation differences and missing information')
     for company in companies:

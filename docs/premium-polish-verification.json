@@ -1,0 +1,302 @@
+{
+  "task_id": 49,
+  "branch": "feat/ai-workflow-readiness",
+  "base_commit": "bc354c435239eff31c3144be16fb5e65636c80b7",
+  "branding": [
+    "154 Partners",
+    "Portfolio Reporting Copilot",
+    "by NL Intelligence"
+  ],
+  "demo_label": "Product Demo · Synthetic Data",
+  "footer_disclaimer": "For demo only. All portfolio companies, investment data, and financial figures are synthetic. Any resemblance to real companies or investments is coincidental.",
+  "visual_reference": "Owner-supplied NL Intelligence banner; charcoal/navy, understated indigo and muted copper. Reference only; no new logo or copied banner artwork.",
+  "presentation_changes": [
+    "Consistent dark sidebar gradient, copper active-navigation accent and bottom-positioned QR/footer.",
+    "Light canvas and white cards, moderate radii, soft borders, aligned KPI numerals and operating-card hierarchy.",
+    "Routine model-call/cache telemetry removed from product chrome; original technical audit and export records preserved.",
+    "Metric-centered catalog company-source cards show original labels, reporting conventions and original coordinates. Linked gaps are associated by existing company/source references, not new data-quality findings.",
+    "Configured workflow usage and known linked gaps shown beside each selected metric. Broader supporting observations remain separate from the monthly workflow subset.",
+    "Original source index sorting/CSV and all source-to-normalization-to-output inspection, unknown stewardship fields and issue evidence preserved."
+  ],
+  "validation": {
+    "focused_tests": "26 passed in41.36s",
+    "portfolio_regressions": "81 passed in111.82s",
+    "responsive_cases": 64,
+    "responsive_widths": [
+      390,
+      430,
+      768,
+      1280,
+      1440
+    ],
+    "browser_errors": [],
+    "external_requests": [],
+    "before": {
+      "phase": "before",
+      "screens": [
+        "overview-1440",
+        "sidebar",
+        "operating-cards",
+        "overview-390",
+        "foundation-1440",
+        "mapping-detail",
+        "foundation-390",
+        "qr-sidebar",
+        "mobile-qr-panel",
+        "qr-dialog"
+      ],
+      "errors": [],
+      "external_requests": []
+    },
+    "after": {
+      "phase": "after",
+      "screens": [
+        "overview-1440",
+        "sidebar",
+        "operating-cards",
+        "overview-390",
+        "foundation-1440",
+        "mapping-detail",
+        "catalog-workflow-context",
+        "foundation-390",
+        "qr-sidebar",
+        "mobile-qr-panel",
+        "qr-dialog"
+      ],
+      "errors": [],
+      "external_requests": []
+    },
+    "download_journey": {
+      "companies": {
+        "summit": {
+          "summary": "pass",
+          "evidence": "pass",
+          "return": "pass",
+          "downloads": {
+            "standard": 182182,
+            "custom": 187811
+          }
+        },
+        "tallis": {
+          "summary": "pass",
+          "evidence": "pass",
+          "return": "pass",
+          "downloads": {
+            "standard": 127409,
+            "custom": 132899
+          }
+        },
+        "harrow": {
+          "summary": "pass",
+          "evidence": "pass",
+          "return": "pass",
+          "downloads": {
+            "standard": 195112,
+            "custom": 200524
+          }
+        }
+      },
+      "external_requests": [],
+      "browser_errors": [],
+      "downloaded_issue_chains": [
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_51",
+          "destination": "Source References!A320"
+        },
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_9",
+          "destination": "Source References!A394"
+        },
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_18",
+          "destination": "Source References!A438"
+        },
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_7",
+          "destination": "Source References!A488"
+        },
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_6",
+          "destination": "Source References!A513"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "s4_K40",
+          "destination": "TBA 04 Monthly Trend!K40"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "s7_D9",
+          "destination": "TBA 07 WIP AR Realization!D9"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "s5_B17",
+          "destination": "TBA 05 Adjusted EBITDA!B17"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "s8_F7",
+          "destination": "TBA 08 Client Book!F7"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "calc_2",
+          "destination": "Source References!A677"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_10",
+          "destination": "Source References!A715"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_18",
+          "destination": "Source References!A757"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_2",
+          "destination": "Source References!A789"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_19",
+          "destination": "Source References!A821"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_8",
+          "destination": "Source References!A845"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_26",
+          "destination": "Source References!A876"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_22",
+          "destination": "Source References!A897"
+        }
+      ],
+      "portfolio_download": {
+        "bytes": 311461,
+        "sheets": [
+          "Portfolio Overview",
+          "Company Comparison",
+          "Investment Issues",
+          "Summit Home Services",
+          "Tallis Brook Accounting",
+          "Harrow Ridge Environmental",
+          "Source References",
+          "Source Snapshots",
+          "Reporting Output",
+          "Investment Ledger",
+          "SHS 01 CFO Commentary",
+          "SHS 02 Income Statement",
+          "SHS 03 Branch Results",
+          "SHS 04 Operating Metrics",
+          "SHS 05 AR Aging & Recon",
+          "SHS 06 Monthly Detail",
+          "TBA 01 MP Letter",
+          "TBA 02 Dashboard",
+          "TBA 03 Practice P&L",
+          "TBA 04 Monthly Trend",
+          "TBA 05 Adjusted EBITDA",
+          "TBA 06 People & Utilization",
+          "TBA 07 WIP AR Realization",
+          "TBA 08 Client Book",
+          "HRE 01 Management Discussion",
+          "HRE 02 P&L Summary",
+          "HRE 03 Monthly P&L",
+          "HRE 04 Cash Flow & Capex",
+          "HRE 05 Balance Sheet",
+          "HRE 06 Segment Results",
+          "HRE 07 Operating KPIs",
+          "HRE 08 Fleet Register",
+          "HRE 09 Customers & Contracts",
+          "HRE 10 Adjusted EBITDA"
+        ]
+      },
+      "company_selector_switching": "pass",
+      "deep_link_summary_evidence_regression": "pass",
+      "data_package_download": {
+        "bytes": 60627,
+        "standalone_consumer": "pass",
+        "company_comparisons": 3
+      },
+      "mobile_no_overflow": "pass"
+    },
+    "preservation": {
+      "workbooks": [
+        {
+          "file": "portfolio-browser.xlsx",
+          "sheets": 34,
+          "values_formats_hyperlinks_unchanged": true
+        },
+        {
+          "file": "summit-standard.xlsx",
+          "sheets": 9,
+          "values_formats_hyperlinks_unchanged": true
+        },
+        {
+          "file": "summit-custom.xlsx",
+          "sheets": 11,
+          "values_formats_hyperlinks_unchanged": true
+        },
+        {
+          "file": "tallis-standard.xlsx",
+          "sheets": 9,
+          "values_formats_hyperlinks_unchanged": true
+        },
+        {
+          "file": "tallis-custom.xlsx",
+          "sheets": 11,
+          "values_formats_hyperlinks_unchanged": true
+        },
+        {
+          "file": "harrow-standard.xlsx",
+          "sheets": 9,
+          "values_formats_hyperlinks_unchanged": true
+        },
+        {
+          "file": "harrow-custom.xlsx",
+          "sheets": 11,
+          "values_formats_hyperlinks_unchanged": true
+        }
+      ],
+      "zip_byte_identical": true,
+      "zip_sha256": "b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b",
+      "frozen_source_pins_verified": 29,
+      "new_analyst_calls": 0
+    }
+  },
+  "screenshots": {
+    "docs/images/premium-polish/before-overview-1440.png": "e2e1a72160e5e05a7cf7d70eb6e510f239a50b2c3eb1d44e46713431da6dfa4c",
+    "docs/images/premium-polish/before-foundation-1440.png": "82aa1cf6ba71532a6b1afd0d8801eaf719eab37f6b3042d650f785291f601e60",
+    "docs/images/premium-polish/before-sidebar.png": "5ca69d19c5529f69ed80ba1e9477a941c898a9f30dcba3ef305c4d9b780ffa52",
+    "docs/images/premium-polish/before-mobile-qr-panel.png": "2725ea986550bfa7333ba33e6181afa8c3ca6991084c5bd11e9e948633268ba6",
+    "docs/images/premium-polish/after-overview-1440.png": "8a69a0d3e50addb2f10855bdf7b38765692e81c4f58b16104e1028614a602705",
+    "docs/images/premium-polish/after-foundation-1440.png": "fb9a9bd8e1ebca2d858fde45cd070942719f790cac9cf06a5109744741ecdb02",
+    "docs/images/premium-polish/after-sidebar.png": "89febb5bad9a21656e15ee31ae6edcabb2447e2faaf943b42f06ebada692e99c",
+    "docs/images/premium-polish/after-mobile-qr-panel.png": "704216680b0de47f28cf1bc8573e830feaaedc368328122c09c2f82a87e4886a",
+    "docs/images/premium-polish/after-overview-390.png": "9d88823155fb3fed2992d7624461f2e7a0def04f2a075fdd2dc58bf726a6811b",
+    "docs/images/premium-polish/after-foundation-390.png": "ac5084fb017afafffab7e3e60319342f27c57350c80345135ad1ba10a5c3ceea",
+    "docs/images/premium-polish/after-catalog-workflow-context.png": "50028ab789b7f1eaaaf872a99d3996ae75c8353b3a2691ecc603aa3a30bf2b6c",
+    "docs/images/premium-polish/after-mapping-detail.png": "820cb636d6b6f8cd6cbd93bcd0f9bd7157eaa95ce36d7a63b2231c041906f304",
+    "docs/images/premium-polish/after-qr-dialog.png": "3ce8815fa898ac22fcf5b931f99d8fbf56f40cb2593110f4bec9a3cef4f838a2"
+  },
+  "preview": "http://127.0.0.1:8502",
+  "limitations": [
+    "The live8502 preview has no phone-accessible DEMO_PUBLIC_URL. Its setup message is preserved.",
+    "QR screenshots use the identical application on localhost8503 with an explicit example URL, for presentation/encoding only. No external reachability, hosting, tunnel or deployment is claimed.",
+    "Known linked gaps use retained source-coordinate intersections and are not a comprehensive data-quality audit. Existing readiness policy and analytical limitations are unchanged."
+  ],
+  "new_analysis_calls": 0
+}

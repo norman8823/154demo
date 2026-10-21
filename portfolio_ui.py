@@ -26,18 +26,18 @@ def navigate(page, company=None, finding=None):
 def shell(page, companies):
     st.markdown(CSS, unsafe_allow_html=True)
     with st.sidebar:
-        st.markdown('<div class="gp-brand">154 Partners<br><span class="gp-product">Portfolio Reporting Copilot</span><small>Concept developed for 154 Partners by NL Intelligence</small></div>', unsafe_allow_html=True)
+        st.markdown('<div class="gp-brand">154 Partners<span class="gp-product">Portfolio Reporting Copilot</span><small>by NL Intelligence</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
-        for label, destination in [('Portfolio Overview', 'overview'), ('Data Foundation','foundation'), ('Investment Issues', 'issues'), ('Company Detail', 'company'), ('Excel Reports', 'excel')]:
-            st.button(label, key='nav_watchlist' if destination == 'issues' else 'nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
-                      on_click=navigate, args=(destination, st.query_params.get('company', companies[0].id)) if destination == 'company' else (destination,))
-        from portfolio_mobile import mobile_panel
-        mobile_panel()
-        st.divider()
-        st.caption('Synthetic demonstration')
-        st.caption('Prepared results · 0 new model calls')
+        with st.container(key='workspace_navigation'):
+            for label, destination in [('Portfolio Overview', 'overview'), ('Data Foundation','foundation'), ('Investment Issues', 'issues'), ('Company Detail', 'company'), ('Excel Reports', 'excel')]:
+                st.button(label, key='nav_watchlist' if destination == 'issues' else 'nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
+                          on_click=navigate, args=(destination, st.query_params.get('company', companies[0].id)) if destination == 'company' else (destination,))
+        with st.container(key='sidebar_footer'):
+            from portfolio_mobile import mobile_panel
+            mobile_panel()
+            st.markdown('<div class="sidebar-demo">Product Demo · Synthetic Data</div>',unsafe_allow_html=True)
     names = {'overview': 'Overview', 'foundation':'Data Foundation', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Company Detail', 'excel': 'Excel Reports'}
-    st.markdown('<div class="gp-breadcrumb">Portfolio / '+names.get(page, 'Overview')+'<span class="gp-tag">SYNTHETIC DATA &nbsp; · &nbsp; GP</span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="gp-breadcrumb">Portfolio / '+names.get(page, 'Overview')+'<span class="gp-tag">Product Demo · Synthetic Data</span></div>', unsafe_allow_html=True)
 
 
 def stats(companies):
@@ -62,7 +62,7 @@ def company_card(company, investment_result=None):
         if investment_result is not None:
             from portfolio_investment_ui import gross_rate
             moic=investment_result['gross_moic']
-            st.markdown('<div class="v3-card-returns"><div><small>GROSS MOIC</small><b>'+escape(f'{moic:.2f}x' if moic is not None else 'Unavailable')+'</b></div><div><small>GROSS IRR</small><b>'+escape(gross_rate(investment_result['gross_irr']))+'</b></div><span>Synthetic illustrative sponsor data</span></div>',unsafe_allow_html=True)
+            st.markdown('<div class="v3-card-returns"><div><small>GROSS MOIC</small><b>'+escape(f'{moic:.2f}x' if moic is not None else 'Unavailable')+'</b></div><div><small>GROSS IRR</small><b>'+escape(gross_rate(investment_result['gross_irr']))+'</b></div><span>Illustrative sponsor returns</span></div>',unsafe_allow_html=True)
         st.button('View Investment Detail →', key='open_'+company.id, width='stretch', on_click=navigate, args=('company', company.id))
 
 
@@ -80,7 +80,7 @@ def page_heading(title, subtitle, workbook_data=None):
 def overview(companies, workbook_data=None):
     st.markdown('<div class="gp-eyebrow">GP MONITORING / REPORTING CYCLE</div>', unsafe_allow_html=True)
     page_heading('Portfolio Overview', 'Operating performance, investment issues and management follow-up · September 2026 / FY2026', workbook_data)
-    st.markdown('<div class="v2-workflow"><b>01 &nbsp;Company packages ✓</b><span>→</span><b>02 &nbsp;Prepared AI assessments ✓</b><span>→</span><b>03 &nbsp;Portfolio review</b><span>→</span><b>04 &nbsp;Management follow-up</b><span>→</span><b>05 &nbsp;Source-linked Excel</b></div>', unsafe_allow_html=True)
+    st.markdown('<div class="v2-workflow"><b>01 &nbsp;Company packages ✓</b><span>→</span><b>02 &nbsp;Verified AI assessments ✓</b><span>→</span><b>03 &nbsp;Portfolio review</b><span>→</span><b>04 &nbsp;Management follow-up</b><span>→</span><b>05 &nbsp;Source-linked Excel</b></div>', unsafe_allow_html=True)
     from portfolio_investment_ui import investment_cards
     investment_cards(companies)
     from portfolio_dashboard import workflow_summary
@@ -88,7 +88,8 @@ def overview(companies, workbook_data=None):
     st.markdown('<div class="gp-guard">OPERATING REVIEW · '+str(review['received'])+'/'+str(review['companies'])+' packages verified · '+str(review['below_plan'])+' below EBITDA plan · '+str(review['issues'])+' accepted investment issues · '+str(review['act_now'])+' act-now follow-ups</div>',unsafe_allow_html=True)
     from portfolio_holdings import render_holdings
     render_holdings(companies)
-    st.markdown('<div class="gp-guard">'+escape(COMPARABILITY)+'</div>', unsafe_allow_html=True)
+    with st.expander('Reporting periods & comparability'):
+        literal_prose(COMPARABILITY)
 
 
 def render_comparison(companies, matrix=False):
@@ -96,7 +97,7 @@ def render_comparison(companies, matrix=False):
     from portfolio_dashboard import operating_rows, comparison_matrix
     from portfolio_tables import responsive_table
     st.subheader('Company comparison' if matrix else 'Investment holdings & operating comparison')
-    st.caption('Investment values are synthetic illustrative USD, as of September 30, 2026. Operating periods remain on the company cards above. Use Table options to sort; select a company for detail.')
+    st.caption('Investment values are illustrative USD, as of September 30, 2026. Operating periods remain on the company cards above. Use Table options to sort; select a company for detail.')
     if matrix:
         responsive_table(pd.DataFrame(comparison_matrix(companies)),key='comparison_matrix')
     else:
@@ -112,7 +113,7 @@ def render_comparison(companies, matrix=False):
 
 
 def footer():
-    st.markdown('<div class="gp-note">Synthetic demonstration · Prepared assessments · For Investment Team Review · No new inference</div>', unsafe_allow_html=True)
+    st.markdown('<div class="gp-note">For demo only. All portfolio companies, investment data, and financial figures are synthetic. Any resemblance to real companies or investments is coincidental.</div>', unsafe_allow_html=True)
 
 
 def render_watchlist(companies, compact=False):

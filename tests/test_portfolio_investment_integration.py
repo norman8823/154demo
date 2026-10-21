@@ -46,7 +46,7 @@ def test_real_investment_cards_remain_distinct_from_verified_operating_values():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60).run()
     assert not at.exception
     html='\n'.join(m.value for m in at.markdown)
-    for value in ('Current Portfolio Equity Value','$82.00M','Gross MOIC','1.50x','Gross IRR','10.95%','Total Invested Capital','$58.00M','SYNTHETIC ILLUSTRATIVE','3 packages verified','17 accepted investment issues','September 2026 · monthly','FY2026 · annual'):
+    for value in ('Current Portfolio Equity Value','$82.00M','Gross MOIC','1.50x','Gross IRR','10.95%','Total Invested Capital','$58.00M','Product Demo · Synthetic Data','3 packages verified','17 accepted investment issues','September 2026 · monthly','FY2026 · annual'):
         # Coverage is rendered as 3/3; verify it separately.
         if value=='3 packages verified':continue
         assert value in html or any(value in c.value for c in at.caption)

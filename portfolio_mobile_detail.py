@@ -37,7 +37,7 @@ def render_mobile_detail(company):
         investment=investments_for([company])[0];result=investment_summary([investment])
         values=[('Invested capital',result['invested_capital']),('Realized distributions',result['realized_proceeds']),('Current equity value',result['current_equity_value'])]
         st.markdown('<div class="mobile-investment-context">'+''.join('<div><small>'+label+'</small><strong>'+escape(money(value))+'</strong></div>' for label,value in values)+'</div>',unsafe_allow_html=True)
-        st.caption('Synthetic illustrative sponsor data · USD · As of '+investment.valuation_date.isoformat())
+        st.caption('Product Demo · Synthetic Data · USD · As of '+investment.valuation_date.isoformat())
         st.subheader('Investment Assessment')
         findings=assessment_items(company,st.query_params.get('finding'))
         if findings:
@@ -53,4 +53,4 @@ def render_mobile_detail(company):
         with st.expander('Investment context'):
             literal_prose(investment.sponsor+' · '+investment.fund)
             st.caption('Investment date '+investment.investment_date.isoformat()+' · Ownership '+f'{investment.ownership:.1%}'+' · '+investment.status.replace('_',' ').title())
-        st.caption('Original prepared conclusions and qualifications retained. No new analysis.')
+        st.caption('Source-backed assessment · Original conclusions and qualifications retained.')
