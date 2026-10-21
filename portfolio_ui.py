@@ -26,20 +26,15 @@ def navigate(page, company=None, finding=None):
 def shell(page, companies):
     st.markdown(CSS, unsafe_allow_html=True)
     with st.sidebar:
-        st.markdown('<div class="gp-brand">▣ &nbsp;Portfolio Intelligence<br><small>GP Reporting Copilot</small></div>', unsafe_allow_html=True)
+        st.markdown('<div class="gp-brand">154 Partners<br><span class="gp-product">Portfolio Reporting Copilot</span><small>Concept developed for 154 Partners by NL Intelligence</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
         for label, destination in [('Portfolio Overview', 'overview'), ('Data Foundation','foundation'), ('Investment Issues', 'issues'), ('Company Detail', 'company'), ('Excel Reports', 'excel')]:
             st.button(label, key='nav_watchlist' if destination == 'issues' else 'nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
                       on_click=navigate, args=(destination, st.query_params.get('company', companies[0].id)) if destination == 'company' else (destination,))
-        ids = [c.id for c in companies]
-        current = st.query_params.get('company', ids[0])
-        current = current if current in ids else ids[0]
-        if st.session_state.get('gp_sidebar_company') != current:
-            st.session_state.gp_sidebar_company = current
-        st.selectbox('Open company', ids, format_func=lambda slug: next(c.name for c in companies if c.id == slug).split()[0],
-                     key='gp_sidebar_company', on_change=select_company, args=('gp_sidebar_company',))
+        from portfolio_mobile import mobile_panel
+        mobile_panel()
         st.divider()
-        st.caption('Synthetic demonstration only')
+        st.caption('Synthetic demonstration')
         st.caption('Prepared results · 0 new model calls')
     names = {'overview': 'Overview', 'foundation':'Data Foundation', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Company Detail', 'excel': 'Excel Reports'}
     st.markdown('<div class="gp-breadcrumb">Portfolio / '+names.get(page, 'Overview')+'<span class="gp-tag">SYNTHETIC DATA &nbsp; · &nbsp; GP</span></div>', unsafe_allow_html=True)
@@ -55,7 +50,7 @@ def stats(companies):
     st.markdown('<div class="gp-stats">'+''.join('<div class="gp-stat"><small>'+escape(a)+'</small><strong>'+escape(b)+'</strong><small>'+escape(c)+'</small></div>' for a,b,c in items)+'</div>', unsafe_allow_html=True)
 
 
-def company_card(company):
+def company_card(company, investment_result=None):
     from portfolio_dashboard import ebitda_chart
     v = comparison(company)
     m = v['ebitda']
@@ -64,6 +59,10 @@ def company_card(company):
         st.altair_chart(ebitda_chart(company), width='stretch', key='ebitda_chart_'+company.id)
         delta = (money(m.variance,m.unit)+' / '+against_plan(m)) if m.variance is not None else 'Budget comparison unavailable'
         st.markdown('<div class="v2-variance">'+escape(delta)+'</div>',unsafe_allow_html=True)
+        if investment_result is not None:
+            from portfolio_investment_ui import gross_rate
+            moic=investment_result['gross_moic']
+            st.markdown('<div class="v3-card-returns"><div><small>GROSS MOIC</small><b>'+escape(f'{moic:.2f}x' if moic is not None else 'Unavailable')+'</b></div><div><small>GROSS IRR</small><b>'+escape(gross_rate(investment_result['gross_irr']))+'</b></div><span>Synthetic illustrative sponsor data</span></div>',unsafe_allow_html=True)
         st.button('Open investment review →', key='open_'+company.id, width='stretch', on_click=navigate, args=('company', company.id))
 
 
@@ -87,13 +86,8 @@ def overview(companies, workbook_data=None):
     from portfolio_dashboard import workflow_summary
     review=workflow_summary(companies)
     st.markdown('<div class="gp-guard">OPERATING REVIEW · '+str(review['received'])+'/'+str(review['companies'])+' packages verified · '+str(review['below_plan'])+' below EBITDA plan · '+str(review['issues'])+' accepted investment issues · '+str(review['act_now'])+' act-now follow-ups</div>',unsafe_allow_html=True)
-    st.subheader('Operating performance')
-    st.caption('Reported EBITDA: Actual vs Budget · Each chart has its own dollar axis and period. Annual and monthly amounts are never pooled.')
-    with st.container(key='operating_cards'):
-        for column, company in zip(st.columns(len(companies)), companies):
-            with column:
-                company_card(company)
-    render_comparison(companies)
+    from portfolio_holdings import render_holdings
+    render_holdings(companies)
     st.markdown('<div class="gp-guard">'+escape(COMPARABILITY)+'</div>', unsafe_allow_html=True)
 
 

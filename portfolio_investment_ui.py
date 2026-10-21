@@ -1,6 +1,5 @@
 """Compact synthetic-return presentation, visibly separate from operating data."""
 from html import escape
-import altair as alt
 import pandas as pd
 import streamlit as st
 from portfolio_comparison import money, percent
@@ -20,19 +19,6 @@ def investment_cards(companies):
            ('Total Invested Capital',money(summary['invested_capital']),'Cumulative sponsor contributions · USD')]
     st.markdown('<div class="gp-stats">'+''.join('<div class="gp-stat"><small>'+escape(label)+'</small><strong>'+escape(value)+'</strong><small>'+escape(note)+'</small></div>' for label,value,note in items)+'</div>',unsafe_allow_html=True)
     st.caption('Illustrative valuation: '+summary['valuation_date']+' · Realized proceeds '+money(summary['realized_proceeds'])+' · '+METHOD)
-    with st.expander('Illustrative investment values and valuation context'):
-        st.caption('Invested capital versus current unrealized sponsor equity. Distributions are excluded from the current-value bar. All investment amounts are illustrative USD.')
-        records=[{'Company':i.company_name,'Measure':label,'USD':value,'Valuation date':i.valuation_date.isoformat()} for i in investments
-                 for label,value in [('Invested capital',investment_summary([i])['invested_capital']),('Current equity value',i.current_equity_value)]]
-        chart=alt.Chart(pd.DataFrame(records)).mark_bar(cornerRadiusTopRight=2,cornerRadiusBottomRight=2).encode(
-            y=alt.Y('Company:N',sort=[i.company_name for i in investments],title=None,axis=alt.Axis(labelExpr="split(datum.label, ' ')[0]",labelLimit=100,labelFontSize=10,labelOverlap=False)),
-            yOffset=alt.YOffset('Measure:N',sort=['Invested capital','Current equity value']),
-            x=alt.X('USD:Q',title='Illustrative sponsor USD',scale=alt.Scale(zero=True),axis=alt.Axis(format='$~s',tickCount=3)),
-            color=alt.Color('Measure:N',scale=alt.Scale(domain=['Invested capital','Current equity value'],range=['#b8cbd9','#173e57']),legend=alt.Legend(title=None,orient='bottom',columns=1,labelLimit=250,labelFontSize=10)),
-            tooltip=['Company:N','Measure:N',alt.Tooltip('USD:Q',format='$,.0f'),'Valuation date:N']).properties(height=260).configure_view(stroke=None)
-        st.altair_chart(chart,width='stretch',key='illustrative_equity_chart')
-        st.caption(investments[0].sponsor+' · '+investments[0].fund+' · '+investments[0].asset_class)
-        st.caption('Enterprise value, debt, cash, ownership and dated sponsor cash flows are exposed in each company detail and the GP workbook Investment Ledger.')
 
 
 def company_investment(company):

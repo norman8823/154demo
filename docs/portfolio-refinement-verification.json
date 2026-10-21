@@ -1,0 +1,932 @@
+{
+  "task_id": 47,
+  "branch": "feat/ai-workflow-readiness",
+  "base_commit": "0e413365c9432c5a405352b026104eef019f81be",
+  "assessment": {
+    "score": 76,
+    "score_status": "76/100",
+    "components": [
+      {
+        "Component": "Mapping completeness",
+        "Maximum": 25,
+        "Input": "12 / 12 slots",
+        "Calculation": "25 × 12 / 12",
+        "Points": 25.0
+      },
+      {
+        "Component": "Source verification",
+        "Maximum": 25,
+        "Input": "12 / 12 slots",
+        "Calculation": "25 × 12 / 12",
+        "Points": 25.0
+      },
+      {
+        "Component": "Reporting-period coverage",
+        "Maximum": 35,
+        "Input": "8 / 12 slots",
+        "Calculation": "35 × 8 / 12",
+        "Points": 23.333333333333332
+      },
+      {
+        "Component": "Known data-issue adjustment",
+        "Maximum": 15,
+        "Input": "4 known issue groups",
+        "Calculation": "max(0, 15 − 3 × 4)",
+        "Points": 3
+      }
+    ],
+    "required_slots": 12,
+    "mapped_slots": 12,
+    "verified_slots": 12,
+    "monthly_slots": 8,
+    "coverage": 0.6666666666666666,
+    "issue_groups": 4,
+    "checks": [
+      {
+        "check": "Required metric/scenario mappings at original frequency",
+        "passed": 12,
+        "evaluated": 12
+      },
+      {
+        "check": "Required metric/scenario source observations checked",
+        "passed": 12,
+        "evaluated": 12
+      },
+      {
+        "check": "Mapped slots matching configured period and frequency",
+        "passed": 8,
+        "evaluated": 12
+      }
+    ],
+    "reconciliation_status": "Not Evaluated comprehensively; known source-backed exceptions remain open",
+    "limitation": "Illustrative workflow assessment, not an externally certified automation-safety standard. The 3-point penalty per curated, non-exhaustive issue group is a demonstration policy, not a statistical risk estimate. Comprehensive cross-schedule reconciliation and semantic validation are not completed. This score does not certify unattended automation or company-wide AI maturity."
+  },
+  "model_file": "data_foundation/models/monthly_portfolio_operating_review.json",
+  "model_version": "1.1.0",
+  "catalog": [
+    {
+      "metric_id": "financial.revenue",
+      "label": "Revenue",
+      "definition": "Reported revenue category; source account labels and detail/total roles retain the original scope.",
+      "category": "Retained financial category",
+      "observations": 207,
+      "accepted": 207,
+      "verified": 207,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$",
+        "USD"
+      ],
+      "scales": [
+        "1",
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx",
+        "Tallis_Brook_Accounting_Sep2026.xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 207
+    },
+    {
+      "metric_id": "financial.cogs",
+      "label": "Cost of services / direct costs",
+      "definition": "Reported direct costs / cost of services category; approved source sign normalization retained.",
+      "category": "Retained financial category",
+      "observations": 179,
+      "accepted": 179,
+      "verified": 179,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$",
+        "USD"
+      ],
+      "scales": [
+        "1",
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx",
+        "Tallis_Brook_Accounting_Sep2026.xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 179
+    },
+    {
+      "metric_id": "financial.gross_profit",
+      "label": "Gross Profit",
+      "definition": "Reported gross profit category; not a standardized cross-company margin definition.",
+      "category": "Retained financial category",
+      "observations": 20,
+      "accepted": 20,
+      "verified": 20,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$"
+      ],
+      "scales": [
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 20
+    },
+    {
+      "metric_id": "financial.operating_expenses",
+      "label": "Operating Expenses",
+      "definition": "Reported operating-expense category; original labels and scope retained.",
+      "category": "Retained financial category",
+      "observations": 225,
+      "accepted": 225,
+      "verified": 225,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$"
+      ],
+      "scales": [
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 225
+    },
+    {
+      "metric_id": "financial.ebitda",
+      "label": "Reported EBITDA",
+      "definition": "Reported EBITDA category; not a standardized adjusted EBITDA or cash-flow measure.",
+      "category": "Retained financial category",
+      "observations": 34,
+      "accepted": 34,
+      "verified": 34,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$",
+        "USD"
+      ],
+      "scales": [
+        "1",
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx",
+        "Tallis_Brook_Accounting_Sep2026.xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 34
+    },
+    {
+      "metric_id": "financial.depreciation",
+      "label": "Depreciation",
+      "definition": "Reported depreciation/amortization category; original source classification retained.",
+      "category": "Retained financial category",
+      "observations": 47,
+      "accepted": 47,
+      "verified": 47,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$"
+      ],
+      "scales": [
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 47
+    },
+    {
+      "metric_id": "financial.interest",
+      "label": "Interest",
+      "definition": "Reported interest category; source period and sign normalization retained.",
+      "category": "Retained financial category",
+      "observations": 20,
+      "accepted": 20,
+      "verified": 20,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$"
+      ],
+      "scales": [
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 20
+    },
+    {
+      "metric_id": "financial.tax",
+      "label": "Tax",
+      "definition": "Reported income-tax category; source period and sign normalization retained.",
+      "category": "Retained financial category",
+      "observations": 20,
+      "accepted": 20,
+      "verified": 20,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$"
+      ],
+      "scales": [
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 20
+    },
+    {
+      "metric_id": "financial.net_income",
+      "label": "Net Income",
+      "definition": "Reported net-income category; source period and entity scope retained.",
+      "category": "Retained financial category",
+      "observations": 20,
+      "accepted": 20,
+      "verified": 20,
+      "units": [
+        "money"
+      ],
+      "currencies": [
+        "$"
+      ],
+      "scales": [
+        "1000"
+      ],
+      "basis": [
+        "Annual / FY (retained grain)",
+        "Fiscal quarter (retained grain)",
+        "Monthly (retained grain)"
+      ],
+      "periods": {
+        "annual": [
+          "2025-FY",
+          "2026-FY"
+        ],
+        "fiscal_quarter": [
+          "2026-FQ1",
+          "2026-FQ2",
+          "2026-FQ3",
+          "2026-FQ4"
+        ],
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Harrow_Ridge_Environmental_FY2026.xlsx",
+        "Summit_Home_Services_Sep2026 (1).xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 20
+    },
+    {
+      "metric_id": "unmapped.source_observation",
+      "label": "Unmapped / other source observations",
+      "definition": "Unmapped or other source observation; no standardized financial meaning or aggregation is established.",
+      "category": "Unclassified source observations",
+      "observations": 230,
+      "accepted": 26,
+      "verified": 224,
+      "units": [
+        "money",
+        "ratio",
+        "unknown"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "scales": [
+        "1"
+      ],
+      "basis": [
+        "LTM (explicit source label)",
+        "Not established; retained month grain",
+        "Run-rate (explicit source label; Annualized revenue per FTE (Q3 run-rate))"
+      ],
+      "periods": {
+        "month": [
+          "2025-09",
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ]
+      },
+      "packages": [
+        "Tallis_Brook_Accounting_Sep2026.xlsx"
+      ],
+      "owner": "Not assigned",
+      "refresh_cadence": "Not configured",
+      "approval_authority": "Not recorded",
+      "lineage_available": 230
+    }
+  ],
+  "workflow_examples": [
+    {
+      "company_id": "summit",
+      "metric_id": "financial.revenue",
+      "period": "2026-09",
+      "period_grain": "month",
+      "scenario": "actual",
+      "value": 3298000.0,
+      "entity_name": "Summit Home Services Group",
+      "source_fact_id": "financial_26",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'Income Statement'!D15"
+    },
+    {
+      "company_id": "summit",
+      "metric_id": "financial.revenue",
+      "period": "2026-09",
+      "period_grain": "month",
+      "scenario": "budget",
+      "value": 3207000.0,
+      "entity_name": "Summit Home Services Group",
+      "source_fact_id": "financial_25",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'Income Statement'!C15"
+    },
+    {
+      "company_id": "summit",
+      "metric_id": "financial.ebitda",
+      "period": "2026-09",
+      "period_grain": "month",
+      "scenario": "actual",
+      "value": 502000.0,
+      "entity_name": "Summit Home Services Group",
+      "source_fact_id": "financial_118",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'Income Statement'!D44"
+    },
+    {
+      "company_id": "summit",
+      "metric_id": "financial.ebitda",
+      "period": "2026-09",
+      "period_grain": "month",
+      "scenario": "budget",
+      "value": 659000.0,
+      "entity_name": "Summit Home Services Group",
+      "source_fact_id": "financial_117",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'Income Statement'!C44"
+    },
+    {
+      "company_id": "tallis",
+      "metric_id": "financial.revenue",
+      "period": "2026-09",
+      "period_grain": "month",
+      "scenario": "actual",
+      "value": 3475418.0,
+      "entity_name": "TALLIS BROOK ACCOUNTING GROUP",
+      "source_fact_id": "financial_34",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'Practice P&L'!G12"
+    },
+    {
+      "company_id": "tallis",
+      "metric_id": "financial.revenue",
+      "period": "2026-09",
+      "period_grain": "month",
+      "scenario": "budget",
+      "value": 3651832.0,
+      "entity_name": "TALLIS BROOK ACCOUNTING GROUP",
+      "source_fact_id": "financial_36",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'Practice P&L'!I12"
+    },
+    {
+      "company_id": "tallis",
+      "metric_id": "financial.ebitda",
+      "period": "2026-09",
+      "period_grain": "month",
+      "scenario": "actual",
+      "value": 684306.0,
+      "entity_name": "TALLIS BROOK ACCOUNTING GROUP",
+      "source_fact_id": "financial_94",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'Practice P&L'!G41"
+    },
+    {
+      "company_id": "tallis",
+      "metric_id": "financial.ebitda",
+      "period": "2026-09",
+      "period_grain": "month",
+      "scenario": "budget",
+      "value": 946225.0,
+      "entity_name": "TALLIS BROOK ACCOUNTING GROUP",
+      "source_fact_id": "financial_96",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'Practice P&L'!I41"
+    },
+    {
+      "company_id": "harrow",
+      "metric_id": "financial.revenue",
+      "period": "2026-FY",
+      "period_grain": "annual",
+      "scenario": "actual",
+      "value": 46650000.0,
+      "entity_name": "HARROW RIDGE ENVIRONMENTAL SERVICES",
+      "source_fact_id": "financial_40",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'P&L Summary'!F13"
+    },
+    {
+      "company_id": "harrow",
+      "metric_id": "financial.revenue",
+      "period": "2026-FY",
+      "period_grain": "annual",
+      "scenario": "budget",
+      "value": 47006000.0,
+      "entity_name": "HARROW RIDGE ENVIRONMENTAL SERVICES",
+      "source_fact_id": "financial_41",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'P&L Summary'!G13"
+    },
+    {
+      "company_id": "harrow",
+      "metric_id": "financial.ebitda",
+      "period": "2026-FY",
+      "period_grain": "annual",
+      "scenario": "actual",
+      "value": 9712000.0,
+      "entity_name": "HARROW RIDGE ENVIRONMENTAL SERVICES",
+      "source_fact_id": "financial_173",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'P&L Summary'!F34"
+    },
+    {
+      "company_id": "harrow",
+      "metric_id": "financial.ebitda",
+      "period": "2026-FY",
+      "period_grain": "annual",
+      "scenario": "budget",
+      "value": 10895000.0,
+      "entity_name": "HARROW RIDGE ENVIRONMENTAL SERVICES",
+      "source_fact_id": "financial_174",
+      "mapping_status": "Auto — explicit financial label",
+      "verification_status": "source_observation_verified",
+      "human_approval_status": "not_recorded",
+      "source": "'P&L Summary'!G34"
+    }
+  ],
+  "issues": [
+    {
+      "company": "summit",
+      "title": "Branch and consolidated EBITDA schedules do not reconcile",
+      "status": "Review Required",
+      "evidence_records": 9
+    },
+    {
+      "company": "tallis",
+      "title": "Supporting observations lack accepted financial classifications",
+      "status": "Review Required",
+      "evidence_records": 204
+    },
+    {
+      "company": "tallis",
+      "title": "Historical supporting comparators are blank",
+      "status": "Review Required",
+      "evidence_records": 6
+    },
+    {
+      "company": "harrow",
+      "title": "Available headline reporting does not meet the monthly intake",
+      "status": "Blocked",
+      "evidence_records": 4
+    }
+  ],
+  "tests": {
+    "full_offline_regression": "415 passed in274.49s before three additional URL-guard cases",
+    "final_focused": "30 passed in27.43s after final state/URL corrections",
+    "responsive_cases": 70,
+    "responsive_errors": [],
+    "main_browser": {
+      "screens": [
+        "overview-1440",
+        "foundation-1440",
+        "overview-390",
+        "foundation-390"
+      ],
+      "errors": [],
+      "external_requests": [],
+      "mobile_navigation": "pass"
+    },
+    "fixture_browser": {
+      "screens": [
+        "twelve-holdings-1440",
+        "twelve-holdings-390"
+      ],
+      "errors": [],
+      "external_requests": [],
+      "twelve_holdings_selection": "default2 / limit2 / replace / clear / select12 / navigate: pass",
+      "qr_modal_and_copy": "both open targets share native button; native Copy Link/clipboard exact; Escape/Close pass"
+    },
+    "independent_qr_decode": {
+      "qr-compact.png": "https://demo.example.com/?page=foundation",
+      "qr-large.png": "https://demo.example.com/?page=foundation"
+    },
+    "independent_decoder": "macOS Vision VNDetectBarcodesRequest; compact CSS image and actual rendered large QR"
+  },
+  "preservation": {
+    "workbooks": [
+      {
+        "file": "portfolio-browser.xlsx",
+        "sheets": 34,
+        "values_formats_hyperlinks_unchanged": true
+      },
+      {
+        "file": "summit-standard.xlsx",
+        "sheets": 9,
+        "values_formats_hyperlinks_unchanged": true
+      },
+      {
+        "file": "summit-custom.xlsx",
+        "sheets": 11,
+        "values_formats_hyperlinks_unchanged": true
+      },
+      {
+        "file": "tallis-standard.xlsx",
+        "sheets": 9,
+        "values_formats_hyperlinks_unchanged": true
+      },
+      {
+        "file": "tallis-custom.xlsx",
+        "sheets": 11,
+        "values_formats_hyperlinks_unchanged": true
+      },
+      {
+        "file": "harrow-standard.xlsx",
+        "sheets": 9,
+        "values_formats_hyperlinks_unchanged": true
+      },
+      {
+        "file": "harrow-custom.xlsx",
+        "sheets": 11,
+        "values_formats_hyperlinks_unchanged": true
+      }
+    ],
+    "zip_byte_identical": true,
+    "zip_sha256": "b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b",
+    "frozen_manifest_hashes_verified": 29,
+    "new_analysis_calls": 0
+  },
+  "screenshots": {
+    "docs/images/product-refinement/overview-1440.png": "05cfc07ccc6e50697d7c9028764b17d1ad33e33da6622c4346cab90694b33575",
+    "docs/images/product-refinement/overview-390.png": "2dd7bd4a1e9132f46afd1bcb6f3779cb2fb1f7cedc556d1e66e5eab61d364f81",
+    "docs/images/product-refinement/foundation-1440.png": "82aa1cf6ba71532a6b1afd0d8801eaf719eab37f6b3042d650f785291f601e60",
+    "docs/images/product-refinement/foundation-390.png": "8fb86ef6f88e17f7a00ae3b980af1863dd7597a2227bffaa7a67b6e398a75efa",
+    "docs/images/product-refinement/catalog-detail-1440.png": "ca77b8f2d47a565325545fd0a7fcc2f69c0a7062d23557c2ca1a2d1efed08acd",
+    "docs/images/product-refinement/catalog-detail-390.png": "be56a11a696e9cffacf98c8460cc38a71f9c5b19e8a846815c07eb400c59277f",
+    "docs/images/product-refinement/holdings-cards-1440.png": "590cf0df30bf2d1ad889dd7d0003f51ac949a780a333cce5683041c3e1c923cc",
+    "docs/images/product-refinement/holdings-cards-390.png": "31a17b5dc956d5e76fd0091355686c2f0ce825650c747ca1cd4c28850543f007",
+    "docs/images/product-refinement/twelve-holdings-1440.png": "5ca19f2882346d12720b85d3d2d0739f8231f8274616a500e8732b584e7f7c30",
+    "docs/images/product-refinement/twelve-holdings-390.png": "c5a784becda163f565f902685f053ac99e532fbba2afc414a56f530087e82de2",
+    "docs/images/product-refinement/mobile-qr-dialog.png": "2b0da7c03dcefc59e81ec21c0835f57fecd539d07448475ade49acb93bd330d2"
+  },
+  "preview": {
+    "url": "http://127.0.0.1:8502",
+    "command": "./scripts/run_portfolio_demo.sh --server.headless true",
+    "browser_title": "Portfolio Reporting Copilot | 154 Partners",
+    "branding": "154 Partners / Portfolio Reporting Copilot / Concept developed for 154 Partners by NL Intelligence",
+    "mobile_url_configured": false
+  },
+  "limitations": [
+    "Readiness is illustrative; the3-point per curated non-exhaustive issue group penalty is policy, not a risk estimate or unattended automation certification. Comprehensive reconciliation remains incomplete.",
+    "Human mapping approval not recorded; source verification and automatic mapping acceptance remain separate.",
+    "Data owner not assigned; expected refresh cadence not configured; approval authority not recorded. Retained units and source labels do not establish standardized meanings for unmapped supporting observations.",
+    "Production remains three approved companies; twelve-company layout uses a test-only fixture with separate stable IDs and copied prepared records. No new production-company onboarding was built.",
+    "No phone-accessible URL is configured. QR syntax/encoding/dialog/copy were verified using a test-only example URL; actual phone reachability requires an operator-configured LAN orHTTPS address. No tunnel, hosting or deployment.",
+    "The native code-block Copy Link control appears when the address is hovered or its toolbar focused.",
+    "Future reporting cycles, persistent approved mapping reuse and exhaustive extraction are not implemented."
+  ],
+  "review": {
+    "scope": "Bounded implementation review and actual Chrome screenshot correction pass",
+    "corrections": [
+      "Explicit native mapping-selection state prevents stale source labels after changing catalog filters.",
+      "QR button label contrast restored to navy; native row-checkbox hit targets enlarged.",
+      "Browser harness waits for native rerender outcomes and uses visible checkbox labels."
+    ],
+    "secret_audit": {
+      "text_files": 23,
+      "actual_synthetic_screenshots": 11,
+      "findings": 0
+    },
+    "analytical_engine_port_8501": "Original PID20385 unchanged"
+  }
+}

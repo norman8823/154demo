@@ -4,6 +4,7 @@ No extraction, mapping acceptance, new financial calculation or model invocation
 Known issues are an evidence-backed review queue, not an exhaustive quality audit.
 """
 import json
+import math
 from pathlib import Path
 from portfolio_foundation import foundation_records, METRICS
 from portfolio_watchlist import evidence_for, source_closure
@@ -114,14 +115,38 @@ def readiness(companies, model, rows, issues):
     mapped=hits(lambda r:r['usable_mapping'])
     in_scope=hits(lambda r:r['usable_mapping'] and r['monthly_scope_matches'])
     checked=hits(lambda r:r['verification_status']=='source_observation_verified')
-    return dict(score=None,score_status='Not Evaluated',required_slots=total,mapped_slots=mapped,
+    score,components=readiness_score(total,mapped,checked,in_scope,len(issues),model['scoring_policy'])
+    return dict(score=score,score_status=f'{score}/100' if score is not None else 'Not Evaluated',
+                components=components,required_slots=total,mapped_slots=mapped,
                 verified_slots=checked,monthly_slots=in_scope,coverage=in_scope/total if total else None,
                 issue_groups=len(issues),checks=[
                     dict(check='Required metric/scenario mappings at original frequency',passed=mapped,evaluated=total),
                     dict(check='Required metric/scenario source observations checked',passed=checked,evaluated=total),
                     dict(check='Mapped slots matching configured period and frequency',passed=in_scope,evaluated=total),
                 ],reconciliation_status='Not Evaluated comprehensively; known source-backed exceptions remain open',
-                limitation='No weighted total: comprehensive cross-schedule reconciliation and semantic validation have not been evaluated. This is workflow evidence, not company-wide AI maturity or authorization for unattended automation.')
+                limitation='Illustrative workflow assessment, not an externally certified automation-safety standard. '
+                'The 3-point penalty per curated, non-exhaustive issue group is a demonstration policy, not a statistical risk estimate. '
+                'Comprehensive cross-schedule reconciliation and semantic validation are not completed. '
+                'This score does not certify unattended automation or company-wide AI maturity.')
+
+
+def readiness_score(required,mapped,verified,monthly,issues,policy):
+    """Explicit illustrative policy; nearest integer, with exact halves rounded up."""
+    if any(not isinstance(n,int) or isinstance(n,bool) or n<0 for n in (required,mapped,verified,monthly,issues)):
+        raise ValueError('Readiness counts must be nonnegative integers.')
+    if any(n>required for n in (mapped,verified,monthly)):
+        raise ValueError('Readiness coverage exceeds its required-slot denominator.')
+    weights=[policy[k] for k in ('mapping_points','verification_points','period_points','issue_points')]
+    if sum(weights)!=100 or any(w<0 for w in weights) or policy['penalty_per_issue_group']<0:
+        raise ValueError('Readiness weights must be nonnegative and sum to100.')
+    components=[]
+    for label,points,count in zip(('Mapping completeness','Source verification','Reporting-period coverage'),weights,(mapped,verified,monthly)):
+        components.append(dict(Component=label,Maximum=points,Input=f'{count} / {required} slots',
+                               Calculation=f'{points} × {count} / {required}',Points=points*count/required if required else None))
+    points=weights[3];penalty=policy['penalty_per_issue_group']
+    components.append(dict(Component='Known data-issue adjustment',Maximum=points,Input=f'{issues} known issue groups',
+                           Calculation=f'max(0, {points} − {penalty} × {issues})',Points=max(0,points-penalty*issues) if required else None))
+    return (math.floor(math.fsum(c['Points'] for c in components)+.5) if required else None),components
 
 
 def workflow_readiness(companies, model=None):
@@ -130,4 +155,4 @@ def workflow_readiness(companies, model=None):
     mappings=workflow_mappings(companies,model,facts,lineage)
     issues=data_issues(companies,facts,lineage,mappings,model)
     return dict(model=model,mappings=mappings,issues=issues,
-                assessment=readiness(companies,model,mappings,issues),quality=quality)
+                assessment=readiness(companies,model,mappings,issues),quality=quality,facts=facts,lineage=lineage)

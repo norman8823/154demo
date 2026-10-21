@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright,expect
 
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'artifacts/ui-polish/after';OUT.mkdir(parents=True,exist_ok=True)
+OUT=ROOT/'artifacts/product-refinement/responsive';OUT.mkdir(parents=True,exist_ok=True)
 ROUTES={'overview':'overview','foundation':'foundation','issues':'issues','summit':'company&company=summit','tallis':'company&company=tallis','harrow':'company&company=harrow','excel':'excel'}
 receipt={'viewports':[],'external_requests':[],'errors':[]}
 
@@ -31,28 +31,22 @@ def audit(page,label,width):
     assert not over,(label,width,over)
     assert page.locator('.katex').count()==0,(label,'Currency rendered as math')
     if label=='overview':
-        table=page.locator('.gp-holdings')
-        expect(table.locator('thead th')).to_have_count(9)
-        assert table.evaluate('(e)=>e.scrollWidth<=e.clientWidth+1')
+        expect(page.locator('.gp-holdings')).to_have_count(0)
+        expect(page.locator('.v3-card-returns')).to_have_count(3)
         if width>=1280:
-            assert table.locator('thead').evaluate('(e)=>getComputedStyle(e).display')!='none'
             rects=page.locator('[class*="st-key-gp_company_"]').evaluate_all('(es)=>es.map(e=>e.getBoundingClientRect()).map(r=>({width:r.width,height:r.height}))')
             assert max(r['height'] for r in rects)-min(r['height'] for r in rects)<4
         if width<=768:
-            assert table.locator('thead').evaluate('(e)=>getComputedStyle(e).display')=='none'
             cards=page.locator('[class*="st-key-gp_company_"]').evaluate_all('(es)=>es.map(e=>e.getBoundingClientRect().top)')
             assert cards==sorted(cards) and len(set(cards))==3
-        table.screenshot(path=str(OUT/f'holdings-{width}.png'))
-        if width<=768:
-            table.locator('tbody tr').first.screenshot(path=str(OUT/f'holding-card-{width}.png'))
-            page.locator('.st-key-gp_company_summit').screenshot(path=str(OUT/f'operating-card-{width}.png'))
+        page.locator('.st-key-gp_company_summit').screenshot(path=str(OUT/f'operating-card-{width}.png'))
     page.locator('[data-testid="stMain"]').evaluate('(e)=>e.scrollTop=0')
     page.screenshot(path=str(OUT/f'{label}-{width}.png'),full_page=True)
     receipt['viewports'].append({'page':label,'width':width,'document_overflow':False,'nested_vertical_scroll':False,'table_overflow':False})
 
 
 def wheel_check(page,label,width):
-    table=page.locator('.gp-table-wrap').first
+    table=page.locator('.st-key-gp_company_summit') if label=='overview' else page.locator('.gp-table-wrap').first
     table.scroll_into_view_if_needed()
     offset='(e)=>{let n=0;for(let p=e.parentElement;p;p=p.parentElement)n+=p.scrollTop;return n;}'
     before=table.evaluate(offset)
@@ -84,7 +78,7 @@ with sync_playwright() as p:
             if label in ('overview','foundation'):
                 wheel_check(page,label,width)
             if label=='overview':
-                page.locator('.gp-holdings a').first.click()
+                page.locator('.st-key-open_summit button').click()
                 expect(page.get_by_role('heading',name='Summit Home Services',exact=True)).to_be_visible(timeout=60000)
                 assert 'company=summit' in page.url
                 page.goto('http://127.0.0.1:8502/?page=overview');settle(page)
@@ -94,7 +88,7 @@ with sync_playwright() as p:
                 audit(page,label+'-evidence',width)
             if label=='foundation':
                 expect(page.get_by_text('Normalization & transformation',exact=True)).to_be_visible()
-                assert page.locator('.gp-mappings tbody tr').count()==12
+                assert page.locator('.gp-catalog-sources tbody tr').count()==3
                 page.locator('.foundation-detail-grid').screenshot(path=str(OUT/f'mapping-detail-{width}.png'))
                 page.get_by_text('Review Required · Supporting observations lack accepted financial classifications',exact=True).click()
                 settle(page)

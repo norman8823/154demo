@@ -16,6 +16,8 @@ def foundation_package(companies):
 
 def _value(row):
     if row['value'] is None:return 'Missing'
+    if row['metric_id']=='unmapped.source_observation':return f"{row['value']:,.4g} (retained value)"
+    if row['unit']=='ratio':return f"{row['value']:.2%}"
     separator='' if row['currency']=='$' else ' '
     return f"{row['currency']}{separator}{row['value']:,.0f}"
 
@@ -55,50 +57,70 @@ def _render_summary(view):
     coverage=f"{a['coverage']:.0%}" if a['coverage'] is not None else 'Not Evaluated'
     progress=100*a['coverage'] if a['coverage'] is not None else 0
     st.markdown('<div class="foundation-kpis">'
-        '<div class="foundation-kpi"><div class="foundation-kpi-head"><span class="foundation-kpi-value partial">'+escape(a['score_status'])+'</span><span class="foundation-kpi-label">Readiness Score</span></div><div class="foundation-progress partial"></div><div class="foundation-kpi-note">Partial assessment · comprehensive reconciliation untested</div><div class="foundation-kpi-foot">'+str(a['verified_slots'])+' of '+str(a['required_slots'])+' required source observations checked</div></div>'
-        '<div class="foundation-kpi"><div class="foundation-kpi-head"><span class="foundation-kpi-value">'+coverage+'</span><span class="foundation-kpi-label">Mapping Coverage</span></div><div class="foundation-progress"><span style="width:'+str(progress)+'%"></span></div><div class="foundation-kpi-note">'+str(a['monthly_slots'])+' of '+str(a['required_slots'])+' required monthly metric / scenario slots</div><div class="foundation-kpi-foot">'+str(a['mapped_slots'])+'/'+str(a['required_slots'])+' mapped at original source frequency</div></div>'
+        '<div class="foundation-kpi"><div class="foundation-kpi-head"><span class="foundation-kpi-value">'+escape(a['score_status'])+'</span><span class="foundation-kpi-label">Workflow Readiness</span></div><div class="foundation-progress readiness"><span style="width:'+str(a['score'] or 0)+'%"></span></div><div class="foundation-kpi-note">Illustrative workflow assessment.</div><div class="foundation-kpi-foot">Weighted evidence checks · methodology below</div></div>'
+        '<div class="foundation-kpi"><div class="foundation-kpi-head"><span class="foundation-kpi-value">'+coverage+'</span><span class="foundation-kpi-label">Monthly Intake Coverage</span></div><div class="foundation-progress"><span style="width:'+str(progress)+'%"></span></div><div class="foundation-kpi-note">'+str(a['monthly_slots'])+' of '+str(a['required_slots'])+' required monthly metric / scenario slots</div><div class="foundation-kpi-foot">'+str(a['mapped_slots'])+'/'+str(a['required_slots'])+' mapped at original source frequency</div></div>'
         '<div class="foundation-kpi"><div class="foundation-kpi-head"><span class="foundation-kpi-value issues">'+str(a['issue_groups'])+'</span><span class="foundation-kpi-label">Data Issues</span></div><div class="foundation-kpi-note" style="margin-top:9px">Evidence-backed review groups · remain open</div><div class="foundation-kpi-foot">'+str(q['unresolved_mappings'])+' unresolved mapping rows · '+str(q['blank_observations'])+' blanks retained</div></div></div>',unsafe_allow_html=True)
 
 
 def _render_mapping(companies,view):
-    heading,filters=st.columns([1.25,3])
-    with heading:
-        st.subheader('Data Mapping')
-        st.caption('Different company reports → Common financial definitions')
-    with filters:
-        company_filter,metric_filter,scenario_filter,period_filter=st.columns([2,1.2,1,1])
-        selected=company_filter.selectbox('Company',['All companies']+[c.name for c in companies],key='foundation_company')
-        metric=metric_filter.selectbox('Metric',['All metrics']+[m['label'] for m in view['model']['metrics']],key='foundation_metric')
+    from portfolio_catalog import catalog_entries,catalog_detail,GRAINS
+    entries=catalog_entries(view['facts'],view['lineage'],view['model'])
+    index={e['metric_id']:e for e in entries}
+    st.subheader('Data Catalog & Dictionary')
+    st.caption('Data Foundation: the broader reusable asset. Monthly Portfolio Operating Review: one workflow requesting Revenue and Reported EBITDA actual / budget at monthly frequency.')
+    st.markdown('<div class="foundation-flow"><div><strong>Company Inputs</strong><span>Summit · Tallis · Harrow</span>Different reporting packages, worksheets and labels; original extraction evidence retained.</div><div><strong>Standardization &amp; Validation</strong><span>GP dictionary + source mappings</span>Periods, scenarios, units, source checks and unresolved classifications remain explicit.</div><div><strong>Structured Data</strong><span>'+format(len(view['facts']),',')+' normalized observations</span>Versioned CSV / JSON, original provenance and independent downstream reuse.</div></div>',unsafe_allow_html=True)
+    identity=st.selectbox('Data element',list(index),format_func=lambda k:index[k]['label']+' · '+str(index[k]['observations'])+' observations',key='foundation_metric')
+    entry=index[identity]
+    with st.expander('Browse catalog · '+str(len(entries))+' data elements'):
+        responsive_table(pd.DataFrame([{'Data element':e['label'],'Observations':e['observations'],'Accepted automatic mappings':str(e['accepted'])+'/'+str(e['observations']),'Numeric source checks':str(e['verified'])+'/'+str(e['observations'])} for e in entries]),key='foundation_catalog',page_size=10,details=False)
+        st.caption('Retained financial categories include account detail, subtotals and repeated presentations; they must not be summed blindly. Source checking does not establish semantic mapping acceptance.')
+    st.markdown('<div class="foundation-definition"><strong>'+escape(entry['label'])+'</strong><p>'+escape(entry['definition'])+'</p><small>'+escape(entry['metric_id'])+' · '+escape(entry['category'])+'</small></div>',unsafe_allow_html=True)
+    if entry['workflow_definition']:st.caption('GP workflow requirement: '+entry['workflow_definition'])
+    with st.expander('Dictionary conventions and stewardship'):
+        latest='; '.join(GRAINS.get(g,g)+': '+periods[-1] for g,periods in entry['periods'].items())
+        st.markdown(_fields([('Retained units / currency',', '.join(entry['units'])+' / '+', '.join(entry['currencies'])),('Source scaling',', '.join(entry['scales'])+' ×; retained sign adjustments shown in source detail'),('Measurement basis','; '.join(entry['basis'])),('Most recent period by grain',latest),('Data owner',entry['owner']),('Expected delivery / refresh cadence',entry['refresh_cadence']),('Approval authority',entry['approval_authority']),('Source lineage',str(entry['lineage_available'])+'/'+str(entry['observations'])+' records'),('Source packages','; '.join(entry['packages']))]),unsafe_allow_html=True)
+        st.caption('Reporting frequency describes the package; measurement basis describes the observation. Neither establishes a delivery schedule. Original unit tags are retained, including unknowns; unmapped supporting measures have no common approved unit or meaning. No LTM, YTD or annualization is inferred from monthly grain.')
+    sources=[]
+    for company in companies:
+        own=[r for r in entry['rows'] if r['company_id']==company.id]
+        if not own:continue
+        selected=[r for r in own if r['comparison_selected'] and r['scenario']=='actual']
+        labels=sorted({r['source_label'] for r in selected or own})
+        headline=[r for r in view['facts'] if r['company_id']==company.id and r['comparison_selected']]
+        frequency=', '.join(sorted({GRAINS.get(r['period_grain'],r['period_grain']) for r in headline}))
+        bases=sorted({GRAINS.get(r['period_grain'],r['period_grain']) for r in own})
+        sources.append({'Company':company.name,'Reported as':'; '.join(labels),'Reporting conventions':frequency+' package · observations: '+', '.join(bases)})
+    responsive_table(pd.DataFrame(sources),key='foundation_sources',page_size=3,details=False,css_class='gp-catalog-sources')
+    st.caption(f"{entry['observations']} observations · {entry['accepted']} accepted automatic mappings · {entry['verified']} numeric source checks · Human approval: not recorded")
+    with st.expander('Inspect company mapping and source evidence',expanded=True):
+        company_filter,scenario_filter,period_filter=st.columns([2,1,1.4])
+        owners=[c.name for c in companies if any(r['company_id']==c.id for r in entry['rows'])]
+        if st.session_state.get('foundation_company') not in ['All companies']+owners:st.session_state.foundation_company='All companies'
+        selected=company_filter.selectbox('Company',['All companies']+owners,key='foundation_company')
         scenario=scenario_filter.selectbox('Scenario',['All scenarios','actual','budget'],key='foundation_scenario')
-        period=period_filter.selectbox('Period',['All periods']+list(dict.fromkeys(r['period'] for r in view['mappings'])),key='foundation_period')
-    rows=[r for r in view['mappings'] if (selected=='All companies' or r['company_name']==selected) and (scenario=='All scenarios' or r['scenario']==scenario) and (metric=='All metrics' or r['target_label']==metric) and (period=='All periods' or r['period']==period)]
-    # Display all three companies' actuals together, then budgets. The native
-    # table scrolls; all twelve original candidates and filters are retained.
-    rows.sort(key=lambda r:r['scenario']!='actual')
-    table=[{'Company':r['company_name'],'Original Source':r['lineage']['source_reference'],'GP Target Metric':r['target_label'],
-            'Period':r['period']+' · '+r['period_grain'],'Scenario':r['scenario'],
-            'Standardized Value':_value(r),'Status':r['status']} for r in rows]
-    frame=pd.DataFrame(table,columns=['Company','Original Source','GP Target Metric','Period','Scenario','Standardized Value','Status'])
-    responsive_table(frame,key='foundation_records',page_size=12,details=False,css_class='gp-mappings')
-    st.caption(f"{len(rows)} mappings · All filtered records shown · Harrow remains annual; no pooled financial total.")
-    if rows:
-        with st.expander('Inspect a mapping and its source evidence',expanded=True):
+        periods=['All periods']+sorted({r['period'] for r in entry['rows']},reverse=True)
+        if st.session_state.get('foundation_period') not in periods:st.session_state.foundation_period='All periods'
+        period=period_filter.selectbox('Period',periods,key='foundation_period')
+        rows=[r for r in entry['rows'] if (selected=='All companies' or r['company_name']==selected) and (scenario=='All scenarios' or r['scenario']==scenario) and (period=='All periods' or r['period']==period)]
+        rows.sort(key=lambda r:(not r['comparison_selected'],r['scenario']!='actual',next(i for i,c in enumerate(companies) if c.id==r['company_id'])))
+        if not rows:st.info('No source observations match these filters.')
+        else:
             by_id={r['fact_key']:r for r in rows}
-            if st.session_state.get('foundation_mapping') not in by_id:
-                st.session_state.pop('foundation_mapping',None)
-            identity=st.selectbox('Mapping source',list(by_id),format_func=lambda key:by_id[key]['company_name']+' · '+by_id[key]['target_label']+' · '+by_id[key]['scenario']+' · '+by_id[key]['workbook_reference'],key='foundation_mapping',label_visibility='collapsed')
-            _render_detail(by_id[identity])
+            if st.session_state.get('foundation_mapping') not in by_id:st.session_state.foundation_mapping=next(iter(by_id))
+            fact=st.selectbox('Mapping source',list(by_id),format_func=lambda key:by_id[key]['company_name']+' · '+by_id[key]['source_label']+' · '+by_id[key]['period']+' · '+by_id[key]['scenario']+' · '+by_id[key]['workbook_reference'],key='foundation_mapping')
+            _render_detail(catalog_detail(by_id[fact],view['lineage'],view['model']))
 
 
 def _render_detail(row):
     origin=row['lineage'];formula=json.loads(origin['original_formula_json'])
     source=_fields([('Workbook',Path(origin['canonical_workbook']).name),('Worksheet',origin['source_sheet']),('Cell',origin['source_cell']),('Source label',row['source_label']),('Original value',str(row['raw_source_value']))])
     if formula:source+='<div style="margin-top:8px"><code>'+escape(formula)+'</code></div>'
-    transformation=_fields([('GP target',row['target_label']),('Metric ID',row['metric_id']),('Period',row['period']+' · '+row['period_grain']),('Scenario',row['scenario']),('Scale / sign',str(row['source_scale'])+' × '+str(row['sign_adjustment'])),('Unit / currency',row['unit']+' / '+row['currency'])])
+    transformation=_fields([('GP target',row['target_label']),('Metric ID',row['metric_id']),('Period',row['period']+' · '+row['period_grain']),('Measurement basis',row.get('measurement_basis',row['period_grain'])),('Scenario',row['scenario']),('Scale / sign',str(row['source_scale'])+' × '+str(row['sign_adjustment'])),('Unit / currency',row['unit']+' / '+row['currency'])])
     status=_badge('Source checked','checked') if row['verification_status']=='source_observation_verified' else _badge('Source review required')
     mapping=_badge('Auto-mapped','checked') if row['mapping_accepted'] else _badge('Mapping review required')
     output='<div class="foundation-output">'+escape(_value(row))+'</div>'+status+' '+mapping
-    if not row['monthly_scope_matches']:output+=' '+_badge('Period review required')
+    if row['metric_id']=='unmapped.source_observation':output+=' '+_badge('No canonical financial meaning')
+    if not row['monthly_scope_matches']:output+=' '+_badge('Outside monthly workflow scope')
     output+='<div class="foundation-export-copy" style="margin-top:8px">'+escape(row['target_definition'])+'</div>'
     st.markdown('<div class="foundation-detail-grid"><div class="foundation-detail"><h4>Original company input</h4>'+source+'</div><div class="foundation-detail"><h4>Normalization &amp; transformation</h4>'+transformation+'</div><div class="foundation-detail"><h4>GP-standardized output</h4>'+output+'</div></div>',unsafe_allow_html=True)
     st.caption('Entity: '+row['entity_name']+' · Accounting basis: '+row['accounting_basis']+' · Human approval: '+row['human_approval_status'])
@@ -161,8 +183,11 @@ def _render_methodology(view):
     with st.expander('GP data model and assessment methodology'):
         st.caption('JSON configuration · '+model['model_id']+' · version '+model['version']+' · requested '+model['target_period']+' / '+model['period_grain'])
         responsive_table(pd.DataFrame([{'GP target':m['label'],'Stable ID':m['metric_id'],'Required':m['required'],'Scenarios':', '.join(m['scenarios']),'Definition':m['definition']} for m in model['metrics']]),key='foundation_model')
+        components=pd.DataFrame(a['components'])
+        responsive_table(components,key='foundation_score',formatters={'Points':lambda v:f'{v:.2f}' if v is not None else 'Not Evaluated'},details=False)
+        st.caption('Total '+str(a['score'])+'/100 · Sum unrounded component points, then round to the nearest integer (exact halves up).')
         responsive_table(pd.DataFrame(a['checks']),key='foundation_checks')
         literal_prose(a['limitation'])
         st.caption('One slot = company × required metric × scenario. Coverage requires the configured period and frequency, accepted mapping, checked numeric source and required context. Accounting basis is optional; unknowns and original currency labels remain unchanged.')
-        st.caption('Source verification, automatic mapping acceptance and documented human approval are separate. Human mapping approval: not recorded. No total readiness score is awarded for untested capabilities.')
+        st.caption('Source verification, automatic mapping acceptance and documented human approval are separate. Human mapping approval: not recorded. The illustrative weighted score covers only the listed evidence checks; comprehensive reconciliation remains incomplete. Known issues remain visible regardless of score.')
         json_records(model,key='foundation_model_json')

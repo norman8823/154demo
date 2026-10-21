@@ -59,10 +59,12 @@ def test_all_twelve_mappings_reconcile_to_existing_reports_and_original_lineage(
     assert {r['lineage']['source_sheet'] for r in view['mappings']}=={'Income Statement','Practice P&L','P&L Summary'}
 
 
-def test_readiness_is_reproducible_partial_and_does_not_assert_unperformed_checks(view):
+def test_readiness_is_reproducible_illustrative_and_keeps_untested_checks_explicit(view):
     a=view['assessment']
     assert a==workflow_readiness(load_companies())['assessment']
-    assert a['score'] is None and a['score_status']=='Not Evaluated'
+    assert a['score']==76 and a['score_status']=='76/100'
+    assert [c['Maximum'] for c in a['components']]==[25,25,35,15]
+    assert [c['Points'] for c in a['components']]==pytest.approx([25,25,35*8/12,3])
     assert (a['mapped_slots'],a['verified_slots'],a['monthly_slots'],a['required_slots'])==(12,12,8,12)
     assert a['coverage']==pytest.approx(2/3)
     assert a['issue_groups']==4
@@ -123,14 +125,12 @@ def test_mapping_filters_detail_state_and_original_finding_navigation():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60)
     at.query_params['page']='foundation';at.run()
     assert not at.exception
+    at.selectbox(key='foundation_metric').set_value('financial.ebitda').run()
     at.selectbox(key='foundation_company').set_value('Harrow Ridge Environmental').run()
-    at.selectbox(key='foundation_metric').set_value('Reported EBITDA').run()
     at.selectbox(key='foundation_scenario').set_value('budget').run()
     assert not at.exception
-    from html import unescape
-    table=unescape(next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value))
-    assert table.count('<tr>')==2 and '$10,895,000' in table
-    for value in ('2026-FY · annual','budget','Period review required'):assert value in table
+    html='\n'.join(m.value for m in at.markdown)
+    assert '$10,895,000' in html and 'Outside monthly workflow scope' in html
     assert "'P&L Summary'!G34" in at.selectbox(key='foundation_mapping').options[0]
     at.selectbox(key='foundation_company').set_value('Tallis Brook Accounting').run()
     assert not at.exception
@@ -138,7 +138,7 @@ def test_mapping_filters_detail_state_and_original_finding_navigation():
     assert any('Entity: TALLIS BROOK ACCOUNTING GROUP' in c.value for c in at.caption)
     at.selectbox(key='foundation_period').set_value('2026-FY').run()
     assert not at.exception
-    assert any('No records match' in m.value for m in at.markdown)
+    assert any('No source observations match' in i.value for i in at.info)
     at.button(key='foundation_issue_summit:finding:10004').click().run()
     assert not at.exception
     assert at.query_params['company']=='summit' and at.query_params['finding']=='10004'

@@ -9,7 +9,7 @@ from portfolio_ui import shell, overview, footer, render_watchlist, page_heading
 from portfolio_excel import export_portfolio, SHEETS, OVERVIEW_HEAD, reference_records
 from portfolio_watchlist import watchlist
 
-st.set_page_config(page_title='Portfolio Intelligence · GP', page_icon='▣', layout='wide', initial_sidebar_state='auto')
+st.set_page_config(page_title='Portfolio Reporting Copilot | 154 Partners', page_icon='▣', layout='wide', initial_sidebar_state='auto')
 
 
 @st.cache_data(show_spinner=False)

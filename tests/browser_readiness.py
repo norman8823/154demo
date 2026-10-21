@@ -32,10 +32,10 @@ with sync_playwright() as p:
     page.route('**/*',route_local)
     page.goto('http://127.0.0.1:8502/?page=foundation')
     expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
-    for heading in ['Data Mapping','Data Issues','Structured Data Export']:
+    for heading in ['Data Catalog & Dictionary','Data Issues','Structured Data Export']:
         expect(page.get_by_role('heading',name=heading,exact=True)).to_be_visible()
     expect(page.get_by_text('67%',exact=True)).to_be_visible()
-    expect(page.get_by_text('Not Evaluated',exact=True)).to_be_visible()
+    expect(page.get_by_text('76/100',exact=True)).to_be_visible()
     check(page)
     page.wait_for_timeout(450)  # Native dataframe canvas paints after script completion.
     page.screenshot(path=str(OUT/'ai-workflow-readiness-desktop.png'),full_page=True)
@@ -47,7 +47,7 @@ with sync_playwright() as p:
     assert page.locator('.foundation-detail').count()==3
     page.wait_for_timeout(350)
     page.screenshot(path=str(OUT/'ai-workflow-readiness-source-details.png'),full_page=True)
-    page.get_by_text('Inspect a mapping and its source evidence',exact=True).click()
+    page.get_by_text('Inspect company mapping and source evidence',exact=True).click()
     page.get_by_text('Review Required · Branch and consolidated EBITDA schedules do not reconcile · $47,000',exact=True).click()
     expect(page.get_by_text('The unresolved schedule difference is $47,000.',exact=False)).to_be_visible()
     check(page)

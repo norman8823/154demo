@@ -12,7 +12,7 @@ from openpyxl import load_workbook
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = Path(os.environ.get('COPILOT_GP_ARTIFACT_DIR', ROOT / 'artifacts/gp-v3'))
+OUT = Path(os.environ.get('COPILOT_GP_ARTIFACT_DIR', ROOT / 'artifacts/gp-v3')).resolve()
 OUT.mkdir(parents=True, exist_ok=True)
 URL = os.environ.get('COPILOT_GP_TEST_URL', 'http://127.0.0.1:8502')
 assert urlparse(URL).hostname in ('127.0.0.1', 'localhost')
@@ -46,11 +46,7 @@ with sync_playwright() as p:
     page.screenshot(path=str(OUT/'overview-final.png'), full_page=True)
     expect(page.get_by_text('$82.00M',exact=True)).to_be_visible()
     expect(page.get_by_text('10.95%',exact=True)).to_be_visible()
-    page.get_by_text('Illustrative investment values and valuation context',exact=True).click()
-    page.wait_for_timeout(300)
-    check(page)
-    page.screenshot(path=str(OUT/'overview-investment-chart.png'),full_page=True)
-    page.get_by_text('Illustrative investment values and valuation context',exact=True).click()
+    expect(page.get_by_text('Illustrative investment values and valuation context',exact=True)).to_have_count(0)
     with page.expect_download() as downloaded:
         page.get_by_role('button', name='↓ Download Portfolio Excel', exact=True).click()
     path = OUT/'portfolio-browser.xlsx'

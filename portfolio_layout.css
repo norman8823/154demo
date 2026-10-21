@@ -111,3 +111,19 @@ div[class*="st-key-gp_company_"]:has(.v2-company-head) [data-testid="stVerticalB
  [data-testid="stMetricValue"] {font-size:25px;}.prose {font-size:14px;}
  .gp-table td {font-size:13px;}
 }
+/* Final refinement: reuse the approved surfaces and spacing. */
+.gp-brand {font-size:21px;}.gp-brand .gp-product {display:block;font-size:14px;line-height:1.4;margin:6px 0 8px;font-weight:600;}.gp-brand small {display:block;font-size:10px;line-height:1.5;}
+.v3-card-returns {display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;border-top:1px solid #e2e9ef;padding-top:10px;margin:4px 0 6px;}
+.v3-card-returns small {font-size:10px;color:#6a8194;display:block;}.v3-card-returns b {font-size:18px;}.v3-card-returns>span {grid-column:1/-1;font-size:10px;color:#708498;}
+.holdings-head,.holdings-row {display:grid;grid-template-columns:minmax(180px,2.3fr) repeat(4,minmax(0,1fr));gap:12px;align-items:center;font-size:13px;}
+.holdings-head {margin-left:48px;background:#f2f6fa;padding:10px;color:#35556e;font-size:12px;font-weight:600;}
+.holdings-row {padding:8px 10px;min-height:42px;}.holdings-row small {display:none;}.holdings-row a {color:#234f79;font-weight:600;text-decoration:none;}.holdings-row a:hover {text-decoration:underline;}
+.st-key-adaptive_holdings [class*="st-key-holding_row_"] {border-bottom:1px solid #e4ebf1;}.st-key-adaptive_holdings [class*="st-key-holding_row_"] [data-testid="stHorizontalBlock"] {align-items:center;}
+.st-key-adaptive_holdings [class*="st-key-holding_row_"] [data-testid="stCheckbox"] {min-width:30px;}
+@media(max-width:1000px){.holdings-head {display:none;}.holdings-row {grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;font-size:12px;padding:8px 2px;}.holdings-row>div:first-child {grid-column:1/-1;font-size:13px;}.holdings-row small {display:block;font-size:9px;line-height:1.5;color:#60778a;}.st-key-adaptive_holdings [class*="st-key-holding_row_"] [data-testid="stHorizontalBlock"] {flex-direction:row!important;gap:8px;}.st-key-adaptive_holdings [class*="st-key-holding_row_"] [data-testid="stColumn"]:first-child {width:30px!important;flex:0 0 30px!important;}.st-key-adaptive_holdings [class*="st-key-holding_row_"] [data-testid="stColumn"]:last-child {width:auto!important;flex:1 1 0!important;}}
+
+.st-key-mobile_access {margin-top:16px;border-top:1px solid #345265;padding-top:14px;}
+@media(max-width:900px){.st-key-mobile_access {display:none;}}
+
+.st-key-adaptive_holdings [data-testid="stCheckbox"] label {min-width:36px;min-height:44px;justify-content:center;}
+@media(max-width:1000px){.st-key-adaptive_holdings [class*="st-key-holding_row_"] [data-testid="stColumn"]:first-child {width:40px!important;flex:0 0 40px!important;}}

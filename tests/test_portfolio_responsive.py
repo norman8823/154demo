@@ -32,30 +32,26 @@ def test_table_escapes_source_content_and_reveals_original_details_without_scrol
     assert 'data-label="Value"' in html
 
 
-def test_legacy_comparison_route_redirects_and_holdings_show_only_requested_columns():
+def test_legacy_comparison_route_redirects_to_adaptive_cards_without_duplicate_table():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60)
     at.query_params['page']='comparison';at.run()
     assert not at.exception and at.query_params['page']=='overview'
     assert not any(b.label=='Company Comparison' for b in at.button)
-    html=unescape(next(m.value for m in at.markdown if 'gp-holdings' in m.value and '<table' in m.value))
-    for label in ('Reporting period','EBITDA vs budget','EBITDA budget','Investment valuation date'):
-        assert '<th scope="col">'+label+'</th>' not in html
-    assert '<th scope="col">Revenue</th>' not in html
-    assert html.count('<th scope="col">')==9 and html.count('<tr>')==4
+    html='\n'.join(m.value for m in at.markdown if not m.value.startswith('<style>'))
+    assert 'gp-holdings' not in html and 'holdings-head' not in html
+    assert html.count('v3-card-returns')==3
     for row in operating_rows(load_companies()):
         assert row['Company'] in html
         assert f'{row["Gross MOIC (illustrative)"]:.2f}x' in html
-    at.selectbox(key='holdings_sort').set_value('Gross MOIC (illustrative)').run()
-    html=unescape(next(m.value for m in at.markdown if 'gp-holdings' in m.value and '<table' in m.value))
-    assert html.index('Tallis Brook Accounting')<html.index('Harrow Ridge Environmental')<html.index('Summit Home Services')
 
 
-def test_large_mapping_issue_pages_without_dataframe_and_all_twelve_mappings_are_visible():
+def test_large_issue_pages_without_dataframe_and_catalog_is_compact():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60)
     at.query_params['page']='foundation';at.run()
     assert not at.exception and not at.dataframe
-    html=next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value)
-    assert html.count('<tr>')==13
+    html=next(m.value for m in at.markdown if 'gp-catalog-sources' in m.value and '<table' in m.value)
+    assert html.count('<tr>')==4
+    assert len(at.selectbox(key='foundation_metric').options)==10
     page=at.selectbox(key='issue_records_tallis:unresolved_page')
     assert len(page.options)==21
     page.set_value(21).run()

@@ -20,7 +20,8 @@ def test_company_selector_updates_all_data_and_clears_finding_and_export_state()
         book=load_workbook(io.BytesIO(at.session_state['export'][0]))
         assert any(row[1] == revenue for row in book['Financial Performance'].values)
         assert 'Partner Review' not in book.sheetnames
-    at.selectbox(key='gp_sidebar_company').set_value('tallis').run()
+    assert not any(s.key=='gp_sidebar_company' for s in at.selectbox)
+    at.selectbox(key='gp_company_selector').set_value('tallis').run()
     assert not at.exception
     assert at.title[0].value == 'Tallis Brook Accounting'
 

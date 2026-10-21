@@ -136,16 +136,13 @@ def test_data_foundation_page_exposes_approval_distinctions_and_real_preview():
     at.button(key='nav_foundation').click().run()
     assert not at.exception
     assert at.title[0].value=='AI Workflow Automation Readiness'
-    table=next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value)
-    assert table.count('<tr>')==13
-    assert 'Revenue' in table and 'Reported EBITDA' in table
+    table=next(m.value for m in at.markdown if 'gp-catalog-sources' in m.value and '<table' in m.value)
+    assert table.count('<tr>')==4
+    assert len(at.selectbox(key='foundation_metric').options)==10
     assert any('Human approval: not_recorded' in c.value for c in at.caption)
     at.selectbox(key='foundation_company').set_value('Tallis Brook Accounting').run()
     assert not at.exception
-    table=next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value)
-    assert table.count('<tr>')==5
-    assert 'Tallis Brook Accounting' in table and 'Harrow Ridge Environmental' not in table
+    assert all('Tallis Brook Accounting' in o for o in at.selectbox(key='foundation_mapping').options)
     at.selectbox(key='foundation_scenario').set_value('budget').run()
     assert not at.exception
-    assert next(m.value for m in at.markdown if 'gp-mappings' in m.value and '<table' in m.value).count('<tr>')==3
     assert any('204 unresolved mapping rows' in c.value for c in at.caption)
