@@ -1,5 +1,6 @@
 """Public release boundaries for prepared-only portfolio presentation."""
 from copy import deepcopy
+import ast
 import io
 import pytest
 from openpyxl import load_workbook
@@ -13,6 +14,19 @@ COMPANIES = {
     'tallis': ('Tallis Brook Accounting', 'Tallis_Brook_Accounting_Sep2026_MonthlyReview.xlsx'),
     'harrow': ('Harrow Ridge Environmental', 'Harrow_Ridge_Environmental_FY2026_AnnualReview.xlsx'),
 }
+
+
+def test_gp_workbook_is_only_retrieved_for_pages_with_a_gp_download():
+    app = ast.parse((ROOT/'portfolio_app.py').read_text())
+    calls = [node for node in ast.walk(app)
+             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+             and node.func.id == 'gp_workbook']
+    guards = [node for node in app.body if isinstance(node, ast.If)
+              and isinstance(node.test, ast.Compare)
+              and ast.unparse(node.test) == "page in {'overview', 'issues'}"]
+    assert len(calls) == 1
+    assert len(guards) == 1
+    assert calls[0] in ast.walk(guards[0])
 
 
 @pytest.mark.parametrize(('slug', 'details'), COMPANIES.items())

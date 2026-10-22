@@ -32,11 +32,13 @@ if page == 'comparison':
     page = 'overview'
     st.query_params.from_dict({'page':'overview'})
 shell(page, companies)
-try:
-    workbook_data = gp_workbook(companies)
-except (InputError,OSError,ValueError) as exc:
-    st.error('GP Excel source verification failed. Restore the canonical prepared sources before downloading. '+str(exc))
-    st.stop()
+workbook_data = None
+if page in {'overview', 'issues'}:
+    try:
+        workbook_data = gp_workbook(companies)
+    except (InputError, OSError, ValueError) as exc:
+        st.error('GP Excel source verification failed. Restore the canonical prepared sources before downloading. '+str(exc))
+        st.stop()
 if page == 'foundation':
     from portfolio_foundation_ui import render_foundation
     try:
