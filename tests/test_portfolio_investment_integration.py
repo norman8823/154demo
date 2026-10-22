@@ -14,7 +14,7 @@ def test_ledger_dashboard_holdings_comparison_and_workbook_reconcile():
     rows=operating_rows(companies);matrix=comparison_matrix(companies)
     book=load_workbook(io.BytesIO(export_portfolio(companies)));ledger=book['Investment Ledger']
     assert len(book.sheetnames)==35
-    assert len(book['Portfolio Overview']._charts)==3
+    assert len(book['Portfolio Overview']._charts)==0
     assert 'SYNTHETIC ILLUSTRATIVE' in ledger['A2'].value
     assert 'not a live financial model' in ledger['A3'].value
     for row,(company,i,holding) in enumerate(zip(companies,investments,rows),6):
@@ -26,7 +26,7 @@ def test_ledger_dashboard_holdings_comparison_and_workbook_reconcile():
         assert matrix[-1][company.name]==f'{result["gross_irr"]:.2%}'
         assert [ledger.cell(row,col).value for col in (2,3,4,5,6)]==[result[k] for k in ('invested_capital','realized_proceeds','current_equity_value','total_value','gross_moic')]
         assert ledger.cell(row,7).value==pytest.approx(result['gross_irr'])
-        assert book['Portfolio Overview'].cell(row+45,4).value==result['current_equity_value']
+        assert book['Portfolio Overview'].cell(row+9,5).value==result['current_equity_value']
         col=row-3
         assert book['Company Comparison'].cell(24,col).value==result['invested_capital']
         assert book['Company Comparison'].cell(25,col).value==result['current_equity_value']

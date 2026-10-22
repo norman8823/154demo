@@ -7,6 +7,8 @@ from portfolio_data import load_companies
 from portfolio_excel import export_portfolio, SHEETS, COMPANY_SHEETS, OVERVIEW_HEAD
 from portfolio_comparison import comparison
 from portfolio_watchlist import watchlist
+from portfolio_gp_presentation import HOLDINGS_HEAD
+from portfolio_investments import investments_for, investment_summary
 
 
 @pytest.fixture(scope='module')
@@ -19,17 +21,16 @@ def test_workbook_dashboard_matrix_company_sheets_and_output_reconcile(exported)
     companies,book=exported
     assert tuple(book.sheetnames[:len(SHEETS)])==SHEETS
     ws=book['Portfolio Overview']
-    assert [ws.cell(6,c).value for c in (1,4,7,10)]==['3 / 3','3 / 3',17,6]
-    assert len(ws._charts)==3
-    assert all(c.y_axis.scaling.min==0 for c in ws._charts)
+    total=investment_summary(investments_for(companies))
+    assert [ws.cell(6,c).value for c in (1,4,7,10)]==pytest.approx([total[k] for k in ('current_equity_value','gross_moic','gross_irr','invested_capital')])
+    assert len(ws._charts)==0  # Executive memo replaces redundant operating charts.
     for index,c in enumerate(companies):
-        v=comparison(c);row=OVERVIEW_HEAD+1+index
+        v=comparison(c);row=HOLDINGS_HEAD+1+index
+        result=investment_summary(investments_for([c]))
         assert ws.cell(row,1).value==c.name
-        assert ws.cell(row,2).value==v['period_label']
-        assert ws.cell(row,3).value==v['revenue'].actual
-        assert ws.cell(row,4).value==v['ebitda'].actual
-        assert ws.cell(row,7).value==pytest.approx(v['ebitda'].variance_pct)
-        assert ws.cell(row,8).value==pytest.approx(v['margin'].actual)
+        assert ws.cell(row,5).value==result['current_equity_value']
+        assert ws.cell(row,7).value==result['gross_moic']
+        assert ws.cell(row,9).value==pytest.approx(result['gross_irr'])
         matrix=book['Company Comparison'];col=3+index
         assert matrix.cell(5,col).value==c.name
         assert matrix.cell(6,col).value==v['period_label']
@@ -43,10 +44,10 @@ def test_workbook_dashboard_matrix_company_sheets_and_output_reconcile(exported)
         assert output.cell(start,4).value==v['revenue'].actual
         assert output.cell(start+1,4).value==v['ebitda'].actual
         assert output.cell(start+2,4).value==pytest.approx(v['margin'].actual)
-    assert 'No combined revenue' in ws['A9'].value
+    assert 'no consolidated revenue or EBITDA' in ws['A11'].value
     for name in SHEETS:
         sheet=book[name]
-        assert sheet.freeze_panes and (sheet.auto_filter.ref or name=='Portfolio Financial Performance') and sheet.print_area
+        assert sheet.freeze_panes and (sheet.auto_filter.ref or name in ('Portfolio Overview','Portfolio Financial Performance')) and sheet.print_area
         assert not sheet.sheet_view.showGridLines
 
 
@@ -81,4 +82,4 @@ def test_original_findings_are_grouped_lossless_and_all_internal_links_resolve(e
 def test_source_text_cannot_become_an_excel_formula():
     companies=list(load_companies());companies[0]=replace(companies[0],name='=HYPERLINK("https://invalid","test")')
     book=load_workbook(io.BytesIO(export_portfolio(companies)))
-    assert book['Portfolio Overview'].cell(OVERVIEW_HEAD+1,1).data_type=='s'
+    assert book['Portfolio Overview'].cell(HOLDINGS_HEAD+1,1).data_type=='s'

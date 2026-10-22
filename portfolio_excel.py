@@ -323,6 +323,8 @@ def export_portfolio(companies):
         if ws.title!='Portfolio Overview':
             ws.print_area=f'A1:{ws.cell(ws.max_row,ws.max_column).coordinate}';ws.print_title_rows='1:5'
         if ws.title!='Portfolio Overview':link(literal(ws,4,1,'← Portfolio Overview'),'Portfolio Overview',1)
+    from portfolio_gp_presentation import polish_gp_workbook
+    polish_gp_workbook(wb, companies)
     stream=io.BytesIO();wb.save(stream);data=stream.getvalue()
     check=load_workbook(io.BytesIO(data))
     if any(cell.data_type in ('e','f') for ws in check for row in ws for cell in row):raise ValueError('GP workbook contains an unsafe formula or error.')

@@ -32,12 +32,10 @@ render_company_summary(load_companies()[{index}])
 def test_requested_id_columns_absent_other_columns_and_evidence_retained():
  companies=load_companies();book=load_workbook(io.BytesIO(export_portfolio(companies)))
  sheet=book['Portfolio Overview']
- assert [sheet.cell(28,c).value for c in range(1,12)]==['Company','Reporting period','Revenue','Reported EBITDA','EBITDA budget','EBITDA variance','EBITDA vs budget','EBITDA margin','Issues','Act now','Company review']
- assert [sheet.cell(42,c).value for c in range(1,5)]==['Company','Actual','Budget','Reporting period']
- assert sheet.auto_filter.ref=='A28:K31'
+ assert [sheet.cell(14,c).value for c in (1,5,7,9,11)]==['Company','Current Equity','Gross MOIC','Gross IRR','Position']
  for row in sheet:
   assert not any(str(c.value).lower() in ('source ids','source id','fact ids','fact id') for c in row)
- assert len(sheet._charts)==3
+ assert len(sheet._charts)==0
  for c in companies:
   company=load_workbook(io.BytesIO(export_company_report(c.review)[0]))
   assert company['Financial Performance'].max_column==4
