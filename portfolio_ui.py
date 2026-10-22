@@ -31,14 +31,14 @@ def shell(page, companies):
         st.markdown('<div class="gp-brand">154 Partners<span class="gp-product">Portfolio Reporting Copilot</span><small>by NL Intelligence</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
         with st.container(key='workspace_navigation'):
-            for label, destination in [('Portfolio Overview', 'overview'), ('Investment Detail', 'company'), ('Data Landscape','foundation'), ('Documents & Reports', 'excel')]:
+            for label, destination in [('Portfolio Overview', 'overview'), ('Investment Detail', 'company'), ('Data Landscape','foundation'), ('Source Documents', 'excel')]:
                 st.button(label, key='nav_watchlist' if destination == 'issues' else 'nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
                           on_click=navigate, args=(destination, st.query_params.get('company', companies[0].id)) if destination == 'company' else (destination,))
         with st.container(key='sidebar_footer'):
             from portfolio_mobile import mobile_panel
             mobile_panel()
             st.markdown('<div class="sidebar-demo">Product Demo · Synthetic Data</div>',unsafe_allow_html=True)
-    names = {'overview': 'Overview', 'foundation':'Data Landscape', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Investment Detail', 'excel': 'Documents & Reports'}
+    names = {'overview': 'Overview', 'foundation':'Data Landscape', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Investment Detail', 'excel': 'Source Documents'}
     st.markdown('<div class="gp-breadcrumb">Portfolio / '+names.get(page, 'Overview')+'<span class="gp-tag">Product Demo · Synthetic Data</span></div>', unsafe_allow_html=True)
 
 
@@ -95,7 +95,7 @@ def overview(companies, workbook_data=None):
     with st.expander('Reporting periods & comparability'):
         literal_prose(COMPARABILITY)
     if workbook_data:
-        generated_excel_download('Download Portfolio Excel',workbook_data,
+        generated_excel_download('Download Excel',workbook_data,
             'GP_Portfolio_Review_Sep2026_FY2026.xlsx','gp_download')
 
 

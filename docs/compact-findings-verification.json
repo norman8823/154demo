@@ -1,0 +1,478 @@
+{
+  "harmony_task": 57,
+  "base": "1f0ff12a7fc82167ee1a4bb8da6182ba34770f3e",
+  "branch": "feat/ai-workflow-readiness",
+  "scope": "Compact finding presentation plus final source-document navigation and generated-download labels only. Frozen engine, prepared reviews, original workbooks, numerical calculations, source viewer implementation, report exporters and data package unchanged.",
+  "finding_contract": {
+    "takeaway": "Exact original approved conclusion, retaining its qualifications; no generated summary.",
+    "full_analysis": "Exact accepted finding text via existing present() projection.",
+    "impact": "Existing card_metric() presentation, unchanged.",
+    "default": "First finding expanded on normal entry; a valid finding deep link opens its target. Others initially collapsed.",
+    "toolbar": [
+      "Read Full Analysis",
+      "Follow Up",
+      "View in Source"
+    ],
+    "followup": "Original proposed action and management question, unchanged.",
+    "technical_notices": "Optional Evidence details, original unsupported-source-location notice; source target unchanged.",
+    "state": "Company-specific view keys, reset on company/finding route change.",
+    "mobile": "Existing simplified assessment renderer unchanged."
+  },
+  "navigation": {
+    "source_page_title": "Source Documents",
+    "legacy_source_route": "?page=excel",
+    "source_page_contents": "Three hash-verified originals with Preview and Download Original; no Generated Reports section or generated report selectors.",
+    "report_button_label": "Download Excel",
+    "report_locations": [
+      "Bottom of Portfolio Overview",
+      "Bottom of Investment Detail, with existing standard/custom format choices"
+    ],
+    "generated_mobile_controls": "Hidden"
+  },
+  "tests": {
+    "focused": "34 passed in121.29s before toolbar key-style correction; all included in the subsequent regression run.",
+    "final_portfolio_regression": "127 passed in240.21s"
+  },
+  "actual_chrome": {
+    "desktop": [
+      {
+        "company": "summit",
+        "first_default_expanded": true,
+        "others_default_collapsed": true,
+        "original_text_takeaway_actions": true,
+        "toolbar_horizontal_beneath_content": true,
+        "optional_evidence_details": true,
+        "no_overflow": true
+      },
+      {
+        "company": "tallis",
+        "first_default_expanded": true,
+        "others_default_collapsed": true,
+        "original_text_takeaway_actions": true,
+        "toolbar_horizontal_beneath_content": true,
+        "optional_evidence_details": true,
+        "no_overflow": true
+      },
+      {
+        "company": "harrow",
+        "first_default_expanded": true,
+        "others_default_collapsed": true,
+        "original_text_takeaway_actions": true,
+        "toolbar_horizontal_beneath_content": true,
+        "optional_evidence_details": true,
+        "no_overflow": true
+      }
+    ],
+    "phone": [
+      {
+        "company": "summit",
+        "width": 390,
+        "simplified_original_assessment": true,
+        "desktop_actions_hidden": true,
+        "no_overflow": true
+      },
+      {
+        "company": "tallis",
+        "width": 390,
+        "simplified_original_assessment": true,
+        "desktop_actions_hidden": true,
+        "no_overflow": true
+      },
+      {
+        "company": "harrow",
+        "width": 390,
+        "simplified_original_assessment": true,
+        "desktop_actions_hidden": true,
+        "no_overflow": true
+      },
+      {
+        "company": "summit",
+        "width": 430,
+        "simplified_original_assessment": true,
+        "desktop_actions_hidden": true,
+        "no_overflow": true
+      },
+      {
+        "company": "tallis",
+        "width": 430,
+        "simplified_original_assessment": true,
+        "desktop_actions_hidden": true,
+        "no_overflow": true
+      },
+      {
+        "company": "harrow",
+        "width": 430,
+        "simplified_original_assessment": true,
+        "desktop_actions_hidden": true,
+        "no_overflow": true
+      }
+    ],
+    "source_targets": [
+      {
+        "company": "summit",
+        "finding": 10000,
+        "sheet": "Income Statement",
+        "cell": "K44"
+      },
+      {
+        "company": "summit",
+        "finding": 10001,
+        "sheet": "AR Aging & Recon",
+        "cell": "F7"
+      },
+      {
+        "company": "summit",
+        "finding": 10002,
+        "sheet": "Operating Metrics",
+        "cell": "K24"
+      },
+      {
+        "company": "summit",
+        "finding": 10003,
+        "sheet": "Branch Results",
+        "cell": "I13"
+      },
+      {
+        "company": "summit",
+        "finding": 10004,
+        "sheet": "Branch Results",
+        "cell": "L19"
+      },
+      {
+        "company": "tallis",
+        "finding": 10000,
+        "sheet": "Monthly Trend",
+        "cell": "K40"
+      },
+      {
+        "company": "tallis",
+        "finding": 10001,
+        "sheet": "Adjusted EBITDA",
+        "cell": "B17"
+      },
+      {
+        "company": "tallis",
+        "finding": 10002,
+        "sheet": "WIP AR Realization",
+        "cell": "D9"
+      },
+      {
+        "company": "tallis",
+        "finding": 10003,
+        "sheet": "Client Book",
+        "cell": "F7"
+      },
+      {
+        "company": "tallis",
+        "finding": 10004,
+        "sheet": "Monthly Trend",
+        "cell": "K12"
+      },
+      {
+        "company": "harrow",
+        "finding": 10000,
+        "sheet": "P&L Summary",
+        "cell": "F13"
+      },
+      {
+        "company": "harrow",
+        "finding": 10001,
+        "sheet": "Cash Flow & Capex",
+        "cell": "F12"
+      },
+      {
+        "company": "harrow",
+        "finding": 10002,
+        "sheet": "Fleet Register",
+        "cell": "G8"
+      },
+      {
+        "company": "harrow",
+        "finding": 10003,
+        "sheet": "Customers & Contracts",
+        "cell": "D7"
+      },
+      {
+        "company": "harrow",
+        "finding": 10004,
+        "sheet": "Adjusted EBITDA",
+        "cell": "B7"
+      },
+      {
+        "company": "harrow",
+        "finding": 10005,
+        "sheet": "Operating KPIs",
+        "cell": "N15"
+      },
+      {
+        "company": "harrow",
+        "finding": 10006,
+        "sheet": "Operating KPIs",
+        "cell": "F12"
+      }
+    ],
+    "original_downloads": [
+      {
+        "company": "summit",
+        "byte_identical": true,
+        "sha256": "52c66cf2c5b95fbfd68b4cbafcffd2d1c1fd4877cbc16a8fec75ff4eb90cbaf0"
+      },
+      {
+        "company": "tallis",
+        "byte_identical": true,
+        "sha256": "197be0d0e0a34273206d61c47df3f63fbb22fca468a2d9c4fc497d030c49cd9b"
+      },
+      {
+        "company": "harrow",
+        "byte_identical": true,
+        "sha256": "bdd9c427e57f4c55fa4a135a0126bd25f5fbdae5781b7c192067bbb937788efb"
+      }
+    ],
+    "errors": [],
+    "external_requests": []
+  },
+  "report_download_journey": {
+    "companies": {
+      "summit": {
+        "summary": "pass",
+        "evidence": "pass",
+        "return": "pass",
+        "downloads": {
+          "standard": 184979,
+          "custom": 191104
+        }
+      },
+      "tallis": {
+        "summary": "pass",
+        "evidence": "pass",
+        "return": "pass",
+        "downloads": {
+          "standard": 130100,
+          "custom": 135950
+        }
+      },
+      "harrow": {
+        "summary": "pass",
+        "evidence": "pass",
+        "return": "pass",
+        "downloads": {
+          "standard": 198532,
+          "custom": 204347
+        }
+      }
+    },
+    "external_requests": [],
+    "browser_errors": [],
+    "downloaded_issue_chains": [
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_51",
+        "destination": "Source References!A368"
+      },
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_9",
+        "destination": "Source References!A442"
+      },
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_18",
+        "destination": "Source References!A486"
+      },
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_7",
+        "destination": "Source References!A536"
+      },
+      {
+        "company": "Summit Home Services",
+        "source_id": "calc_6",
+        "destination": "Source References!A561"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "s4_K40",
+        "destination": "TBA 04 Monthly Trend!K40"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "s7_D9",
+        "destination": "TBA 07 WIP AR Realization!D9"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "s5_B17",
+        "destination": "TBA 05 Adjusted EBITDA!B17"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "s8_F7",
+        "destination": "TBA 08 Client Book!F7"
+      },
+      {
+        "company": "Tallis Brook Accounting",
+        "source_id": "calc_2",
+        "destination": "Source References!A725"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_10",
+        "destination": "Source References!A763"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_18",
+        "destination": "Source References!A805"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_2",
+        "destination": "Source References!A837"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_19",
+        "destination": "Source References!A869"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_8",
+        "destination": "Source References!A893"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_26",
+        "destination": "Source References!A924"
+      },
+      {
+        "company": "Harrow Ridge Environmental",
+        "source_id": "calc_22",
+        "destination": "Source References!A945"
+      }
+    ],
+    "portfolio_download": {
+      "bytes": 324401,
+      "sheets": [
+        "Portfolio Overview",
+        "Company Comparison",
+        "Investment Issues",
+        "Summit Home Services",
+        "Tallis Brook Accounting",
+        "Harrow Ridge Environmental",
+        "Source References",
+        "Source Snapshots",
+        "Reporting Output",
+        "Investment Ledger",
+        "Portfolio Financial Performance",
+        "SHS 01 CFO Commentary",
+        "SHS 02 Income Statement",
+        "SHS 03 Branch Results",
+        "SHS 04 Operating Metrics",
+        "SHS 05 AR Aging & Recon",
+        "SHS 06 Monthly Detail",
+        "TBA 01 MP Letter",
+        "TBA 02 Dashboard",
+        "TBA 03 Practice P&L",
+        "TBA 04 Monthly Trend",
+        "TBA 05 Adjusted EBITDA",
+        "TBA 06 People & Utilization",
+        "TBA 07 WIP AR Realization",
+        "TBA 08 Client Book",
+        "HRE 01 Management Discussion",
+        "HRE 02 P&L Summary",
+        "HRE 03 Monthly P&L",
+        "HRE 04 Cash Flow & Capex",
+        "HRE 05 Balance Sheet",
+        "HRE 06 Segment Results",
+        "HRE 07 Operating KPIs",
+        "HRE 08 Fleet Register",
+        "HRE 09 Customers & Contracts",
+        "HRE 10 Adjusted EBITDA"
+      ]
+    },
+    "company_selector_switching": "pass",
+    "deep_link_summary_evidence_regression": "pass",
+    "data_package_download": {
+      "bytes": 60627,
+      "standalone_consumer": "pass",
+      "company_comparisons": 3
+    },
+    "mobile_no_overflow": "pass"
+  },
+  "actual_export_reconciliation": {
+    "baseline": "Validated exports preserved through1f0ff12",
+    "actual_downloads": [
+      {
+        "actual_browser_download": "harrow-custom.xlsx",
+        "unchanged_cells": 25147,
+        "chart_xml_unchanged": true
+      },
+      {
+        "actual_browser_download": "harrow-standard.xlsx",
+        "unchanged_cells": 24707,
+        "chart_xml_unchanged": true
+      },
+      {
+        "actual_browser_download": "portfolio-browser.xlsx",
+        "unchanged_cells": 31330,
+        "chart_xml_unchanged": true
+      },
+      {
+        "actual_browser_download": "summit-custom.xlsx",
+        "unchanged_cells": 22980,
+        "chart_xml_unchanged": true
+      },
+      {
+        "actual_browser_download": "summit-standard.xlsx",
+        "unchanged_cells": 22540,
+        "chart_xml_unchanged": true
+      },
+      {
+        "actual_browser_download": "tallis-custom.xlsx",
+        "unchanged_cells": 14418,
+        "chart_xml_unchanged": true
+      },
+      {
+        "actual_browser_download": "tallis-standard.xlsx",
+        "unchanged_cells": 13978,
+        "chart_xml_unchanged": true
+      }
+    ],
+    "value_formula_format_hyperlink_mismatches": [],
+    "data_zip_sha256_unchanged": "b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b",
+    "new_inference": 0
+  },
+  "prepared_review_verification": [
+    {
+      "run": "harrow-17-final",
+      "status": "verified",
+      "new_model_calls": 0
+    },
+    {
+      "run": "summit-05-final",
+      "status": "verified",
+      "new_model_calls": 0
+    },
+    {
+      "run": "tallis-05-final",
+      "status": "verified",
+      "new_model_calls": 0
+    }
+  ],
+  "screenshots": [
+    "docs/images/compact-findings/harrow-390.png",
+    "docs/images/compact-findings/harrow-desktop.png",
+    "docs/images/compact-findings/source-documents-390.png",
+    "docs/images/compact-findings/source-documents-desktop.png",
+    "docs/images/compact-findings/summit-390.png",
+    "docs/images/compact-findings/summit-desktop.png",
+    "docs/images/compact-findings/tallis-390.png",
+    "docs/images/compact-findings/tallis-desktop.png"
+  ],
+  "bounded_review": "Reviewed production diffs and actual Summit/Tallis/Harrow desktop and Source Documents desktop/390px screenshots. Corrected one CSS key-prefix collision that applied expanded Follow Up styling to its toolbar button. Final native toolbar is aligned, full analysis and original follow-up expand naturally, and optional evidence notices remain discoverable. Final per-company browser checks use independent direct-link sessions to avoid prior-dialog dismissal events racing next-page widget hydration; contextual company switching also passes the full journey and state tests. No material clipping or outstanding presentation issue found.",
+  "preview": "http://127.0.0.1:8502/?page=company&company=tallis",
+  "source_library_preview": "http://127.0.0.1:8502/?page=excel",
+  "restart": "./scripts/run_portfolio_demo.sh --server.headless true",
+  "preservation": "All7actual downloaded reports reconcile cell values, formulas, formats, hyperlinks and native chartXML. Data ZIP byte-identical; standalone consumer works. Original3workbooks byte-identical; prepared reviews verified0newcalls. Analytical app8501PID20385 untouched.",
+  "release_boundary": "Commit and push current feature branch only; no merge/deployment or new inference."
+}

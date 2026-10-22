@@ -80,15 +80,12 @@ def test_documents_page_preserves_formats_and_removes_fake_preview():
     at.session_state['source_viewport']={'desktop':True}
     at.query_params['page']='excel';at.run()
     assert not at.exception
-    assert at.title[0].value=='Documents & Reports'
-    assert [s.value for s in at.subheader]==['Source Documents','Generated Reports']
+    assert at.title[0].value=='Source Documents'
+    assert [s.value for s in at.subheader]==[]
     assert len([b for b in at.button if b.label=='Preview'])==3
     assert not any(s.label=='Worksheet preview' for s in at.selectbox)
-    for slug in ('summit','tallis','harrow'):
-        at.selectbox(key='documents_company').set_value(slug).run()
-        for choice in ('Use supplied firm template','Standard Excel report'):
-            at.selectbox(key='documents_format').set_value(choice).run()
-            assert not at.exception
+    assert [d.proto.label for d in at.get('download_button')]==['Download Original']*3
+    assert not any(s.key in ('documents_company','documents_format') for s in at.selectbox)
     at.button(key='preview_summit').click().run()
     assert not at.exception
     assert not any(s.label=='Worksheet' for s in at.selectbox)

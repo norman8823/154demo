@@ -12,7 +12,7 @@ import pandas as pd
 import streamlit as st
 from engine import ROOT, NOT_AVAILABLE, company_name
 from executive import present, money as executive_money, pp
-from card_presentation import finding_html
+from card_presentation import finding_html, card_metric
 from package_analysis import analysis_findings
 from portfolio_financial_reporting import export_company_report as export_report
 from portfolio_comparison import comparison
@@ -110,7 +110,7 @@ def _render_desktop_company(company,r,v):
     data_bytes, filename, warnings = data
     for warning in warnings: st.caption(warning)
     from portfolio_ui import generated_excel_download
-    generated_excel_download('Download Investment Excel',data_bytes,filename,'company_download')
+    generated_excel_download('Download Excel',data_bytes,filename,'company_download')
 
 
 def render_company_summary(company):
@@ -129,18 +129,50 @@ def render_company_summary(company):
     st.subheader('Priority findings')
     originals={f['id']:f for f in r.package['ai_insights']}
     cards=summary['cards']+summary.get('secondary',[])
+    route=(company.id,st.query_params.get('finding'))
+    if st.session_state.get('finding_cards_route')!=route:
+        st.session_state.finding_cards_route=route
+        requested=next((c['id'] for c in cards if str(c['id'])==route[1]),cards[0]['id'] if cards else None)
+        for card in cards:
+            st.session_state[_finding_state(company,card['id'],'analysis')]=card['id']==requested
+            st.session_state[_finding_state(company,card['id'],'followup')]=False
     for card in cards:
+        finding=originals[card['id']]
+        analysis_key=_finding_state(company,card['id'],'analysis')
+        followup_key=_finding_state(company,card['id'],'followup')
+        opened=st.session_state[analysis_key]
         with st.container(border=True,key='finding_panel_'+str(card['id'])):
-            analysis,actions=st.columns([7,3],gap='large',vertical_alignment='top')
-            finding=originals[card['id']]
-            with analysis,st.container(key='finding_analysis_'+str(card['id'])):
-                st.caption(finding['priority'].title()+' priority')
-                st.markdown(finding_html(card,r),unsafe_allow_html=True)
-            with actions,st.container(key='finding_actions_'+str(card['id'])):
-                with st.expander('Follow Up'):
+            impact,_=card_metric(card,r)
+            st.markdown('<div class="finding-brief"><div class="finding-labels"><span class="finding-priority">'+escape(finding['priority'].title())+' priority</span><span class="badge">'+escape(card['kind'])+'</span></div><div class="finding-title-row"><h3>'+escape(card['title'])+'</h3>'+('<strong class="finding-impact">'+escape(impact)+'</strong>' if impact else '')+'</div></div>',unsafe_allow_html=True)
+            if opened:
+                with st.container(key='finding_analysis_'+str(card['id'])):
+                    literal_prose(card['summary'])
+            else:
+                with st.container(key='finding_takeaway_'+str(card['id'])):
+                    literal_prose(finding['conclusion'])
+            with st.container(horizontal=True,gap='small',vertical_alignment='top',key='finding_actions_'+str(card['id'])):
+                st.button('Read Full Analysis',key='toggle_'+analysis_key,on_click=_toggle_finding,args=(analysis_key,),
+                          icon=':material/expand_less:' if opened else ':material/expand_more:',
+                          help='Collapse the original analysis' if opened else 'Expand the complete original analysis')
+                st.button('Follow Up',key='toggle_'+followup_key,on_click=_toggle_finding,args=(followup_key,),
+                          icon=':material/expand_less:' if st.session_state[followup_key] else ':material/expand_more:')
+                with st.container(width='content'):
+                    unsupported=evidence_actions(company,finding['fact_ids'],
+                        'company_source_'+company.id+'_'+str(card['id']),
+                        show_calculations=False,show_picker=False,show_notices=False)
+            if st.session_state[followup_key]:
+                with st.container(key='finding_followup_'+str(card['id'])):
                     literal_prose(finding['action'])
                     st.markdown('**Question for management**')
                     literal_prose(finding['management_question'])
-                evidence_actions(company,finding['fact_ids'],
-                                 'company_source_'+company.id+'_'+str(card['id']),
-                                 show_calculations=False, show_picker=False)
+            if unsupported:
+                with st.expander('Evidence details'):
+                    st.caption(str(len(unsupported))+' supporting records have no supported single-cell location; their original evidence remains available in the downloaded Source Evidence sheet.')
+
+
+def _finding_state(company,finding_id,view):
+    return 'finding_'+view+'_'+company.id+'_'+str(finding_id)
+
+
+def _toggle_finding(key):
+    st.session_state[key]=not st.session_state.get(key,False)

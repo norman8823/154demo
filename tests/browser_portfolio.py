@@ -50,7 +50,7 @@ with sync_playwright() as p:
     expect(page.get_by_text('10.95%',exact=True)).to_be_visible()
     expect(page.get_by_text('Illustrative investment values and valuation context',exact=True)).to_have_count(0)
     with page.expect_download() as downloaded:
-        page.get_by_role('button', name='Download Portfolio Excel', exact=True).click()
+        page.get_by_role('button', name='Download Excel', exact=True).click()
     path = OUT/'portfolio-browser.xlsx'
     downloaded.value.save_as(path)
     gp = load_workbook(path)
@@ -94,7 +94,7 @@ with sync_playwright() as p:
                 expect(page.get_by_text('Optional company Excel template', exact=True)).to_have_count(0)
             check(page)
             with page.expect_download() as download:
-                page.get_by_role('button', name='Download Investment Excel', exact=True).first.click()
+                page.get_by_role('button', name='Download Excel', exact=True).first.click()
             destination = OUT/(slug+('-custom' if custom else '-standard')+'.xlsx')
             download.value.save_as(destination)
             book = load_workbook(destination)
@@ -137,7 +137,7 @@ with sync_playwright() as p:
     page.keyboard.press('Escape')
     expect(page.get_by_role('dialog')).to_have_count(0)
     results['deep_link_summary_evidence_regression'] = 'pass'
-    page.get_by_role('button', name='Documents & Reports', exact=True).click()
+    page.get_by_role('button', name='Source Documents', exact=True).click()
     expect(page.get_by_role('heading', name='Source Documents', exact=True)).to_be_visible(timeout=60000)
     expect(page.get_by_role('button',name='Preview',exact=True)).to_have_count(3)
     expect(page.get_by_role('heading',name='Workbook preview',exact=True)).to_have_count(0)

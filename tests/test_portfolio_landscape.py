@@ -6,7 +6,7 @@ from engine import ROOT
 def test_landscape_navigation_order_heading_workflow_and_unchanged_kpis():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60).run()
     expected=[('Portfolio Overview','nav_overview'),('Investment Detail','nav_company'),
-              ('Data Landscape','nav_foundation'),('Documents & Reports','nav_excel')]
+              ('Data Landscape','nav_foundation'),('Source Documents','nav_excel')]
     assert [(b.label,b.key) for b in at.sidebar.button if str(b.key).startswith('nav_')]==expected
     at.button(key='nav_foundation').click().run()
     assert not at.exception

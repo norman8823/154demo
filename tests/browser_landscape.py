@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/outlook/landscape';OUT.mkdir(parents=True,exist_ok=True)
 IMAGES=ROOT/'docs/images/outlook';IMAGES.mkdir(parents=True,exist_ok=True)
 receipt={'browser_errors':[],'external_requests':[]}
-expected=['Portfolio Overview','Investment Detail','Data Landscape','Documents & Reports']
+expected=['Portfolio Overview','Investment Detail','Data Landscape','Source Documents']
 with sync_playwright() as p:
     browser=p.chromium.launch(channel='chrome',headless=True)
     page=browser.new_page(viewport={'width':1440,'height':1100},accept_downloads=True)

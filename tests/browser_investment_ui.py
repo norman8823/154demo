@@ -30,9 +30,9 @@ with sync_playwright() as p:
         else:route.continue_()
     page.route('**/*',local)
     page.goto('http://127.0.0.1:8502/')
-    portfolio=page.get_by_role('button',name='Download Portfolio Excel',exact=True)
+    portfolio=page.get_by_role('button',name='Download Excel',exact=True)
     expect(portfolio).to_have_count(1,timeout=60000);ready(page)
-    assert page.locator('.st-key-workspace_navigation button').all_text_contents()==['Portfolio Overview','Investment Detail','Data Landscape','Documents & Reports']
+    assert page.locator('.st-key-workspace_navigation button').all_text_contents()==['Portfolio Overview','Investment Detail','Data Landscape','Source Documents']
     assert portfolio.bounding_box()['y']>page.locator('.st-key-operating_cards').bounding_box()['y']+page.locator('.st-key-operating_cards').bounding_box()['height']
     receipt['styles'].append(style(portfolio));capture(page,'overview-top')
     portfolio.evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})");capture(page,'overview-download')
@@ -47,14 +47,14 @@ with sync_playwright() as p:
         assert 'page=company' in page.url and 'company='+company.id in page.url
         expect(desktop.get_by_role('button',name='View in Source',exact=True)).to_have_count(len(company.review.package['ai_insights']),timeout=60000)
         ready(page);capture(page,company.id+'-detail')
-        download=desktop.get_by_role('button',name='Download Investment Excel',exact=True)
+        download=desktop.get_by_role('button',name='Download Excel',exact=True)
         expect(download).to_have_count(1)
         last=desktop.locator('.st-key-finding_panel_'+str(company.review.package['ai_insights'][-1]['id']))
         assert download.bounding_box()['y']>=last.bounding_box()['y']+last.bounding_box()['height']
         receipt['styles'].append(style(download))
         first=desktop.locator('.st-key-finding_panel_10000');actions=first.locator('.st-key-finding_actions_10000')
         actions.get_by_text('Follow Up',exact=True).click()
-        expect(actions.get_by_text(company.review.package['ai_insights'][0]['action'],exact=True)).to_be_visible()
+        expect(first.get_by_text(company.review.package['ai_insights'][0]['action'],exact=True)).to_be_visible()
         actions.get_by_text('Follow Up',exact=True).click()
         target=evidence_locations(company,company.review.package['ai_insights'][0]['fact_ids'])[0][0]
         actions.get_by_role('button',name='View in Source',exact=True).click()
@@ -66,17 +66,15 @@ with sync_playwright() as p:
         download.evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})");capture(page,company.id+'-download')
         receipt['desktop'].append({'page':'investment','company':company.id,'h1_and_company_heading':True,'bottom_download':True,'followup_and_source':True})
     page.goto('http://127.0.0.1:8502/?page=excel')
-    expect(page.get_by_role('heading',name='Documents & Reports',exact=True)).to_be_visible(timeout=60000);ready(page)
+    expect(page.get_by_role('heading',name='Source Documents',exact=True)).to_be_visible(timeout=60000);ready(page)
     for company in load_companies():
         row=page.locator('.st-key-source_document_'+company.id)
         expect(row.get_by_role('button',name='Download Original',exact=True)).to_be_visible()
         expect(row.get_by_role('button',name='Preview',exact=True)).to_be_visible()
-    for label in ('Download Portfolio Excel','Download Investment Excel'):
-        button=page.get_by_role('button',name=label,exact=True)
-        assert button.bounding_box()['y']>page.get_by_role('combobox',name='Company Excel format',exact=True).bounding_box()['y']
-        receipt['styles'].append(style(button))
+    assert page.get_by_role('button',name='Download Excel',exact=True).count()==0
+    assert page.get_by_role('combobox',name='Company report',exact=True).count()==0
     capture(page,'documents-reports')
-    receipt['desktop'].append({'page':'documents','original_actions_beside_sources':True,'generated_actions_after_controls':True})
+    receipt['desktop'].append({'page':'documents','original_actions_beside_sources':True,'source_library_only':True})
     assert len({json.dumps(s,sort_keys=True) for s in receipt['styles']})==1,receipt['styles']
     assert receipt['styles'][0]['background']=='rgb(37, 59, 88)'
     for width in (390,430):
@@ -84,10 +82,9 @@ with sync_playwright() as p:
         for route,slug in [('overview',None),('company','summit'),('company','tallis'),('company','harrow'),('excel',None)]:
             url='http://127.0.0.1:8502/?page='+route+('&company='+slug if slug else '')
             page.goto(url)
-            heading={'overview':'Portfolio Overview','company':'Investment Detail','excel':'Documents & Reports'}[route]
+            heading={'overview':'Portfolio Overview','company':'Investment Detail','excel':'Source Documents'}[route]
             expect(page.get_by_role('heading',name=heading,level=1,exact=True)).to_be_visible(timeout=60000);ready(page)
-            assert page.get_by_role('button',name='Download Portfolio Excel',exact=True).count()==0
-            assert page.get_by_role('button',name='Download Investment Excel',exact=True).count()==0
+            assert page.get_by_role('button',name='Download Excel',exact=True).count()==0
             if route=='company':
                 mobile=page.locator('.st-key-mobile_company_detail')
                 expect(mobile.locator('.investment-company-name')).to_have_text(next(c.name for c in load_companies() if c.id==slug))

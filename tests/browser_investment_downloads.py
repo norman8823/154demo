@@ -17,29 +17,32 @@ with sync_playwright() as p:
   else:route.continue_()
  page.route('**/*',local)
  page.goto('http://127.0.0.1:8502/?page=excel')
- expect(page.get_by_role('heading',name='Documents & Reports',exact=True)).to_be_visible(timeout=60000)
+ expect(page.get_by_role('heading',name='Source Documents',exact=True)).to_be_visible(timeout=60000)
  for c in load_companies():
   original=original_document(c)
   with page.expect_download() as d:page.locator('.st-key-source_document_'+c.id).get_by_role('button',name='Download Original',exact=True).click()
   target=OUT/(c.id+'-original.xlsx');d.value.save_as(target)
   assert target.read_bytes()==original.data
   receipt['original_downloads'].append({'company':c.id,'sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'byte_identical':True})
- page.get_by_role('combobox',name='Company report',exact=True).click();page.get_by_role('option',name='Tallis Brook Accounting',exact=True).click()
+ assert page.get_by_role('button',name='Download Excel',exact=True).count()==0
+ assert page.get_by_role('combobox',name='Company report',exact=True).count()==0
+ assert not page.evaluate('document.documentElement.scrollWidth>innerWidth+1')
+ receipt['source_library_only']='pass'
+ page.screenshot(path=str(IMAGES/'source-documents-1280.png'),full_page=True,animations='disabled')
+ page.goto('http://127.0.0.1:8502/?page=company&company=tallis')
+ expect(page.get_by_role('heading',name='Investment Detail',level=1,exact=True)).to_be_visible(timeout=60000)
  page.get_by_role('combobox',name='Company Excel format',exact=True).click();page.get_by_role('option',name='Use supplied firm template',exact=True).click()
  expect(page.get_by_text('Optional company Excel template',exact=True)).to_be_visible(timeout=60000)
- for label,filename in [('Download Portfolio Excel','documents-portfolio.xlsx'),('Download Investment Excel','documents-tallis-custom.xlsx')]:
-  with page.expect_download() as d:page.get_by_role('button',name=label,exact=True).click()
-  d.value.save_as(OUT/filename)
- assert not page.evaluate('document.documentElement.scrollWidth>innerWidth+1')
- receipt['documents_1280_custom_and_portfolio_downloads']='pass'
- page.screenshot(path=str(IMAGES/'documents-1280.png'),full_page=True,animations='disabled')
+ with page.expect_download() as d:page.get_by_role('button',name='Download Excel',exact=True).click()
+ d.value.save_as(OUT/'investment-tallis-custom.xlsx')
+ receipt['investment_custom_download']='pass'
  page.goto('http://127.0.0.1:8502/?page=issues')
  expect(page.get_by_role('heading',name='Investment Issues',exact=True)).to_be_visible(timeout=60000)
- download=page.get_by_role('button',name='Download Portfolio Excel',exact=True)
+ download=page.get_by_role('button',name='Download Excel',exact=True)
  assert download.bounding_box()['y']>page.get_by_role('button',name='View source evidence →',exact=True).last.bounding_box()['y']
  receipt['legacy_issues_download_at_bottom']='pass'
  page.set_viewport_size({'width':1440,'height':1100})
- for route,company,filename,label in [('overview',None,'overview-download','Download Portfolio Excel'),('company','tallis','tallis-download','Download Investment Excel')]:
+ for route,company,filename,label in [('overview',None,'overview-download','Download Excel'),('company','tallis','tallis-download','Download Excel')]:
   page.goto('http://127.0.0.1:8502/?page='+route+('&company='+company if company else ''))
   button=page.get_by_role('button',name=label,exact=True);expect(button).to_be_visible(timeout=60000)
   button.evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})")

@@ -17,9 +17,9 @@ def test_investment_detail_keeps_company_deep_links_followups_and_export_choices
     assert at.button(key='nav_company').label=='Investment Detail'
     assert at.selectbox(key='gp_company_selector').value==company.id
     assert at.query_params['page']=='company' and at.query_params['finding']=='10000'
-    assert len([e for e in at.expander if e.label=='Follow Up'])==len(company.review.package['ai_insights'])
+    assert len([e for e in at.button if e.label=='Follow Up'])==len(company.review.package['ai_insights'])
     labels=[d.proto.label for d in at.get('download_button')]
-    assert labels==['Download Investment Excel']
+    assert labels==['Download Excel']
     for choice in ('Use supplied firm template','Standard Excel report'):
         at.selectbox(key='gp_company_format').set_value(choice).run()
         assert not at.exception
@@ -29,11 +29,11 @@ def test_investment_detail_keeps_company_deep_links_followups_and_export_choices
 def test_generated_labels_are_contextual_and_original_downloads_remain_distinct():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60).run()
     assert not at.exception
-    assert [d.proto.label for d in at.get('download_button')]==['Download Portfolio Excel']
+    assert [d.proto.label for d in at.get('download_button')]==['Download Excel']
     at.button(key='nav_excel').click().run()
     assert not at.exception
-    assert [d.proto.label for d in at.get('download_button')]==['Download Original']*3+['Download Portfolio Excel','Download Investment Excel']
+    assert [d.proto.label for d in at.get('download_button')]==['Download Original']*3
     at.button(key='nav_foundation').click().run()
     assert not at.exception
     labels=[d.proto.label for d in at.get('download_button')]
-    assert 'Download Portfolio Excel' not in labels and 'Download Investment Excel' not in labels
+    assert 'Download Excel' not in labels

@@ -54,7 +54,7 @@ def source_action(company, fact_id, key):
         if st.button('View in Source',key=key): open_source(company,fact['sheet'],fact['cell'])
 
 
-def evidence_actions(company, source_ids, key, *, show_calculations=True, show_picker=True):
+def evidence_actions(company, source_ids, key, *, show_calculations=True, show_picker=True, show_notices=True):
     if not source_desktop():return
     try: originals,derived,unsupported=evidence_locations(company,source_ids)
     except (InputError,OSError,ValueError) as exc:
@@ -71,17 +71,16 @@ def evidence_actions(company, source_ids, key, *, show_calculations=True, show_p
         identity=(st.selectbox('Original source cell',list(index),format_func=lambda i:index[i]['ref']+' · '+(index[i].get('label') or i),key=key+'_operand')
                   if show_picker else originals[0]['id'])
         source_action(company,identity,key+'_view')
-    if unsupported:
+    if unsupported and show_notices:
         location='above' if show_calculations else 'in the downloaded Source Evidence sheet'
         st.caption(str(len(unsupported))+' supporting records have no supported single-cell location; their original evidence remains available '+location+'.')
+    return unsupported
 
 
 def render_documents(companies, workbook_data):
     from portfolio_ui import page_heading
     from portfolio_comparison import comparison
-    from portfolio_company import company_export
-    page_heading('Documents & Reports','Original company reporting packages · Source-backed reporting')
-    st.subheader('Source Documents')
+    page_heading('Source Documents','Original company reporting packages · Source-backed reporting')
     st.caption('Approved original workbooks, verified against the prepared-analysis manifest before preview or download.')
     for company in companies:
         with st.container(border=True,key='source_document_'+company.id):
@@ -98,27 +97,6 @@ def render_documents(companies, workbook_data):
                 with preview,st.container(key='desktop_source_preview_'+company.id):
                     if st.button('Preview',key='preview_'+company.id,width='stretch'): open_source(company)
             download.download_button('Download Original',document.data,file_name=document.filename,mime=XLSX,on_click='ignore',key='original_'+company.id,width='stretch')
-    with st.container(key='generated_report_controls'):
-        st.subheader('Generated Reports')
-        st.caption('Generated portfolio and company analyses. Original reporting packages are listed separately above.')
-        ids={c.id:c for c in companies}
-        selected=st.selectbox('Company report',list(ids),format_func=lambda identity:ids[identity].name,key='documents_company')
-        company=ids[selected]
-        choice=st.selectbox('Company Excel format',['Standard Excel report','Use supplied firm template'],key='documents_format')
-        custom=choice=='Use supplied firm template'
-        template=st.file_uploader('Optional company Excel template',type=['xlsx'],key='documents_template') if custom else None
-        if template:
-            from portfolio_financial_reporting import export_company_report as export_report
-            try: data=export_report(company.review,template.getvalue())
-            except Exception:
-                st.error('This template could not be populated. Choose the standard report or supplied firm template.');return
-        else: data=company_export(company.review,custom)
-        from portfolio_ui import generated_excel_download
-        portfolio_action,investment_action=st.columns(2,gap='medium')
-        with portfolio_action:
-            generated_excel_download('Download Portfolio Excel',workbook_data,'GP_Portfolio_Review.xlsx','documents_gp_download')
-        with investment_action:
-            generated_excel_download('Download Investment Excel',data[0],data[1],'documents_company_download')
 
 
 def render_source_route(companies):

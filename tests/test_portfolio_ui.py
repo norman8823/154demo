@@ -18,7 +18,7 @@ def test_documents_library_separates_originals_and_generated_reports():
     at.run()
     at.button(key='nav_excel').click().run()
     assert not at.exception
-    assert at.title[0].value == 'Documents & Reports'
-    assert [s.value for s in at.subheader] == ['Source Documents','Generated Reports']
+    assert at.title[0].value == 'Source Documents'
+    assert [s.value for s in at.subheader] == []
     assert len([b for b in at.button if b.label == 'Preview']) == 3
     assert not any('Workbook preview' in s.value for s in at.subheader)
