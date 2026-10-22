@@ -34,7 +34,8 @@ def test_all_company_summary_evidence_exports_and_return(slug, monkeypatch):
 
 def test_watchlist_filter_and_link_to_exact_finding():
     at = AppTest.from_file(str(ROOT / 'portfolio_app.py'), default_timeout=60).run()
-    at.button(key='nav_watchlist').click().run()
+    at.query_params['page']='issues'
+    at.run()
     next(s for s in at.selectbox if s.label == 'Company').set_value('Harrow Ridge Environmental').run()
     next(s for s in at.selectbox if s.label == 'Original priority').set_value('high').run()
     buttons = [b for b in at.button if b.label == 'View source evidence →']
@@ -51,7 +52,8 @@ def test_watchlist_filter_and_link_to_exact_finding():
 
 def test_financial_watchlist_prose_is_literal_currency():
     at = AppTest.from_file(str(ROOT / 'portfolio_app.py'), default_timeout=60).run()
-    at.button(key='nav_watchlist').click().run()
+    at.query_params['page']='issues'
+    at.run()
     text = '\n'.join(m.value for m in at.markdown)
     assert '&#36;3,916,548 against budget of &#36;5,311,831' in text
     assert '$3,916,548 against budget of $5,311,831' not in text

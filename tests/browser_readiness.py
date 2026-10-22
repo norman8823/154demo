@@ -31,7 +31,7 @@ with sync_playwright() as p:
         else:route.continue_()
     page.route('**/*',route_local)
     page.goto('http://127.0.0.1:8502/?page=foundation')
-    expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
+    expect(page.get_by_role('heading',name='Data Landscape',exact=True)).to_be_visible(timeout=60000)
     for heading in ['Data Catalog & Dictionary','Data Issues','Structured Data Export']:
         expect(page.get_by_role('heading',name=heading,exact=True)).to_be_visible()
     expect(page.get_by_text('67%',exact=True)).to_be_visible()
@@ -61,8 +61,8 @@ with sync_playwright() as p:
     assert 'company=summit' in page.url and 'finding=10004' in page.url
     assert page.locator('.foundation-kpis').count()==0
     receipt['source_issue_deep_link']='pass'
-    page.get_by_role('button',name='Data Foundation',exact=True).click()
-    expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
+    page.get_by_role('button',name='Data Landscape',exact=True).click()
+    expect(page.get_by_role('heading',name='Data Landscape',exact=True)).to_be_visible(timeout=60000)
     with page.expect_download() as d:
         page.get_by_role('button',name='↓ Download AI-ready data package',exact=True).click()
     downloaded=OUT/'AI_Ready_Operating_Data_browser.zip';d.value.save_as(downloaded)
@@ -82,7 +82,7 @@ with sync_playwright() as p:
     page.wait_for_timeout(350)
     page.locator('.st-key-foundation_page').evaluate('(e)=>{for(let p=e.parentElement;p;p=p.parentElement)p.scrollTop=0;}')
     check(page)
-    assert page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True).bounding_box()['y']>=60
+    assert page.get_by_role('heading',name='Data Landscape',exact=True).bounding_box()['y']>=60
     page.screenshot(path=str(OUT/'ai-workflow-readiness-mobile.png'),full_page=True)
     receipt['mobile_no_document_overflow']='pass'
     assert receipt['browser_errors']==[]

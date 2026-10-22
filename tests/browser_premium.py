@@ -19,7 +19,7 @@ with sync_playwright() as p:
  page.route('**/*',local)
  for name in ('overview','foundation'):
   page.goto('http://127.0.0.1:8502/?page='+name)
-  expect(page.get_by_role('heading',name='Portfolio Overview' if name=='overview' else 'AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000);wait(page)
+  expect(page.get_by_role('heading',name='Portfolio Overview' if name=='overview' else 'Data Landscape',exact=True)).to_be_visible(timeout=60000);wait(page)
   shot(page,name+'-1440')
   if name=='overview':shot(page,'sidebar',page.locator('[data-testid="stSidebar"]'));shot(page,'operating-cards',page.locator('.st-key-operating_cards'))
   else:

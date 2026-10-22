@@ -30,7 +30,8 @@ def test_company_selector_updates_all_data_and_clears_finding_and_export_state()
 
 def test_issues_are_grouped_with_original_questions_and_actions():
     at = AppTest.from_file(str(ROOT/'portfolio_app.py'), default_timeout=60).run()
-    at.button(key='nav_watchlist').click().run()
+    at.query_params['page']='issues'
+    at.run()
     assert not at.exception
     assert at.title[0].value == 'Investment Issues'
     assert [s.value for s in at.subheader][-3:] == ['Summit Home Services','Tallis Brook Accounting','Harrow Ridge Environmental']

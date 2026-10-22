@@ -167,3 +167,10 @@ div[class*="st-key-gp_company_"]:has(.v2-company-head) .stButton button {backgro
 .source-document-header{padding-right:32px;margin:0 0 2px}.source-document-header h3{font-size:19px!important;line-height:1.4!important;margin:0 0 3px!important}.source-document-header p{font-size:12px!important;color:#60738a;margin:0 0 3px!important}.source-document-header small{font-size:11px;color:#657e72;font-style:italic}
 @media(max-width:1023px){[class*="st-key-desktop_source_"]{display:none!important}}
 [role="dialog"]:has(.source-document-header)>button[aria-label="Close"]{z-index:3}
+
+/* Company outlook uses the existing restrained editorial card surface. */
+.investment-outlook {background:#fff;border:1px solid #dbe3ed;border-left:3px solid #284662;border-radius:9px;padding:20px 24px;margin:0 0 24px;}
+.investment-outlook h3 {font-size:20px!important;line-height:1.4;color:#18364a;margin:0 0 12px;}
+.investment-outlook p {font-size:15px;line-height:1.65;color:#344e65;margin:0 0 12px;max-width:1100px;}
+.investment-outlook small {display:block;color:#748397;font-size:11px;line-height:1.5;}
+@media(max-width:600px){.investment-outlook {padding:16px;margin-bottom:20px;}.investment-outlook h3 {font-size:18px!important;}.investment-outlook p {font-size:14px;}}

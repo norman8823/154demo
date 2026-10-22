@@ -83,8 +83,11 @@ with sync_playwright() as p:
         page.locator('[data-testid="stMain"]').evaluate('(e)=>e.scrollTo(0,0)')
         outputs = {}
         for custom in (False, True):
-            page.get_by_role('combobox', name='Company Excel format', exact=True).click()
-            page.get_by_role('option', name='Use supplied firm template' if custom else 'Standard Excel report', exact=True).click()
+            choice='Use supplied firm template' if custom else 'Standard Excel report'
+            field=page.get_by_role('combobox',name='Company Excel format',exact=True)
+            if field.input_value()!=choice:
+                field.click()
+                page.get_by_role('option',name=choice,exact=True).click()
             if custom:
                 expect(page.get_by_text('Optional company Excel template', exact=True)).to_be_visible(timeout=60000)
             else:
@@ -119,7 +122,8 @@ with sync_playwright() as p:
         assert 'company='+slug in page.url
         expect(page.get_by_role('combobox',name='Company Excel format',exact=True)).to_have_value('Standard Excel report')
     results['company_selector_switching']='pass'
-    page.get_by_role('button', name='Investment Issues', exact=True).click()
+    assert page.get_by_role('button',name='Investment Issues',exact=True).count()==0
+    page.goto(URL+'/?page=issues')
     expect(page.get_by_role('heading', name='Investment Issues', exact=True).first).to_be_visible()
     expect(page.get_by_text('17 findings shown', exact=False)).to_be_visible()
     assert page.locator('.katex').count() == 0
@@ -139,8 +143,8 @@ with sync_playwright() as p:
     expect(page.get_by_role('heading',name='Workbook preview',exact=True)).to_have_count(0)
     check(page)
     page.screenshot(path=str(OUT/'documents-library.png'),full_page=True)
-    page.get_by_role('button',name='Data Foundation',exact=True).click()
-    expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
+    page.get_by_role('button',name='Data Landscape',exact=True).click()
+    expect(page.get_by_role('heading',name='Data Landscape',exact=True)).to_be_visible(timeout=60000)
     check(page)
     page.screenshot(path=str(OUT/'data-foundation.png'),full_page=True)
     with page.expect_download() as downloaded:
@@ -169,8 +173,8 @@ with sync_playwright() as p:
     check(page)
     page.screenshot(path=str(OUT/'overview-mobile.png'), full_page=True)
     page.get_by_role('button',name='Expand sidebar',exact=True).click()
-    page.get_by_role('button',name='Data Foundation',exact=True).click()
-    expect(page.get_by_role('heading',name='AI Workflow Automation Readiness',exact=True)).to_be_visible(timeout=60000)
+    page.get_by_role('button',name='Data Landscape',exact=True).click()
+    expect(page.get_by_role('heading',name='Data Landscape',exact=True)).to_be_visible(timeout=60000)
     if sidebar.get_attribute('data-collapsed')=='false':page.get_by_role('button',name='Collapse sidebar',exact=True).click()
     page.wait_for_timeout(350)
     check(page)

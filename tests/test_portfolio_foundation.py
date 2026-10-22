@@ -135,7 +135,7 @@ def test_data_foundation_page_exposes_approval_distinctions_and_real_preview():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60).run()
     at.button(key='nav_foundation').click().run()
     assert not at.exception
-    assert at.title[0].value=='AI Workflow Automation Readiness'
+    assert at.title[0].value=='Data Landscape'
     table=next(m.value for m in at.markdown if 'gp-catalog-sources' in m.value and '<table' in m.value)
     assert table.count('<tr>')==4
     assert len(at.selectbox(key='foundation_metric').options)==10

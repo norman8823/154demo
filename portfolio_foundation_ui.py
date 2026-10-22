@@ -36,10 +36,11 @@ def render_foundation(companies):
     with st.container(key='foundation_page'):
         title,badge=st.columns([4.5,1.5])
         with title:
-            st.title('AI Workflow Automation Readiness')
-            st.markdown('<div class="foundation-subtitle">'+escape(view['model']['name'])+'</div>',unsafe_allow_html=True)
+            st.title('Data Landscape')
+            st.markdown('<div class="foundation-intro">Overview of portfolio data sources, definitions, quality, mapping gaps, and readiness for AI-enabled workflows.</div>',unsafe_allow_html=True)
         badge.markdown('<span class="foundation-demo">Product Demo · Synthetic Data</span>',unsafe_allow_html=True)
-        st.markdown('<div class="foundation-intro">Company reporting packages → Common financial definitions → Reusable structured data.</div>',unsafe_allow_html=True)
+        st.subheader('AI Workflow Readiness')
+        st.markdown('<div class="foundation-subtitle">'+escape(view['model']['name'])+'</div>',unsafe_allow_html=True)
         _render_summary(view)
         st.markdown('<div class="foundation-scope"><span class="foundation-scope-icon">i</span><div><strong>Scope: '+escape(view['model']['name'])+'</strong>Mapping, source verification and reporting-frequency checks for this workflow.</div><a href="#foundation-model">View workflow configuration &nbsp; →</a></div>',unsafe_allow_html=True)
         with st.container(key='foundation_mapping_panel'):

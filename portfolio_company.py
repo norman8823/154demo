@@ -87,6 +87,9 @@ def _render_desktop_company(company,r,v):
     st.button('← Portfolio Overview', on_click=navigate, args=('overview',))
     st.title(company.name)
     st.caption(company.sector+' · '+v['period_label']+' · Verified prepared review')
+    from portfolio_outlook import render_outlook
+    render_outlook(company)
+    render_company_summary(company)
     # The presentation adapter preserves the frozen exporter and its evidence appendices.
     choice = st.selectbox('Company Excel format', ['Standard Excel report', 'Use supplied firm template'], key='gp_company_format')
     custom = choice == 'Use supplied firm template'
@@ -107,7 +110,6 @@ def _render_desktop_company(company,r,v):
     st.download_button('↓  Download Excel Report',data_bytes,file_name=filename,
                        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     for warning in warnings: st.caption(warning)
-    render_company_summary(company)
 
 
 def render_company_summary(company):
@@ -131,6 +133,10 @@ def render_company_summary(company):
             with column,st.container(border=True,key='finding_panel_'+str(card['id'])):
                 st.markdown(finding_html(card,r),unsafe_allow_html=True)
                 finding=originals[card['id']]
+                with st.expander('Management follow-up'):
+                    literal_prose(finding['action'])
+                    st.markdown('**Question for management**')
+                    literal_prose(finding['management_question'])
                 evidence_actions(company,finding['fact_ids'],
                                  'company_source_'+company.id+'_'+str(card['id']),
                                  show_calculations=False, show_picker=False)

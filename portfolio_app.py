@@ -61,5 +61,4 @@ elif page == 'excel':
     render_documents(companies, workbook_data)
 else:
     overview(companies, workbook_data)
-    render_watchlist(companies, compact=True)
 footer()
