@@ -128,12 +128,15 @@ def render_company_summary(company):
     st.subheader('Priority findings')
     originals={f['id']:f for f in r.package['ai_insights']}
     cards=summary['cards']+summary.get('secondary',[])
-    for start in range(0,len(cards),3):
-        for column,card in zip(st.columns(3),cards[start:start+3]):
-            with column,st.container(border=True,key='finding_panel_'+str(card['id'])):
+    for card in cards:
+        with st.container(border=True,key='finding_panel_'+str(card['id'])):
+            analysis,actions=st.columns([7,3],gap='large',vertical_alignment='top')
+            finding=originals[card['id']]
+            with analysis,st.container(key='finding_analysis_'+str(card['id'])):
+                st.caption(finding['priority'].title()+' priority')
                 st.markdown(finding_html(card,r),unsafe_allow_html=True)
-                finding=originals[card['id']]
-                with st.expander('Management follow-up'):
+            with actions,st.container(key='finding_actions_'+str(card['id'])):
+                with st.expander('Follow Up'):
                     literal_prose(finding['action'])
                     st.markdown('**Question for management**')
                     literal_prose(finding['management_question'])

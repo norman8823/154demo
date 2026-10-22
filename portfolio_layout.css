@@ -174,3 +174,13 @@ div[class*="st-key-gp_company_"]:has(.v2-company-head) .stButton button {backgro
 .investment-outlook p {font-size:15px;line-height:1.65;color:#344e65;margin:0 0 12px;max-width:1100px;}
 .investment-outlook small {display:block;color:#748397;font-size:11px;line-height:1.5;}
 @media(max-width:600px){.investment-outlook {padding:16px;margin-bottom:20px;}.investment-outlook h3 {font-size:18px!important;}.investment-outlook p {font-size:14px;}}
+
+/* Full-width investment memo rows; only the desktop company report uses these. */
+.st-key-desktop_company_detail [class*="st-key-finding_panel_"] {background:#fff;padding:20px 24px;border-color:var(--gp-line);border-radius:var(--gp-radius);margin-bottom:8px;}
+.st-key-desktop_company_detail [class*="st-key-finding_analysis_"] .finding {border-top:0;padding:0;max-width:78ch;}
+.st-key-desktop_company_detail [class*="st-key-finding_analysis_"] .finding h3 {font-size:18px!important;line-height:1.4!important;margin:8px 0;}
+.st-key-desktop_company_detail [class*="st-key-finding_analysis_"] .finding p {font-size:14px;line-height:1.75;}
+.st-key-desktop_company_detail [class*="st-key-finding_actions_"] [data-testid="stExpander"] {margin-bottom:0;}
+.st-key-desktop_company_detail [class*="st-key-finding_actions_"] .prose {font-size:14px;line-height:1.65;}
+.st-key-desktop_company_detail [class*="st-key-finding_actions_"] .stButton button {width:100%;}
+@media(max-width:900px){.st-key-desktop_company_detail [class*="st-key-finding_panel_"] {padding:16px;}}

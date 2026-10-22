@@ -57,4 +57,4 @@ def test_switching_narrative_hierarchy_and_original_followups():
   assert all(investment_outlook(other).headline not in text for other in load_companies() if other.id!=company.id)
   for finding in company.review.package['ai_insights']:
    assert finding['action'] in text and finding['management_question'] in text
-  assert len([e for e in at.expander if e.label=='Management follow-up'])==len(company.review.package['ai_insights'])
+  assert len([e for e in at.expander if e.label=='Follow Up'])==len(company.review.package['ai_insights'])

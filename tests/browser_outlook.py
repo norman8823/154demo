@@ -44,10 +44,10 @@ with sync_playwright() as p:
   assert order[:3]==['Investment Outlook','Investment Summary','Priority findings'],order
   assert page.get_by_role('button',name='Investment Issues',exact=True).count()==0
   first=desktop.locator('.st-key-finding_panel_10000')
-  first.get_by_text('Management follow-up',exact=True).click()
+  first.get_by_text('Follow Up',exact=True).click()
   finding=company.review.package['ai_insights'][0]
   expect(first.get_by_text(finding['action'],exact=True)).to_be_visible()
-  first.get_by_text('Management follow-up',exact=True).click()
+  first.get_by_text('Follow Up',exact=True).click()
   page.locator('[data-testid="stMain"]').evaluate('(e)=>e.scrollTop=0')
   page.screenshot(path=str(IMAGES/(company.id+'-desktop.png')),full_page=True)
   receipt['desktop'].append({'company':company.id,'same_company_outlook':True,'heading_order':order[:3],'original_management_action':True,'no_page_overflow':True})
