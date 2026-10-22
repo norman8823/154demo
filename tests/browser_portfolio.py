@@ -55,7 +55,7 @@ with sync_playwright() as p:
     downloaded.value.save_as(path)
     gp = load_workbook(path)
     assert gp.sheetnames[:9] == ['Portfolio Overview', 'Company Comparison', 'Investment Issues', 'Summit Home Services', 'Tallis Brook Accounting', 'Harrow Ridge Environmental', 'Source References', 'Source Snapshots', 'Reporting Output']
-    assert len(gp.sheetnames)==34 and 'Investment Ledger' in gp.sheetnames
+    assert len(gp.sheetnames)==35 and 'Investment Ledger' in gp.sheetnames
     assert gp['Investment Ledger']['D9'].value==82000000
     assert gp['Investment Ledger']['B9'].value==58000000
     assert gp['Investment Ledger']['F9'].value==1.5

@@ -13,7 +13,7 @@ def test_ledger_dashboard_holdings_comparison_and_workbook_reconcile():
     companies=load_companies();investments=investments_for(companies)
     rows=operating_rows(companies);matrix=comparison_matrix(companies)
     book=load_workbook(io.BytesIO(export_portfolio(companies)));ledger=book['Investment Ledger']
-    assert len(book.sheetnames)==34
+    assert len(book.sheetnames)==35
     assert len(book['Portfolio Overview']._charts)==3
     assert 'SYNTHETIC ILLUSTRATIVE' in ledger['A2'].value
     assert 'not a live financial model' in ledger['A3'].value

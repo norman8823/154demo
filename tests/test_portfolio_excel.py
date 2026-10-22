@@ -46,7 +46,7 @@ def test_workbook_dashboard_matrix_company_sheets_and_output_reconcile(exported)
     assert 'No combined revenue' in ws['A9'].value
     for name in SHEETS:
         sheet=book[name]
-        assert sheet.freeze_panes and sheet.auto_filter.ref and sheet.print_area
+        assert sheet.freeze_panes and (sheet.auto_filter.ref or name=='Portfolio Financial Performance') and sheet.print_area
         assert not sheet.sheet_view.showGridLines
 
 

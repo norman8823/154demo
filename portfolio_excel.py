@@ -18,7 +18,7 @@ MONEY = '"$"#,##0;[Red]("$"#,##0);"$0"'
 PERCENT = '0.0%;[Red](0.0%);"0.0%"'
 PP = '0.0" pp";[Red](0.0" pp");"0.0 pp"'
 SHEETS = ('Portfolio Overview','Company Comparison','Investment Issues','Summit Home Services',
-          'Tallis Brook Accounting','Harrow Ridge Environmental','Source References','Source Snapshots','Reporting Output','Investment Ledger')
+          'Tallis Brook Accounting','Harrow Ridge Environmental','Source References','Source Snapshots','Reporting Output','Investment Ledger','Portfolio Financial Performance')
 COMPANY_SHEETS = dict(zip(('summit','tallis','harrow'), SHEETS[3:6]))
 OVERVIEW_HEAD = 28
 
@@ -85,6 +85,8 @@ def reference_records(companies):
     for c in companies:
         v=comparison(c)
         ids=[s for key in ('revenue','ebitda','margin') for s in v[key].source_ids]
+        from portfolio_financial_reporting import statement
+        ids.extend(s for line in statement(c.review) for s in line.actual_refs+line.budget_refs)
         ids.extend(s for item in items if item.company_id==c.id for s in item.source_ids)
         ids=source_closure(c.review,ids)
         evidence=evidence_for(c.review,ids)
@@ -313,6 +315,9 @@ def export_portfolio(companies):
     attach_metric_proofs(wb,companies,source_rows)
     from portfolio_investment_excel import attach_investment_excel
     attach_investment_excel(wb,companies)
+    from portfolio_financial_reporting import attach_portfolio_statement
+    attach_portfolio_statement(wb,companies,source_rows)
+    wb.move_sheet('Portfolio Financial Performance',offset=10-wb.sheetnames.index('Portfolio Financial Performance'))
     # Source snapshots keep their original grid; never write navigation into it.
     for name in SHEETS:
         if name not in wb.sheetnames:continue

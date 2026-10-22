@@ -105,7 +105,7 @@ def render_documents(companies, workbook_data):
     custom=choice=='Use supplied firm template'
     template=st.file_uploader('Optional company Excel template',type=['xlsx'],key='documents_template') if custom else None
     if template:
-        from reports import export_report
+        from portfolio_financial_reporting import export_company_report as export_report
         try: data=export_report(company.review,template.getvalue())
         except Exception:
             st.error('This template could not be populated. Choose the standard report or supplied firm template.');return

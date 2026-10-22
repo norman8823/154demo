@@ -1,0 +1,615 @@
+{
+  "task": 53,
+  "branch": "feat/ai-workflow-readiness",
+  "base": "6951510b18a916ab3feac3f13d985286495dde38",
+  "producer_trace": {
+    "fresh_baseline_download": "artifacts/financial-reporting/before/tallis-standard.xlsx",
+    "Financial Performance": {
+      "columns": 13,
+      "rows": 10,
+      "producer": "reports.export_report -> excel_layout.financial_table / style_performance"
+    },
+    "five_column_repeated_facts": {
+      "sheet": "Extracted Detail",
+      "columns": 5,
+      "rows": 1025,
+      "producer": "reports.export_report -> reports.performance_rows (reports.py:176)"
+    },
+    "finding": "The described five-column repeated observation layout is reproduced in Extracted Detail. No five-column Financial Performance sheet was found in the current downloaded standard report; the owner screenshot file itself was not available for exact image matching. The GP exporter is a separate producer.",
+    "current_routes": "Company Detail and Documents & Reports standard, supplied-template and uploaded-template calls use portfolio_financial_reporting.export_company_report. Frozen exporters remain untouched."
+  },
+  "statement_policy": {
+    "totals": "Select existing accepted current-period financial_table / financial_rows totals once. Never sum package facts or duplicate detail/subtotal observations.",
+    "metrics": [
+      {
+        "key": "revenue",
+        "label": "Revenue"
+      },
+      {
+        "key": "cogs",
+        "label": "Direct Costs / Cost of Services"
+      },
+      {
+        "key": "gross_profit",
+        "label": "Gross Profit"
+      },
+      {
+        "key": "gm",
+        "label": "Gross Margin"
+      },
+      {
+        "key": "operating_expenses",
+        "label": "Operating Expenses"
+      },
+      {
+        "key": "ebitda",
+        "label": "Reported EBITDA"
+      },
+      {
+        "key": "margin",
+        "label": "EBITDA Margin"
+      },
+      {
+        "key": "depreciation",
+        "label": "Depreciation / Amortization"
+      },
+      {
+        "key": "interest",
+        "label": "Interest Expense"
+      },
+      {
+        "key": "tax",
+        "label": "Income Taxes"
+      },
+      {
+        "key": "net_income",
+        "label": "Net Income"
+      }
+    ],
+    "variance": "Actual minus Budget; margins (Actual minus Budget) times 100 percentage points. Positive expense variances adverse.",
+    "unavailable": "N/A for absent accepted metrics. Tallis Operating Expenses, D&A, Interest, Taxes and Net Income are not inferred from balancing arithmetic.",
+    "units": "Original reported $ or USD, base units; fractional numeric margins with Excel percentage formats; percentage-point variances; parentheses for negatives. Investment Summary ratio label also humanized to %. No FX conversion.",
+    "comparability": "September 2026 monthly Summit/Tallis versus FY2026 annual Harrow. No consolidated total or annualization.",
+    "provenance": "Every populated statement cell links to exact actual/budget approved definitions and all source IDs, then Source Evidence (company) or Source References and original source snapshots (GP).",
+    "template_preservation": "Existing supplied template cells/formulas and source appendices preserved. A colliding Financial Performance template sheet moves to Template Financial Performance; explicit same-workbook formula references relocate with original formula comments."
+  },
+  "approved_financial_values": {
+    "summit": {
+      "period": "September 2026",
+      "lines": [
+        {
+          "metric": "Revenue",
+          "actual": 3298000.0,
+          "budget": 3207000.0,
+          "variance": 91000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Direct Costs / Cost of Services",
+          "actual": 1865000.0,
+          "budget": 1630000.0,
+          "variance": 235000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Gross Profit",
+          "actual": 1433000.0,
+          "budget": 1577000.0,
+          "variance": -144000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Gross Margin",
+          "actual": 0.43450576106731353,
+          "budget": 0.49173682569379484,
+          "variance": -5.723106462648131,
+          "unit": "%"
+        },
+        {
+          "metric": "Operating Expenses",
+          "actual": 931000.0,
+          "budget": 918000.0,
+          "variance": 13000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Reported EBITDA",
+          "actual": 502000.0,
+          "budget": 659000.0,
+          "variance": -157000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "EBITDA Margin",
+          "actual": 0.15221346270466948,
+          "budget": 0.20548799501091364,
+          "variance": -5.327453230624416,
+          "unit": "%"
+        },
+        {
+          "metric": "Depreciation / Amortization",
+          "actual": 93000.0,
+          "budget": 93000.0,
+          "variance": 0.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Interest Expense",
+          "actual": 165000.0,
+          "budget": 165000.0,
+          "variance": 0.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Income Taxes",
+          "actual": 61000.0,
+          "budget": 100000.0,
+          "variance": -39000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Net Income",
+          "actual": 183000.0,
+          "budget": 301000.0,
+          "variance": -118000.0,
+          "unit": "$"
+        }
+      ]
+    },
+    "tallis": {
+      "period": "September 2026",
+      "lines": [
+        {
+          "metric": "Revenue",
+          "actual": 3475418.0,
+          "budget": 3651832.0,
+          "variance": -176414.0,
+          "unit": "USD"
+        },
+        {
+          "metric": "Direct Costs / Cost of Services",
+          "actual": 1875360.0,
+          "budget": 1860351.0,
+          "variance": 15009.0,
+          "unit": "USD"
+        },
+        {
+          "metric": "Gross Profit",
+          "actual": 1600058.0,
+          "budget": 1791481.0,
+          "variance": -191423.0,
+          "unit": "USD"
+        },
+        {
+          "metric": "Gross Margin",
+          "actual": 0.46039296568067495,
+          "budget": 0.49057048626552374,
+          "variance": -3.0177520584848794,
+          "unit": "%"
+        },
+        {
+          "metric": "Operating Expenses",
+          "actual": null,
+          "budget": null,
+          "variance": null,
+          "unit": "USD"
+        },
+        {
+          "metric": "Reported EBITDA",
+          "actual": 684306.0,
+          "budget": 946225.0,
+          "variance": -261919.0,
+          "unit": "USD"
+        },
+        {
+          "metric": "EBITDA Margin",
+          "actual": 0.1968989053978543,
+          "budget": 0.25910967426760045,
+          "variance": -6.2210768869746165,
+          "unit": "%"
+        },
+        {
+          "metric": "Depreciation / Amortization",
+          "actual": null,
+          "budget": null,
+          "variance": null,
+          "unit": "USD"
+        },
+        {
+          "metric": "Interest Expense",
+          "actual": null,
+          "budget": null,
+          "variance": null,
+          "unit": "USD"
+        },
+        {
+          "metric": "Income Taxes",
+          "actual": null,
+          "budget": null,
+          "variance": null,
+          "unit": "USD"
+        },
+        {
+          "metric": "Net Income",
+          "actual": null,
+          "budget": null,
+          "variance": null,
+          "unit": "USD"
+        }
+      ]
+    },
+    "harrow": {
+      "period": "FY2026",
+      "lines": [
+        {
+          "metric": "Revenue",
+          "actual": 46650000.0,
+          "budget": 47006000.0,
+          "variance": -356000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Direct Costs / Cost of Services",
+          "actual": 31616000.0,
+          "budget": 30790000.0,
+          "variance": 826000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Gross Profit",
+          "actual": 15034000.0,
+          "budget": 16216000.0,
+          "variance": -1182000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Gross Margin",
+          "actual": 0.3222722400857449,
+          "budget": 0.34497723694847465,
+          "variance": -2.2704996862729754,
+          "unit": "%"
+        },
+        {
+          "metric": "Operating Expenses",
+          "actual": 5322000.0,
+          "budget": 5321000.0,
+          "variance": 1000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Reported EBITDA",
+          "actual": 9712000.0,
+          "budget": 10895000.0,
+          "variance": -1183000.0,
+          "unit": "$"
+        },
+        {
+          "metric": "EBITDA Margin",
+          "actual": 0.20818863879957128,
+          "budget": 0.23177892183976515,
+          "variance": -2.3590283040193865,
+          "unit": "%"
+        },
+        {
+          "metric": "Depreciation / Amortization",
+          "actual": 7104000.0,
+          "budget": 7104000.0,
+          "variance": 0.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Interest Expense",
+          "actual": 3996000.0,
+          "budget": 3996000.0,
+          "variance": 0.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Income Taxes",
+          "actual": 96000.0,
+          "budget": 96000.0,
+          "variance": 0.0,
+          "unit": "$"
+        },
+        {
+          "metric": "Net Income",
+          "actual": -1484000.0,
+          "budget": -301000.0,
+          "variance": -1183000.0,
+          "unit": "$"
+        }
+      ]
+    }
+  },
+  "verification": {
+    "portfolio_regression": {
+      "passed": 109,
+      "command": ".venv/bin/python -m pytest tests/test_portfolio*.py -q -p no:cacheprovider",
+      "receipt": "artifacts/financial-reporting/portfolio-regression-final.log"
+    },
+    "post_review_financial_checks": {
+      "passed": 6,
+      "receipt": "artifacts/financial-reporting/final-financial-tests.log"
+    },
+    "actual_chrome_full_journey": {
+      "companies": {
+        "summit": {
+          "summary": "pass",
+          "evidence": "pass",
+          "return": "pass",
+          "downloads": {
+            "standard": 184959,
+            "custom": 190993
+          }
+        },
+        "tallis": {
+          "summary": "pass",
+          "evidence": "pass",
+          "return": "pass",
+          "downloads": {
+            "standard": 130098,
+            "custom": 135838
+          }
+        },
+        "harrow": {
+          "summary": "pass",
+          "evidence": "pass",
+          "return": "pass",
+          "downloads": {
+            "standard": 198525,
+            "custom": 204235
+          }
+        }
+      },
+      "external_requests": [],
+      "browser_errors": [],
+      "downloaded_issue_chains": [
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_51",
+          "destination": "Source References!A368"
+        },
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_9",
+          "destination": "Source References!A442"
+        },
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_18",
+          "destination": "Source References!A486"
+        },
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_7",
+          "destination": "Source References!A536"
+        },
+        {
+          "company": "Summit Home Services",
+          "source_id": "calc_6",
+          "destination": "Source References!A561"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "s4_K40",
+          "destination": "TBA 04 Monthly Trend!K40"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "s7_D9",
+          "destination": "TBA 07 WIP AR Realization!D9"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "s5_B17",
+          "destination": "TBA 05 Adjusted EBITDA!B17"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "s8_F7",
+          "destination": "TBA 08 Client Book!F7"
+        },
+        {
+          "company": "Tallis Brook Accounting",
+          "source_id": "calc_2",
+          "destination": "Source References!A725"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_10",
+          "destination": "Source References!A763"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_18",
+          "destination": "Source References!A805"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_2",
+          "destination": "Source References!A837"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_19",
+          "destination": "Source References!A869"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_8",
+          "destination": "Source References!A893"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_26",
+          "destination": "Source References!A924"
+        },
+        {
+          "company": "Harrow Ridge Environmental",
+          "source_id": "calc_22",
+          "destination": "Source References!A945"
+        }
+      ],
+      "portfolio_download": {
+        "bytes": 324534,
+        "sheets": [
+          "Portfolio Overview",
+          "Company Comparison",
+          "Investment Issues",
+          "Summit Home Services",
+          "Tallis Brook Accounting",
+          "Harrow Ridge Environmental",
+          "Source References",
+          "Source Snapshots",
+          "Reporting Output",
+          "Investment Ledger",
+          "Portfolio Financial Performance",
+          "SHS 01 CFO Commentary",
+          "SHS 02 Income Statement",
+          "SHS 03 Branch Results",
+          "SHS 04 Operating Metrics",
+          "SHS 05 AR Aging & Recon",
+          "SHS 06 Monthly Detail",
+          "TBA 01 MP Letter",
+          "TBA 02 Dashboard",
+          "TBA 03 Practice P&L",
+          "TBA 04 Monthly Trend",
+          "TBA 05 Adjusted EBITDA",
+          "TBA 06 People & Utilization",
+          "TBA 07 WIP AR Realization",
+          "TBA 08 Client Book",
+          "HRE 01 Management Discussion",
+          "HRE 02 P&L Summary",
+          "HRE 03 Monthly P&L",
+          "HRE 04 Cash Flow & Capex",
+          "HRE 05 Balance Sheet",
+          "HRE 06 Segment Results",
+          "HRE 07 Operating KPIs",
+          "HRE 08 Fleet Register",
+          "HRE 09 Customers & Contracts",
+          "HRE 10 Adjusted EBITDA"
+        ]
+      },
+      "company_selector_switching": "pass",
+      "deep_link_summary_evidence_regression": "pass",
+      "data_package_download": {
+        "bytes": 60627,
+        "standalone_consumer": "pass",
+        "company_comparisons": 3
+      },
+      "mobile_no_overflow": "pass"
+    },
+    "final_tallis_download_routes": [
+      {
+        "route": "tallis-standard.xlsx",
+        "company": "tallis",
+        "revenue": 3475418,
+        "reported_ebitda": 684306,
+        "active_sheet": "Financial Performance",
+        "bytes": 130101
+      },
+      {
+        "route": "tallis-custom.xlsx",
+        "company": "tallis",
+        "revenue": 3475418,
+        "reported_ebitda": 684306,
+        "active_sheet": "Financial Performance",
+        "bytes": 135950
+      },
+      {
+        "route": "tallis-uploaded-company.xlsx",
+        "company": "tallis",
+        "revenue": 3475418,
+        "reported_ebitda": 684306,
+        "active_sheet": "Financial Performance",
+        "bytes": 135950
+      },
+      {
+        "route": "tallis-uploaded-documents.xlsx",
+        "company": "tallis",
+        "revenue": 3475418,
+        "reported_ebitda": 684306,
+        "active_sheet": "Financial Performance",
+        "bytes": 135950
+      }
+    ],
+    "native_spreadsheet_rendering": [
+      {
+        "broken_internal_destinations": 0,
+        "download": "portfolio-browser.xlsx",
+        "pages": 108,
+        "renderer": "LibreOffice Calc 26.8.1 native PDF export",
+        "resolved_internal_destinations": 1227,
+        "screenshot": "portfolio-financial-performance.png",
+        "statement_page": 80
+      },
+      {
+        "broken_internal_destinations": 0,
+        "download": "tallis-standard.xlsx",
+        "pages": 112,
+        "renderer": "LibreOffice Calc 26.8.1 native PDF export",
+        "resolved_internal_destinations": 20,
+        "screenshot": "tallis-financial-performance.png",
+        "statement_page": 3
+      },
+      {
+        "broken_internal_destinations": 0,
+        "download": "tallis-custom.xlsx",
+        "pages": 120,
+        "renderer": "LibreOffice Calc 26.8.1 native PDF export",
+        "resolved_internal_destinations": 20,
+        "screenshot": "tallis-custom-financial-performance.png",
+        "statement_page": 11
+      }
+    ],
+    "frozen_pins": [
+      "engine.py",
+      "ingestion.py",
+      "financial_analysis.py",
+      "package_reader.py",
+      "package_analysis.py",
+      "ai_evidence.py",
+      "investment_output.py",
+      "executive.py",
+      "reports.py",
+      "excel_layout.py",
+      "ai_runtime.py",
+      "report_cache.py",
+      "investigation.py",
+      "investigation_math.py",
+      "company_context.py",
+      "skill_engine.py",
+      "skill_tools.py",
+      "skill_output.py",
+      "task_budget.py",
+      "analyst_ai.py",
+      "mapping_ai.py",
+      "app.py",
+      "scripts/run_skill_demo.sh",
+      "demo_workbooks/Harrow_Ridge_Environmental_FY2026.xlsx",
+      "demo_results/harrow-17-final.json.gz",
+      "demo_workbooks/Summit_Home_Services_Sep2026 (1).xlsx",
+      "demo_results/summit-05-final.json.gz",
+      "demo_workbooks/Tallis_Brook_Accounting_Sep2026.xlsx",
+      "demo_results/tallis-05-final.json.gz"
+    ],
+    "all_pins_unchanged": true,
+    "new_paid_analysis_calls": 0,
+    "data_zip_sha256_unchanged": "b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b",
+    "review": "One bounded code/presentation review plus corrections: safe custom worksheet-name handling, workbook views for correct active tab, accounting-basis header, percentage unit display. Approved data, calculations and frozen modules unchanged.",
+    "original_8501_pid_untouched": 20385
+  },
+  "screenshots": [
+    "docs/images/financial-reporting/portfolio-financial-performance.png",
+    "docs/images/financial-reporting/tallis-financial-performance.png"
+  ],
+  "limitations": [
+    "Tallis accepted contract does not support a complete lower income statement or expense reconciliation; relevant rows show N/A.",
+    "Complex uploaded templates colliding with Financial Performance and using ambiguous dynamic/3-D references or charts/pivots fail safely; rename that template sheet before upload.",
+    "Native Calc rendering and internal-destination import inspected; interactive Microsoft Excel mouse click-through is not certified.",
+    "Previously downloaded/stale files and the separately frozen analytical application are not rewritten. Download current reports from port 8502."
+  ],
+  "preview": "http://127.0.0.1:8502/",
+  "restart": "./scripts/run_portfolio_demo.sh --server.headless true",
+  "artifact_boundary": "Actual generated XLSX/PDF/log receipts remain in ignored artifacts/financial-reporting; only synthetic-data screenshots and this verification receipt are committed."
+}
