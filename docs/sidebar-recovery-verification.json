@@ -1,0 +1,70 @@
+{
+  "harmony_task": 61,
+  "branch": "feat/ai-workflow-readiness",
+  "base": "a3977db",
+  "change": "Native Streamlit initial_sidebar_state=locked (supported by requirements Streamlit>=1.66); remove global stHeader height:0. No custom JavaScript or sidebar replacement.",
+  "behavior": "Desktop lock explicitly overrides retained collapsed browser state and removes collapse affordances; narrow/mobile retains native collapse/reopen controls. Header retains native dimensions; existing mobile header style remains.",
+  "browser": [
+    {
+      "width": 390,
+      "stored_collapsed_state": true,
+      "refresh_recovery": "pass",
+      "navigation": "pass",
+      "mobile_toggle_or_desktop_lock": "pass",
+      "branding_gradient_footer": "preserved"
+    },
+    {
+      "width": 430,
+      "stored_collapsed_state": true,
+      "refresh_recovery": "pass",
+      "navigation": "pass",
+      "mobile_toggle_or_desktop_lock": "pass",
+      "branding_gradient_footer": "preserved"
+    },
+    {
+      "width": 1280,
+      "stored_collapsed_state": true,
+      "refresh_recovery": "pass",
+      "navigation": "pass",
+      "mobile_toggle_or_desktop_lock": "pass",
+      "branding_gradient_footer": "preserved"
+    },
+    {
+      "width": 1440,
+      "stored_collapsed_state": true,
+      "refresh_recovery": "pass",
+      "navigation": "pass",
+      "mobile_toggle_or_desktop_lock": "pass",
+      "branding_gradient_footer": "preserved"
+    }
+  ],
+  "interaction_checks": [
+    "390/430 stored-collapsed load, visible in-viewport expand control, open/close, collapsed refresh, source-document navigation, phone-to-desktop recovery and desktop refresh",
+    "1280/1440 stored-collapsed load, expanded sidebar, no collapse/expand controls, refresh and page navigation",
+    "Animation geometry awaited before correctly labeled screenshots; mobile native header at least44px; no page overflow"
+  ],
+  "focused_tests": "18 passed in 41.16s",
+  "export_integrity": {
+    "compared_to": "a3977db validated GP browser download",
+    "identical_xl_parts": 111,
+    "mismatches": [],
+    "gp_download_filename": "GP_Portfolio_Review_Sep2026_FY2026.xlsx"
+  },
+  "frozen_hash_pins_verified": 29,
+  "new_paid_analysis_calls": 0,
+  "preserved": "154 Partners/Portfolio Reporting Copilot/by NL Intelligence; gradient, navigation order/routes and unchanged QR-panel implementation; all financial/export code unchanged.",
+  "screenshots": [
+    "docs/images/sidebar-recovery/desktop-1280.png",
+    "docs/images/sidebar-recovery/desktop-1440.png",
+    "docs/images/sidebar-recovery/mobile-closed-390.png",
+    "docs/images/sidebar-recovery/mobile-closed-430.png",
+    "docs/images/sidebar-recovery/mobile-open-390.png",
+    "docs/images/sidebar-recovery/mobile-open-430.png"
+  ],
+  "preview": "http://127.0.0.1:8502/",
+  "analytical_8501_pid_untouched": 20385,
+  "limitations": [
+    "Uses the installed/pinned Streamlit native locked behavior; no compatibility shim for older unsupported Streamlit versions.",
+    "No mobile-access URL was configured or exposed; existing QR setup message remains."
+  ]
+}

@@ -2,7 +2,8 @@
 :root {--gp-ink:#1a2b43;--gp-muted:#657389;--gp-canvas:#f6f7fa;--gp-line:#e1e6ed;--gp-copper:#bd907d;--gp-radius:10px;}
 .stApp {background:var(--gp-canvas);color:var(--gp-ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 .block-container {max-width:1580px;padding:28px 32px 36px;}
-header[data-testid="stHeader"] {height:0;background:transparent;}
+/* Keep the native recovery/menu surface available; desktop locking is native. */
+header[data-testid="stHeader"] {background:transparent;}
 [data-testid="stSidebar"] {min-width:240px;max-width:240px;background:linear-gradient(160deg,#111f32 0%,#18263d 58%,#202740 100%);}
 [data-testid="stSidebarContent"] {padding:0 18px;}
 [data-testid="stSidebarUserContent"] {padding:22px 0 18px;}

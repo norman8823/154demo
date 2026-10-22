@@ -5,7 +5,7 @@ from portfolio_data import load_companies, company_by_id
 from portfolio_ui import shell, overview, footer, render_watchlist, page_heading
 from portfolio_excel import export_portfolio
 
-st.set_page_config(page_title='Portfolio Reporting Copilot | 154 Partners', page_icon='▣', layout='wide', initial_sidebar_state='auto')
+st.set_page_config(page_title='Portfolio Reporting Copilot | 154 Partners', page_icon='▣', layout='wide', initial_sidebar_state='locked')
 
 
 @st.cache_data(show_spinner=False)
