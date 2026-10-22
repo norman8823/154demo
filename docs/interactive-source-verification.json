@@ -1,0 +1,160 @@
+{
+  "task": 51,
+  "branch": "feat/ai-workflow-readiness",
+  "base": "a2c3afe8a4e415a8f03e3469a509554c6c46b06d",
+  "scope": "Interactive read-only original-worksheet inspection; no financial, source-verification or exporter changes.",
+  "implementation": [
+    "Native Streamlit Components v2 with local vanilla JavaScript/CSS; no new dependencies or frontend framework.",
+    "Click selection, green Excel-style border, four-arrow roving grid focus, coordinate name box / jump, and original formula-or-raw-value bar.",
+    "Selection, formula, source metadata and bounded range update synchronously in the component; no Python rerun for each selection.",
+    "12 rows \u00d7 4 columns desktop; 8 rows \u00d7 2 columns phone. Viewport shifts at each grid edge and clamps at actual worksheet bounds.",
+    "Worksheet selection and fresh citation-opening identities retain exact valid original targets.",
+    "Optional cell provenance, original observed value/units, standardized value and comments; no duplicate formula expander.",
+    "Original filenames, strict source allowlist/hash verification, downloads and derived operand controls reused unchanged."
+  ],
+  "validation": {
+    "portfolio_regressions": "93 passed in 115.07s",
+    "focused_tests": "12 passed in 19.33s",
+    "actual_chrome": {
+      "originals": {
+        "summit": {
+          "sha256": "52c66cf2c5b95fbfd68b4cbafcffd2d1c1fd4877cbc16a8fec75ff4eb90cbaf0",
+          "library_and_dialog_download": "identical approved bytes"
+        },
+        "tallis": {
+          "sha256": "197be0d0e0a34273206d61c47df3f63fbb22fca468a2d9c4fc497d030c49cd9b",
+          "library_and_dialog_download": "identical approved bytes"
+        },
+        "harrow": {
+          "sha256": "bdd9c427e57f4c55fa4a135a0126bd25f5fbdae5781b7c192067bbb937788efb",
+          "library_and_dialog_download": "identical approved bytes"
+        }
+      },
+      "interaction": [
+        {
+          "company": "summit",
+          "exact_citation": "Income Statement!D15",
+          "click_four_arrows": "pass",
+          "immediate_formula_bar": "pass; same component mount",
+          "all_four_visible_edges": "pass",
+          "worksheet_bounds": "pass",
+          "invalid_coordinate": "safe; valid selection unchanged",
+          "worksheet_switching": "pass",
+          "outside_grid_arrows": "not intercepted",
+          "Escape_reopen": "original citation restored"
+        },
+        {
+          "company": "tallis",
+          "exact_citation": "Practice P&L!G12",
+          "click_four_arrows": "pass",
+          "immediate_formula_bar": "pass; same component mount",
+          "all_four_visible_edges": "pass",
+          "worksheet_bounds": "pass",
+          "invalid_coordinate": "safe; valid selection unchanged",
+          "worksheet_switching": "pass",
+          "outside_grid_arrows": "not intercepted",
+          "Escape_reopen": "original citation restored"
+        },
+        {
+          "company": "harrow",
+          "exact_citation": "P&L Summary!F13",
+          "click_four_arrows": "pass",
+          "immediate_formula_bar": "pass; same component mount",
+          "all_four_visible_edges": "pass",
+          "worksheet_bounds": "pass",
+          "invalid_coordinate": "safe; valid selection unchanged",
+          "worksheet_switching": "pass",
+          "outside_grid_arrows": "not intercepted",
+          "Escape_reopen": "original citation restored"
+        }
+      ],
+      "citations": [
+        {
+          "route": "issues",
+          "recorded_operand": "Income Statement!K44"
+        },
+        {
+          "route": "company&company=summit&finding=10000",
+          "recorded_operand": "Income Statement!K44"
+        }
+      ],
+      "mobile": [
+        {
+          "company": "summit",
+          "width": 390,
+          "bounded_grid": "8 rows \u00d7 2 columns",
+          "selection_and_formula_bar": "pass",
+          "overflow": false
+        },
+        {
+          "company": "tallis",
+          "width": 390,
+          "bounded_grid": "8 rows \u00d7 2 columns",
+          "selection_and_formula_bar": "pass",
+          "overflow": false
+        },
+        {
+          "company": "harrow",
+          "width": 390,
+          "bounded_grid": "8 rows \u00d7 2 columns",
+          "selection_and_formula_bar": "pass",
+          "overflow": false
+        }
+      ],
+      "errors": [],
+      "external_requests": []
+    },
+    "existing_workflow": {
+      "downloads": 8,
+      "company_exports": 6,
+      "excel_issue_source_chains": 17,
+      "independent_data_consumer": {
+        "bytes": 60627,
+        "standalone_consumer": "pass",
+        "company_comparisons": 3
+      },
+      "browser_errors": [],
+      "external_requests": []
+    },
+    "export_and_frozen_integrity": {
+      "xlsx_values_formats_types_links_identical": [
+        "portfolio-browser.xlsx",
+        "summit-standard.xlsx",
+        "summit-custom.xlsx",
+        "tallis-standard.xlsx",
+        "tallis-custom.xlsx",
+        "harrow-standard.xlsx",
+        "harrow-custom.xlsx"
+      ],
+      "zip_bytes_identical": true,
+      "zip_sha256": "b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b",
+      "frozen_hash_pins": 29,
+      "new_analyst_calls": 0
+    },
+    "secret_audit": "Exact changed-path allowlist / high-confidence credential scan passed; no credential or environment files read."
+  },
+  "bounded_review": [
+    "Workbook strings enter the component as serialized data and are displayed only through textContent/value. No HTML interpretation, formula execution, editing or clipboard spreadsheet handlers.",
+    "Keyboard listeners attach only to the worksheet table; modifier shortcuts and focus outside data cells are left alone.",
+    "Removed obsolete global source-grid CSS; component styling is isolated in its shadow root.",
+    "Actual screenshots inspected: initial cited context for each company and a 390px phone grid; no page/table horizontal overflow."
+  ],
+  "screenshots": [
+    "docs/images/interactive-source/harrow-interactive-desktop.png",
+    "docs/images/interactive-source/summit-interactive-desktop.png",
+    "docs/images/interactive-source/summit-interactive-mobile.png",
+    "docs/images/interactive-source/tallis-interactive-desktop.png"
+  ],
+  "preview": {
+    "url": "http://127.0.0.1:8502/?page=excel",
+    "restart": "./scripts/run_portfolio_demo.sh --server.headless true",
+    "portfolio_process": 82801,
+    "analytical_8501_pid_unchanged": 20385
+  },
+  "limitations": [
+    "Bounded original worksheet reconstruction; merged layouts, embedded artwork and charts are not reproduced.",
+    "Formula bar shows original formula text; grid uses original cached values or clearly attributed approved retained source observations. No recalculation.",
+    "A different worksheet starts at A1; returning to the cited sheet starts at its original citation. Cursor history is not persisted across sheets or dialog openings.",
+    "Native dialog owns vertical scrolling while open; the worksheet has no separate scrolling panel."
+  ]
+}

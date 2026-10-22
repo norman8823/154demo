@@ -1,6 +1,6 @@
 import hashlib
 from dataclasses import replace
-from html import unescape
+import json
 import pytest
 from streamlit.testing.v1 import AppTest
 from engine import ROOT, InputError
@@ -91,7 +91,8 @@ def test_documents_page_preserves_formats_and_removes_fake_preview():
     at.button(key='preview_summit').click().run()
     assert not at.exception
     assert any(s.label=='Worksheet' for s in at.selectbox)
-    assert any(s.label=='Inspect cell' and s.value=='A1' for s in at.text_input)
+    component=at.get('bidi_component')[0]
+    assert json.loads(component.proto.json)['initial']=='A1'
 
 
 
@@ -102,4 +103,6 @@ def test_foundation_mapping_opens_original_source():
     at.button(key='foundation_source_view').click().run()
     assert not at.exception
     assert any(s.label=='Worksheet' and s.value=='Income Statement' for s in at.selectbox)
-    assert any(s.label=='Inspect cell' and s.value=='D15' for s in at.text_input)
+    payload=json.loads(at.get('bidi_component')[0].proto.json)
+    assert payload['initial']=='D15' and payload['sheet']=='Income Statement'
+    assert payload['cells']['D15']['bar']=='=SUM(D9:D14)'

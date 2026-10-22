@@ -1,9 +1,8 @@
 """One shared native source viewer for library, mappings and accepted findings."""
 import streamlit as st
-from openpyxl.utils import get_column_letter
 from engine import InputError
 from portfolio_documents import (original_document, source_books, checked_coordinate,
-    source_fact, evidence_locations, cell_record, display_value, worksheet_html)
+    source_fact, evidence_locations)
 
 XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
@@ -34,32 +33,9 @@ def source_dialog(company, requested_sheet, requested_cell, request_id):
         name = st.selectbox('Worksheet', book.sheetnames, index=book.sheetnames.index(requested_sheet), key=prefix+'_sheet')
         sheet = book[name]
         focus = requested_cell if name == requested_sheet else 'A1'
-        coordinate = st.text_input('Inspect cell', value=focus, key=prefix+'_'+name+'_cell', help='Enter an Excel coordinate to inspect its original value and nearby cells.').strip().upper()
-        row, col = checked_coordinate(sheet, coordinate)
-        anchor = prefix+'_'+name+'_'+coordinate
-        left, right = st.columns(2)
-        first_row = int(left.number_input('First row', min_value=1, max_value=sheet.max_row, value=max(1,row-5), step=12, key=anchor+'_row'))
-        first_col = int(right.number_input('First column', min_value=1, max_value=sheet.max_column, value=max(1,col-2), step=4, key=anchor+'_col', help='1 = A, 2 = B, etc. Four columns are shown per view.'))
-        last_row=min(sheet.max_row,first_row+11); last_col=min(sheet.max_column,first_col+3)
-        st.caption(f'{name} · {get_column_letter(first_col)}{first_row}:{get_column_letter(last_col)}{last_row} · {sheet.max_row} rows × {sheet.max_column} columns in original')
-        st.markdown(worksheet_html(company,sheet,cached[name],first_row,first_col,coordinate),unsafe_allow_html=True)
-        if not (first_row<=row<=last_row and first_col<=col<=last_col): st.info('The inspected cell is outside this range. Change the first row / column to return to it.')
-        record=cell_record(company,sheet,cached[name],coordinate)
-        st.markdown('**'+name.replace('$','\\$')+' · '+coordinate+'**')
-        st.text('Source label: '+str(record['label']))
-        st.text('Original cell value: '+display_value(record['value'],record['number_format']))
-        st.caption(record['origin']+' · Original number format: '+record['number_format'])
-        if record['fact'] and record['fact'].get('value') is not None:
-            fact=record['fact']
-            st.caption('Source-unit multiplier: '+str(fact.get('source_scale',1))+' · Verified standardized value: '+str(fact.get('value'))+' '+str(fact.get('currency',''))+' · '+str(fact.get('period','')))
-        if record['formula']:
-            with st.expander('Original formula text'):
-                st.code(record['formula'],language=None)
-                st.caption('Retained for inspection only; formulas are never executed in this viewer.')
-        if record['comment']:
-            with st.expander('Original cell comment'):
-                st.text(record['comment'])
-        st.caption('Bounded worksheet reconstruction; original coordinates and values are retained. Merged layouts and Excel artwork are not reproduced.')
+        from portfolio_sheet_grid import render_sheet_grid
+        render_sheet_grid(company,sheet,cached[name],focus,prefix+'_'+name+'_grid')
+        st.caption('Bounded worksheet reconstruction; original coordinates and cached values are retained. Formulas are never executed. Merged layouts and Excel artwork are not reproduced.')
         download,close=st.columns(2)
         download.download_button('Download Original',document.data,file_name=document.filename,mime=XLSX,on_click='ignore',key=prefix+'_download',width='stretch')
         if close.button('Close',key=prefix+'_close',width='stretch'): st.rerun()
