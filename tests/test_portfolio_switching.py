@@ -7,7 +7,6 @@ from engine import ROOT
 def test_company_selector_updates_all_data_and_clears_finding_and_export_state():
     at = AppTest.from_file(str(ROOT/'portfolio_app.py'), default_timeout=60).run()
     at.button(key='open_summit').click().run()
-    at.selectbox(key='gp_company_format').set_value('Use supplied firm template').run()
     at.query_params['finding']='10001'
     at.run()
     assert at.session_state['selected']==10001
@@ -18,7 +17,9 @@ def test_company_selector_updates_all_data_and_clears_finding_and_export_state()
         assert any(name in m.value for m in at.markdown)
         assert at.session_state['gp_company_tab'] == 'summary'
         assert not any(r.key=='gp_company_tab' for r in at.radio)
-        assert at.selectbox(key='gp_company_format').value == 'Standard Excel report'
+        assert not any(item.label == 'Company Excel format' for item in at.selectbox)
+        assert not at.get('file_uploader')
+        assert [d.proto.label for d in at.get('download_button')] == ['Download Excel']
         assert 'finding' not in at.query_params
         book=load_workbook(io.BytesIO(at.session_state['export'][0]))
         assert any(row[1] == revenue for row in book['Financial Performance'].values)

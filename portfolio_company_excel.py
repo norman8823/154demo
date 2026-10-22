@@ -27,7 +27,7 @@ def company_identity(review):
     return SimpleNamespace(id=None, name=company_name(review), review=review)
 
 
-def company_filename(review, context, *, custom=False):
+def company_filename(review, context):
     company = company_identity(review)
     period = context['period']
     for fmt in ('%B %Y', '%b %Y', '%Y-%m'):
@@ -41,12 +41,11 @@ def company_filename(review, context, *, custom=False):
         period = 'FY' + period[:4]
     clean = lambda text: re.sub(r'[^A-Za-z0-9]+', '_', text).strip('_')
     frequency = context['frequency'] if context['frequency'] in ('Monthly', 'Annual') else ''
-    return (clean(company.name) + '_' + clean(period) + '_' + frequency + 'Review'
-            + ('_CustomTemplate' if custom else '') + '.xlsx')
+    return clean(company.name) + '_' + clean(period) + '_' + frequency + 'Review.xlsx'
 
 
-def executive_review(wb, review, lines, context, *, remove_summary=False):
-    """Rebuild only an exporter-owned summary; never called for a supplied one."""
+def executive_review(wb, review, lines, context):
+    """Rebuild the generated summary and preserve its in-workbook references."""
     company = company_identity(review)
     index = wb.sheetnames.index('Executive Summary')
     wb.remove(wb['Executive Summary'])
@@ -174,7 +173,7 @@ def executive_review(wb, review, lines, context, *, remove_summary=False):
         spacer()
     body('For demo only. All portfolio companies, investment data, and financial figures are synthetic. Any resemblance to real companies or investments is coincidental.', color=MUTED)
     ws.print_area = 'A1:L' + str(row-1)
-    if remove_summary and 'Investment Summary' in wb:
+    if 'Investment Summary' in wb:
         # Generated context is now above. Preserve any old context hyperlinks.
         for sheet in wb:
             for cells in sheet:

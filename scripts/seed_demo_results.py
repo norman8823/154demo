@@ -9,6 +9,7 @@ import gzip
 import hashlib
 import io
 import json
+import math
 import os
 from pathlib import Path
 import sys
@@ -29,6 +30,43 @@ DEMO_SETTINGS = {
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def _exact_json(actual, approved):
+    """Type-aware exact equality for provenance and calculation metadata."""
+    if type(actual) is not type(approved):
+        return False
+    if isinstance(approved, dict):
+        return (actual.keys() == approved.keys()
+                and all(_exact_json(actual[key], approved[key]) for key in approved))
+    if isinstance(approved, list):
+        return (len(actual) == len(approved)
+                and all(_exact_json(a, b) for a, b in zip(actual, approved)))
+    return actual == approved
+
+
+def calculations_match(observed, approved):
+    """Compare only calculated numeric values approximately; retain exact provenance.
+
+    Python versions can differ by a few binary floating-point ULPs while
+    recomputing the same expression. 1e-12 relative/absolute bounds cover that
+    representation noise but reject business-significant numerical changes.
+    """
+    if type(observed) is not list or type(approved) is not list or len(observed) != len(approved):
+        return False
+    for actual, expected in zip(observed, approved):
+        if type(actual) is not dict or type(expected) is not dict or actual.keys() != expected.keys():
+            return False
+        for field, wanted in expected.items():
+            got = actual[field]
+            if field == 'value':
+                if (type(got) not in (int, float) or type(wanted) not in (int, float)
+                        or not math.isfinite(got) or not math.isfinite(wanted)
+                        or not math.isclose(got, wanted, rel_tol=1e-12, abs_tol=1e-12)):
+                    return False
+            elif not _exact_json(got, wanted):
+                return False
+    return True
 
 
 def project_file(name):
@@ -77,7 +115,7 @@ def verify_prepared():
                     raise
         for fact in tools.facts:
             tools.verify_fact(fact)
-        if tools.calculations != state['calculations'] or tools.errors:
+        if not calculations_match(tools.calculations, state['calculations']) or tools.errors:
             raise InputError('Prepared calculation/source verification failed.')
         for finding in review.package['ai_insights']:
             if not set(finding['fact_ids']) <= tools.facts.keys() | tools.notes.keys():

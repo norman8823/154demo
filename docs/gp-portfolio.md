@@ -18,9 +18,8 @@ the unchanged analytical-engine preview on 8501.
 4. Download **Portfolio Excel**. Inspect the four worksheets, follow a company
    link into Company Comparison, then follow a source link to Source References.
    The Watchlist includes an index and full original finding narratives below it.
-5. In a company drilldown, switch between the original standard and supplied firm
-   template exports. An optional uploaded firm template still uses the unchanged
-   company exporter.
+5. In a company drilldown, download the standard prepared company report. Original
+   source workbooks remain available from Source Documents.
 
 ## Run and reproduce
 
@@ -35,7 +34,7 @@ The GP path needs no API credential: it reads only the committed, approved prepa
 Reviews through `verify_prepared()`, preserving original provider receipts and
 recording **zero current model calls / $0 current inference**. There is no upload,
 analysis-generation or cache-miss inference path in the GP application. Company
-Excel template upload affects formatting only.
+Company detail offers the standard prepared report only.
 
 For a fresh checkout:
 

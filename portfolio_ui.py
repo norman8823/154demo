@@ -10,11 +10,8 @@ CSS = '<style>'+Path(__file__).with_name('portfolio_layout.css').read_text()+'</
 
 def navigate(page, company=None, finding=None):
     if page == 'company' and company and company != st.query_params.get('company'):
-        for key in ('gp_company_route','gp_company_tab','selected','gp_selected_finding','export','custom','gp_company_format','gp_company_template'):
+        for key in ('gp_company_route','gp_company_tab','selected','gp_selected_finding','export'):
             st.session_state.pop(key, None)
-        # Explicit widget state reaches the browser; deletion alone can retain
-        # a prior company's frontend selection during a callback rerun.
-        st.session_state.gp_company_format = 'Standard Excel report'
     params = {'page': page}
     if company:
         params['company'] = company

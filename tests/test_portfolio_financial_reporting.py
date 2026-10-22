@@ -1,8 +1,7 @@
 import io
 from copy import deepcopy
-from pathlib import Path
 import pytest
-from openpyxl import load_workbook, Workbook
+from openpyxl import load_workbook
 from portfolio_data import load_companies
 from portfolio_financial_reporting import statement, export_company_report, PORTFOLIO_SHEET, LINES
 from portfolio_excel import export_portfolio
@@ -40,25 +39,16 @@ def signature(sheet):
  return [(c.coordinate,c.value,c.number_format,c.hyperlink.target if c.hyperlink else None,c.hyperlink.location if c.hyperlink else None) for row in sheet for c in row if c.value is not None]
 
 
-@pytest.mark.parametrize('custom',[False,True])
-def test_six_company_exports_preserve_evidence_templates_and_statement(companies,custom):
- template=(Path(__file__).resolve().parents[1]/'sample_templates/Sample_Firm_Review_Template.xlsx').read_bytes() if custom else None
+def test_three_standard_company_exports_preserve_evidence_and_statement(companies):
  for c in companies:
-  original=load_workbook(io.BytesIO(frozen_export(c.review,template)[0]))
-  result=load_workbook(io.BytesIO(export_company_report(c.review,template)[0]))
+  original=load_workbook(io.BytesIO(frozen_export(c.review)[0]))
+  result=load_workbook(io.BytesIO(export_company_report(c.review)[0]))
   for name in original.sheetnames:
    if name not in ('Financial Performance','Investment Summary','Executive Summary'):assert signature(original[name])==signature(result[name]),name
-  if custom:
-   # Generated context remains in custom exports; supplied worksheets are protected.
-   for row in original['Investment Summary']:
-    for old in row:
-     new=result['Investment Summary'][old.coordinate]
-     expected='%'+old.value[len('ratio'):] if isinstance(old.value,str) and old.value.startswith('ratio;') else old.value
-     assert new.value==expected
-  else:assert 'Investment Summary' not in result
-  if custom:assert result['Partner Review']['C16'].data_type=='f'
+  assert 'Investment Summary' not in result
+  assert 'Partner Review' not in result
   sheet=result['Financial Performance'];assert sheet.max_column==4 and sheet.max_row<=22
-  assert result.active.title==('Partner Review' if custom else 'Executive Summary')
+  assert result.active.title=='Executive Summary'
   for row,line in enumerate(statement(c.review),7):
    assert sheet.cell(row,1).value==line.label
    for col,value in zip((2,3,4),(line.actual,line.budget,line.variance)):
@@ -92,24 +82,3 @@ def test_gp_statement_reconciles_and_supports_every_operand(companies):
   for cell in row:
    assert cell.value not in ('money','ratio') and not str(cell.value).startswith('financial_')
  assert book['Portfolio Overview']['A4'].hyperlink.location=="'Portfolio Financial Performance'!A1"
-
-
-def test_template_statement_name_collision_preserves_layout_and_references():
- w=Workbook();w.active.title='Financial Performance';w.active['A1']='=1+2'
- w.create_sheet('Partner Input')['B2']="='Financial Performance'!A1*2"
- out=io.BytesIO();w.save(out)
- data,_,warnings=export_company_report(load_companies()[1].review,out.getvalue())
- result=load_workbook(io.BytesIO(data))
- assert result['Template Financial Performance']['A1'].value=='=1+2'
- assert result['Partner Input']['B2'].value=="='Template Financial Performance'!A1*2"
- assert result['Partner Input']['B2'].comment.text.endswith("='Financial Performance'!A1*2")
- assert result['Financial Performance']['B7'].value==3475418
- assert any('preserved as Template' in warning for warning in warnings)
-
-
-def test_ambiguous_dynamic_template_reference_fails_safely():
- w=Workbook();w.active.title='Financial Performance'
- w.create_sheet('Partner Input')['B2']='=INDIRECT("Financial Performance!A1")'
- out=io.BytesIO();w.save(out)
- with pytest.raises(ValueError,match='safely relocated'):
-  export_company_report(load_companies()[1].review,out.getvalue())

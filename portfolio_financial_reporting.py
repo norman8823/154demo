@@ -1,7 +1,7 @@
-"""Income-statement presentation over approved Reviews; no extraction or analysis.
+"""Standard income-statement presentation over approved Reviews; no analysis.
 
 The frozen exporter remains intact. This adapter replaces its generated financial
-sheet, retaining all original evidence and custom-template output elsewhere.
+sheet and retains all original evidence in the prepared company report.
 """
 import io
 import math
@@ -180,81 +180,12 @@ def add_proof(ws, review, line, name, evidence_rows, company_id=None):
     return ws.title, 'A'+str(first)
 
 
-def prepare_template(template):
-    """Reserve the primary statement name without discarding a supplied layout.
-
-    Move a colliding template sheet to a named appendix, preserving coordinates,
-    styles and arithmetic. Rewrite explicit same-workbook references only; refuse
-    ambiguous dynamic/3-D references rather than silently changing their meaning.
-    """
-    if template is None: return template, []
-    wb=load_workbook(io.BytesIO(template))
-    if 'Financial Performance' not in wb.sheetnames: return template, []
-    from openpyxl.formula.tokenizer import Tokenizer
-    from openpyxl.comments import Comment
-    original='Financial Performance';archive='Template Financial Performance'
-    if archive in wb.sheetnames: raise InputError('Template statement archive name is already used.')
-    wb[original].title=archive
-    prefix="'"+original+"'!";replacement="'"+archive+"'!"
-    for sheet in wb:
-        for row in sheet:
-            for cell in row:
-                if cell.data_type!='f': continue
-                before=cell.value;tokens=Tokenizer(before).items
-                for token in tokens:
-                    if original.lower() not in token.value.lower(): continue
-                    if token.type=='OPERAND' and token.subtype=='RANGE' and token.value.startswith(prefix):
-                        token.value=replacement+token.value[len(prefix):]
-                    else:
-                        raise InputError('A template statement reference cannot be safely relocated: '+sheet.title+'!'+cell.coordinate)
-                after='='+''.join(t.value for t in tokens)
-                if after!=before:
-                    cell.value=after
-                    prior=cell.comment.text+'\n' if cell.comment else ''
-                    cell.comment=Comment(prior+'Original template formula before statement-sheet relocation: '+before,'Portfolio Reporting Copilot')
-        for name in sheet.defined_names.values():
-            if original in name.attr_text:
-                if not name.attr_text.startswith(prefix):raise InputError('Unsupported template named reference.')
-                name.attr_text=replacement+name.attr_text[len(prefix):]
-    for name in wb.defined_names.values():
-        if original in name.attr_text:
-            if not name.attr_text.startswith(prefix):raise InputError('Unsupported template named reference.')
-            name.attr_text=replacement+name.attr_text[len(prefix):]
-    # Chart/pivot references require a template-specific relocation contract.
-    if any(sheet._charts or sheet._pivots for sheet in wb):
-        raise InputError('Rename the Financial Performance template sheet before uploading a chart/pivot template.')
-    stream=io.BytesIO();wb.save(stream)
-    return stream.getvalue(), ['Supplied Financial Performance layout preserved as Template Financial Performance; explicit formula references relocated.']
-
-
-def export_company_report(review, template=None):
-    """Wrap the frozen exporter; all portfolio standard/custom/upload routes use this."""
+def export_company_report(review):
+    """Wrap the frozen exporter for the prepared demo's standard company report."""
     from reports import export_report
-    custom = template is not None
-    original_sheets = set()
-    protected_summary = None
-    if custom:
-        supplied = load_workbook(io.BytesIO(template))
-        original_sheets = set(supplied.sheetnames)
-        if 'Investment Summary' in supplied:
-            # Protect the supplied layout from the frozen exporter's generated
-            # context table. Original formulas remain verbatim and resolve after
-            # the original sheet name is restored, before bytes are returned.
-            protected_summary = 'Supplied Investment Summary'
-            suffix = 1
-            while protected_summary in supplied:
-                protected_summary = 'Supplied Summary ' + str(suffix)
-                suffix += 1
-            supplied['Investment Summary'].title = protected_summary
-            stream = io.BytesIO(); supplied.save(stream); template = stream.getvalue()
-    template, presentation_warnings = prepare_template(template)
-    data, filename, warnings = export_report(review, template)
-    warnings += presentation_warnings
+    data, filename, warnings = export_report(review)
     wb = load_workbook(io.BytesIO(data))
-    if protected_summary:
-        if 'Investment Summary' in wb: wb.remove(wb['Investment Summary'])
-        wb[protected_summary].title = 'Investment Summary'
-    if 'Investment Summary' in wb and 'Investment Summary' not in original_sheets:
+    if 'Investment Summary' in wb:
         for row in wb['Investment Summary']:
             unit=row[2] if len(row)>2 else None
             if unit and isinstance(unit.value,str) and unit.value.startswith('ratio;'):
@@ -285,11 +216,9 @@ def export_company_report(review, template=None):
     ws.print_area='A1:D'+str(ws.max_row);ws.print_title_rows='1:6'
     ws.sheet_view.zoomScale=90
     from portfolio_company_excel import executive_review, company_filename
-    if 'Executive Summary' not in original_sheets:
-        executive_review(wb, review, statement(review), context, remove_summary=not custom)
-    filename = company_filename(review, context, custom=custom)
-    # Open the investment review first; a supplied template keeps its own lead sheet.
-    index = 0 if custom else wb.sheetnames.index('Executive Summary')
+    executive_review(wb, review, statement(review), context)
+    filename = company_filename(review, context)
+    index = wb.sheetnames.index('Executive Summary')
     for sheet in wb: sheet.sheet_view.tabSelected=False
     wb.worksheets[index].sheet_view.tabSelected=True
     from openpyxl.workbook.views import BookView

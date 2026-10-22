@@ -53,9 +53,8 @@ def existing_views():
 
 
 @st.cache_data(show_spinner=False)
-def company_export(review, custom):
-    template = (ROOT / 'sample_templates' / 'Sample_Firm_Review_Template.xlsx').read_bytes() if custom else None
-    return export_report(review, template)
+def company_export(review):
+    return export_report(review)
 
 
 def render_company(company, companies=None):
@@ -91,22 +90,9 @@ def _render_desktop_company(company,r,v):
     from portfolio_outlook import render_outlook
     render_outlook(company)
     render_company_summary(company)
-    # The presentation adapter preserves the frozen exporter and its evidence appendices.
-    choice = st.selectbox('Company Excel format', ['Standard Excel report', 'Use supplied firm template'], key='gp_company_format')
-    custom = choice == 'Use supplied firm template'
-    template = None
-    if custom:
-        template = st.file_uploader('Optional company Excel template', type=['xlsx'], key='gp_company_template')
-    if template is not None:
-        try:
-            data = export_report(r, template.getvalue())
-        except Exception:
-            st.error('This Excel template could not be populated. Choose the standard report or the supplied firm template.')
-            return
-    else:
-        data = company_export(r, custom)
+    # The portfolio demo exposes only the standard, prepared company report.
+    data = company_export(r)
     st.session_state.export = data
-    st.session_state.custom = custom
     data_bytes, filename, warnings = data
     for warning in warnings: st.caption(warning)
     from portfolio_ui import generated_excel_download

@@ -6,7 +6,7 @@ from portfolio_data import load_companies
 
 
 @pytest.mark.parametrize('company',load_companies(),ids=lambda c:c.id)
-def test_investment_detail_keeps_company_deep_links_followups_and_export_choices(company):
+def test_investment_detail_keeps_company_deep_links_followups_and_standard_export(company):
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60)
     at.query_params.update({'page':'company','company':company.id,'finding':'10000'});at.run()
     assert not at.exception
@@ -21,10 +21,9 @@ def test_investment_detail_keeps_company_deep_links_followups_and_export_choices
     assert not any(b.label in ('Follow Up','Read Full Analysis') for b in at.button)
     labels=[d.proto.label for d in at.get('download_button')]
     assert labels==['Download Excel']
-    for choice in ('Use supplied firm template','Standard Excel report'):
-        at.selectbox(key='gp_company_format').set_value(choice).run()
-        assert not at.exception
-        assert at.session_state['export'][0]
+    assert not any('Excel format' in s.label for s in at.selectbox)
+    assert not at.get('file_uploader')
+    assert at.session_state['export'][0].startswith(b'PK')
 
 
 def test_generated_labels_are_contextual_and_original_downloads_remain_distinct():

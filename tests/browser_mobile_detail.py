@@ -1,5 +1,6 @@
 """Actual Chrome phone journeys and unchanged desktop reports on localhost8502."""
 import json
+import os
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
@@ -13,6 +14,7 @@ from portfolio_comparison import money
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/mobile-investment-detail/browser';OUT.mkdir(parents=True,exist_ok=True)
 receipt={'phone_cases':[],'desktop_cases':[],'errors':[],'external_requests':[]}
+BASE_URL=os.environ.get('COPILOT_GP_TEST_URL','http://127.0.0.1:8502')
 
 
 def settle(page):
@@ -42,7 +44,7 @@ with sync_playwright() as p:
         page.set_viewport_size({'width':width,'height':1200})
         for company in companies:
             print('Phone',width,company.id,flush=True)
-            page.goto('http://127.0.0.1:8502/?page=overview')
+            page.goto(BASE_URL+'/?page=overview')
             expect(page.locator('.st-key-open_'+company.id+' button')).to_be_visible(timeout=60000)
             settle(page)
             if page.locator('[data-testid="stSidebar"]').get_attribute('data-collapsed')=='false':page.get_by_role('button',name='Collapse sidebar',exact=True).click()
@@ -73,7 +75,7 @@ with sync_playwright() as p:
             expect(page.get_by_role('heading',name='Portfolio Overview',exact=True)).to_be_visible()
             receipt['phone_cases'].append({'company':company.id,'width':width,'card_action_and_back':'pass','original_assessment_and_incremental_context':'pass','full_report_controls_hidden':True,'no_overflow_or_nested_scrolling':True})
         # A finding deep link becomes the primary assessment rather than technical evidence.
-        page.goto('http://127.0.0.1:8502/?page=company&company=summit&finding=10004')
+        page.goto(BASE_URL+'/?page=company&company=summit&finding=10004')
         expect(page.locator('.st-key-mobile_primary_summit_10004')).to_be_visible(timeout=60000)
         expect(page.get_by_role('heading',name='Branch and consolidated EBITDA schedules do not reconcile',exact=True)).to_be_visible()
         assert page.get_by_role('heading',name='See where every conclusion came from',exact=True).count()==0
@@ -88,11 +90,13 @@ with sync_playwright() as p:
     page.set_viewport_size({'width':1440,'height':1200})
     for company in companies:
         print('Desktop',company.id,flush=True)
-        page.goto('http://127.0.0.1:8502/?page=company&company='+company.id)
+        page.goto(BASE_URL+'/?page=company&company='+company.id)
         expect(page.get_by_role('heading',name=company.name,exact=True)).to_be_visible(timeout=60000)
         assert not page.locator('.st-key-mobile_company_detail').is_visible()
         expect(page.get_by_role('heading',name='Investment Summary',exact=True)).to_be_visible()
-        expect(page.get_by_role('combobox',name='Company Excel format',exact=True)).to_be_visible()
+        expect(page.get_by_role('combobox',name='Company Excel format',exact=True)).to_have_count(0)
+        expect(page.get_by_text('Use supplied firm template',exact=True)).to_have_count(0)
+        expect(page.locator('input[type=file]')).to_have_count(0)
         expect(page.get_by_role('button',name='Download Excel',exact=True)).to_be_visible()
         audit(page)
         if company.id=='summit':page.screenshot(path=str(OUT/'desktop-complete-1440.png'),full_page=True)

@@ -19,14 +19,12 @@ def test_all_company_summary_evidence_exports_and_return(slug, monkeypatch):
     assert not any(r.key=='gp_company_tab' for r in at.radio)
     assert not any(b.label in ('View source evidence','View Evidence  →','Open source evidence  →') for b in at.button)
     assert not any(e.label=='Derived calculations & original operands' for e in at.expander)
-    for choice in ['Standard Excel report', 'Use supplied firm template']:
-        at.selectbox(key='gp_company_format').set_value(choice).run()
-        assert not at.exception
-        data = at.session_state['export'][0]
-        book = load_workbook(io.BytesIO(data))
-        assert 'Source Evidence' in book.sheetnames
-        if choice.startswith('Use'):
-            assert book['Partner Review']['C16'].data_type == 'f'
+    assert not any(item.label == 'Company Excel format' for item in at.selectbox)
+    assert not at.get('file_uploader')
+    assert [d.proto.label for d in at.get('download_button')] == ['Download Excel']
+    book = load_workbook(io.BytesIO(at.session_state['export'][0]))
+    assert 'Source Evidence' in book.sheetnames
+    assert 'Partner Review' not in book.sheetnames
     next(b for b in at.button if b.label == '← Portfolio Overview').click().run()
     assert not at.exception
     assert at.title[0].value == 'Portfolio Overview'

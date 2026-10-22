@@ -82,33 +82,24 @@ with sync_playwright() as p:
         page.screenshot(path=str(OUT/(slug+'-assessment-questions.png')), full_page=True)
         page.locator('[data-testid="stMain"]').evaluate('(e)=>e.scrollTo(0,0)')
         outputs = {}
-        for custom in (False, True):
-            choice='Use supplied firm template' if custom else 'Standard Excel report'
-            field=page.get_by_role('combobox',name='Company Excel format',exact=True)
-            if field.input_value()!=choice:
-                field.click()
-                page.get_by_role('option',name=choice,exact=True).click()
-            if custom:
-                expect(page.get_by_text('Optional company Excel template', exact=True)).to_be_visible(timeout=60000)
-            else:
-                expect(page.get_by_text('Optional company Excel template', exact=True)).to_have_count(0)
-            check(page)
-            with page.expect_download() as download:
-                page.get_by_role('button', name='Download Excel', exact=True).first.click()
-            destination = OUT/(slug+('-custom' if custom else '-standard')+'.xlsx')
-            download.value.save_as(destination)
-            expected_name = {'summit':'Summit_Home_Services_Sep2026_MonthlyReview',
-                             'tallis':'Tallis_Brook_Accounting_Sep2026_MonthlyReview',
-                             'harrow':'Harrow_Ridge_Environmental_FY2026_AnnualReview'}[slug]
-            assert download.value.suggested_filename == expected_name + ('_CustomTemplate' if custom else '') + '.xlsx'
-            book = load_workbook(destination)
-            assert {'Findings', 'Source Evidence', 'Analyst Execution'} <= set(book.sheetnames)
-            assert any(c.hyperlink for row in book['Findings'] for c in row)
-            if custom:
-                assert book['Partner Review']['C16'].data_type == 'f'
-            else:
-                assert 'Partner Review' not in book.sheetnames
-            outputs['custom' if custom else 'standard'] = destination.stat().st_size
+        expect(page.get_by_role('combobox',name='Company Excel format',exact=True)).to_have_count(0)
+        expect(page.get_by_text('Use supplied firm template',exact=True)).to_have_count(0)
+        expect(page.locator('input[type=file]')).to_have_count(0)
+        expect(page.get_by_role('button',name='Download Excel',exact=True)).to_have_count(1)
+        check(page)
+        with page.expect_download() as download:
+            page.get_by_role('button', name='Download Excel', exact=True).click()
+        destination = OUT/(slug+'-standard.xlsx')
+        download.value.save_as(destination)
+        expected_name = {'summit':'Summit_Home_Services_Sep2026_MonthlyReview',
+                         'tallis':'Tallis_Brook_Accounting_Sep2026_MonthlyReview',
+                         'harrow':'Harrow_Ridge_Environmental_FY2026_AnnualReview'}[slug]
+        assert download.value.suggested_filename == expected_name + '.xlsx'
+        book = load_workbook(destination)
+        assert {'Findings', 'Source Evidence', 'Analyst Execution'} <= set(book.sheetnames)
+        assert any(c.hyperlink for row in book['Findings'] for c in row)
+        assert 'Partner Review' not in book.sheetnames
+        outputs['standard'] = destination.stat().st_size
         page.get_by_role('button',name='View in Source',exact=True).first.click()
         expect(page.get_by_role('dialog').locator('.source-target')).to_have_count(1,timeout=60000)
         page.screenshot(path=str(OUT/(slug+'-source-cell.png')),full_page=True)
@@ -124,7 +115,8 @@ with sync_playwright() as p:
         expect(page.get_by_role('heading',name=name,exact=True)).to_be_visible(timeout=60000)
         check(page)
         assert 'company='+slug in page.url
-        expect(page.get_by_role('combobox',name='Company Excel format',exact=True)).to_have_value('Standard Excel report')
+        expect(page.get_by_role('combobox',name='Company Excel format',exact=True)).to_have_count(0)
+        expect(page.locator('input[type=file]')).to_have_count(0)
     results['company_selector_switching']='pass'
     assert page.get_by_role('button',name='Investment Issues',exact=True).count()==0
     page.goto(URL+'/?page=issues')
