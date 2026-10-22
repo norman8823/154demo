@@ -54,12 +54,12 @@ def source_action(company, fact_id, key):
         if st.button('View in Source',key=key): open_source(company,fact['sheet'],fact['cell'])
 
 
-def evidence_actions(company, source_ids, key):
+def evidence_actions(company, source_ids, key, *, show_calculations=True, show_picker=True):
     if not source_desktop():return
     try: originals,derived,unsupported=evidence_locations(company,source_ids)
     except (InputError,OSError,ValueError) as exc:
         st.warning('Original sources unavailable: '+str(exc)); return
-    if derived:
+    if derived and show_calculations:
         with st.expander('Derived calculations & original operands'):
             for calculation in derived:
                 st.text(calculation['label'])
@@ -68,9 +68,12 @@ def evidence_actions(company, source_ids, key):
             st.caption('Calculated values are not original worksheet cells. Inspect their recorded source operands below.')
     if originals:
         index={f['id']:f for f in originals}
-        identity=st.selectbox('Original source cell',list(index),format_func=lambda i:index[i]['ref']+' · '+(index[i].get('label') or i),key=key+'_operand')
+        identity=(st.selectbox('Original source cell',list(index),format_func=lambda i:index[i]['ref']+' · '+(index[i].get('label') or i),key=key+'_operand')
+                  if show_picker else originals[0]['id'])
         source_action(company,identity,key+'_view')
-    if unsupported: st.caption(str(len(unsupported))+' supporting records have no supported single-cell location; their original evidence remains available above.')
+    if unsupported:
+        location='above' if show_calculations else 'in the downloaded Source Evidence sheet'
+        st.caption(str(len(unsupported))+' supporting records have no supported single-cell location; their original evidence remains available '+location+'.')
 
 
 def render_documents(companies, workbook_data):

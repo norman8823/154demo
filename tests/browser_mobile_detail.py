@@ -96,8 +96,10 @@ with sync_playwright() as p:
         expect(page.get_by_role('button',name='↓  Download Excel Report',exact=True)).to_be_visible()
         audit(page)
         if company.id=='summit':page.screenshot(path=str(OUT/'desktop-complete-1440.png'),full_page=True)
-        page.get_by_role('button',name='View source evidence',exact=True).click()
-        expect(page.get_by_role('heading',name='See where every conclusion came from',exact=True)).to_be_visible(timeout=60000)
+        page.get_by_role('button',name='View in Source',exact=True).first.click()
+        expect(page.get_by_role('dialog').locator('.source-target')).to_have_count(1,timeout=60000)
+        page.keyboard.press('Escape')
+        expect(page.get_by_role('dialog')).to_have_count(0)
         audit(page)
         receipt['desktop_cases'].append({'company':company.id,'full_summary_exports_and_evidence':'pass'})
     assert not receipt['errors'] and not receipt['external_requests']

@@ -67,7 +67,7 @@ def render_company(company, companies=None):
     route = (company.id, st.query_params.get('finding'))
     if st.session_state.get('gp_company_route') != route:
         st.session_state.gp_company_route = route
-        st.session_state.gp_company_tab = 'evidence' if route[1] else 'summary'
+        st.session_state.gp_company_tab = 'summary'
         try:
             requested = int(route[1]) if route[1] else None
         except ValueError:
@@ -87,8 +87,6 @@ def _render_desktop_company(company,r,v):
     st.button('← Portfolio Overview', on_click=navigate, args=('overview',))
     st.title(company.name)
     st.caption(company.sector+' · '+v['period_label']+' · Verified prepared review')
-    from portfolio_investment_ui import company_investment
-    company_investment(company)
     # The presentation adapter preserves the frozen exporter and its evidence appendices.
     choice = st.selectbox('Company Excel format', ['Standard Excel report', 'Use supplied firm template'], key='gp_company_format')
     custom = choice == 'Use supplied firm template'
@@ -105,18 +103,34 @@ def _render_desktop_company(company,r,v):
         data = company_export(r, custom)
     st.session_state.export = data
     st.session_state.custom = custom
-    st.radio('Company review', ['summary', 'evidence'], format_func=lambda x: 'Investment Summary & Priority Findings' if x == 'summary' else 'Source Evidence & Excel',
-             horizontal=True, key='gp_company_tab')
-    views = existing_views()
-    if st.session_state.gp_company_tab == 'evidence':
-        if 'selected' not in st.session_state:
-            st.session_state.selected = st.session_state.gp_selected_finding
-        views['evidence_view'](r)
-        st.session_state.gp_selected_finding = st.session_state.selected
-        from portfolio_document_ui import evidence_actions
-        finding=next((f for f in r.package['ai_insights'] if f['id']==st.session_state.selected),None)
-        if finding:
-            st.subheader('Inspect original worksheet cells')
-            evidence_actions(company,finding['fact_ids'],'company_source_'+company.id+'_'+str(finding['id']))
-    else:
-        views['overview'](r)
+    data_bytes, filename, warnings = data
+    st.download_button('↓  Download Excel Report',data_bytes,file_name=filename,
+                       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    for warning in warnings: st.caption(warning)
+    render_company_summary(company)
+
+
+def render_company_summary(company):
+    """Prepared summary/findings only; original-cell inspection stays contextual."""
+    from portfolio_ui import literal_prose
+    from portfolio_document_ui import evidence_actions
+    r=company.review;summary=present(r)
+    st.subheader('Investment Summary')
+    description=r.package.get('company_profile',{}).get('description')
+    if description: literal_prose(description)
+    metrics=r.metrics
+    values=[('Revenue',executive_money(r,metrics['revenue'])),
+            ('EBITDA',executive_money(r,metrics['ebitda'])),
+            ('Gross margin',f"{metrics['gm']:.1%}")]
+    for column,(label,value) in zip(st.columns(3),values): column.metric(label,value)
+    st.subheader('Priority findings')
+    originals={f['id']:f for f in r.package['ai_insights']}
+    cards=summary['cards']+summary.get('secondary',[])
+    for start in range(0,len(cards),3):
+        for column,card in zip(st.columns(3),cards[start:start+3]):
+            with column,st.container(border=True,key='finding_panel_'+str(card['id'])):
+                st.markdown(finding_html(card,r),unsafe_allow_html=True)
+                finding=originals[card['id']]
+                evidence_actions(company,finding['fact_ids'],
+                                 'company_source_'+company.id+'_'+str(card['id']),
+                                 show_calculations=False, show_picker=False)

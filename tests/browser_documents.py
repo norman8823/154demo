@@ -165,7 +165,17 @@ with sync_playwright() as p:
  for route,key in [('issues','issue_source_summit_'),('company&company=summit&finding=10000','company_source_summit_')]:
   page.goto('http://127.0.0.1:8502/?page='+route)
   button=page.locator('[class*="st-key-'+key+'"][class*="_view"] button').first;expect(button).to_be_visible(timeout=60000)
-  operand=page.locator('[class*="st-key-'+key+'"][class*="_operand"]').first.get_by_role('combobox',name='Original source cell',exact=True).input_value()
+  if route.startswith('company'):
+   import sys
+   sys.path.insert(0,str(ROOT))
+   from portfolio_data import load_companies
+   from portfolio_documents import evidence_locations
+   company=next(c for c in load_companies() if c.id=='summit')
+   finding=next(f for f in company.review.package['ai_insights'] if f['id']==10000)
+   operand=evidence_locations(company,finding['fact_ids'])[0][0]['ref']
+   assert page.get_by_role('combobox',name='Original source cell',exact=True).count()==0
+  else:
+   operand=page.locator('[class*="st-key-'+key+'"][class*="_operand"]').first.get_by_role('combobox',name='Original source cell',exact=True).input_value()
   button.click();dialog=page.get_by_role('dialog');expect(dialog.locator('.source-target')).to_have_count(1,timeout=60000)
   cell=dialog.get_by_role('textbox',name='Selected cell',exact=True).input_value();sheet_name=dialog.get_by_role('tab',selected=True).inner_text()
   assert cell in operand and sheet_name in operand;selected(dialog,BOOKS['summit'][sheet_name],cell)

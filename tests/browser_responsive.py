@@ -82,10 +82,10 @@ with sync_playwright() as p:
                 expect(page.get_by_role('heading',name='Summit Home Services',exact=True)).to_be_visible(timeout=60000)
                 assert 'company=summit' in page.url
                 page.goto('http://127.0.0.1:8502/?page=overview');settle(page)
-            if label in ('summit','tallis','harrow') and width>=768:
-                page.get_by_role('button',name='View source evidence',exact=True).click()
-                expect(page.get_by_role('heading',name='See where every conclusion came from',exact=True)).to_be_visible(timeout=60000)
-                audit(page,label+'-evidence',width)
+            if label in ('summit','tallis','harrow') and width>=1024:
+                expect(page.get_by_role('button',name='View in Source',exact=True).first).to_be_visible(timeout=60000)
+                assert page.get_by_role('button',name='View source evidence',exact=True).count()==0
+                audit(page,label+'-source-actions',width)
             if label=='foundation':
                 expect(page.get_by_text('Normalization & transformation',exact=True)).to_be_visible()
                 assert page.locator('.gp-catalog-sources tbody tr').count()==3

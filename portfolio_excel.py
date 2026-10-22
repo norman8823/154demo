@@ -128,11 +128,10 @@ def write_overview(ws,companies,source_rows):
     ws.merge_cells('A9:L10');literal(ws,9,1,COMPARABILITY);ws.row_dimensions[9].height=32
     ws.merge_cells('A12:L12');literal(ws,12,1,'Reported EBITDA — Actual versus Budget · independent company-period axes').font=Font(name='Arial',size=12,bold=True,color=NAVY)
     # Visible chart inputs are also the auditable data behind native Excel charts.
-    headers(ws,42,['Company','Actual','Budget','Reporting period','Source IDs'])
+    headers(ws,42,['Company','Actual','Budget','Reporting period'])
     for row,c in enumerate(companies,43):
-        v=comparison(c);m=v['ebitda'];row_values(ws,row,[c.name,m.actual,m.budget,v['period_label'],', '.join(m.source_ids)],44)
+        v=comparison(c);m=v['ebitda'];row_values(ws,row,[c.name,m.actual,m.budget,v['period_label']],44)
         for col in (2,3):ws.cell(row,col).number_format=MONEY
-        source_link(ws.cell(row,5),c.id,m.source_ids,source_rows)
         chart=BarChart();chart.type='col';chart.style=10;chart.title=c.name+'\n'+v['period_label'];chart.y_axis.title='Reported EBITDA · source dollars'
         chart.y_axis.scaling.min=0;chart.legend=None;chart.width=11.2;chart.height=7.2
         chart.add_data(Reference(ws,min_col=2,max_col=3,min_row=row,max_row=row),from_rows=True,titles_from_data=False)
@@ -144,16 +143,15 @@ def write_overview(ws,companies,source_rows):
         chart.dataLabels.showPercent=False;chart.dataLabels.showLeaderLines=False
         chart.dataLabels.numFmt='"$"#,##0'
         ws.add_chart(chart,('A14','E14','I14')[row-43])
-    labels=['Company','Reporting period','Revenue','Reported EBITDA','EBITDA budget','EBITDA variance','EBITDA vs budget','EBITDA margin','Issues','Act now','Company review','Source IDs']
+    labels=['Company','Reporting period','Revenue','Reported EBITDA','EBITDA budget','EBITDA variance','EBITDA vs budget','EBITDA margin','Issues','Act now','Company review']
     headers(ws,OVERVIEW_HEAD,labels)
     for row,c in enumerate(companies,OVERVIEW_HEAD+1):
         v=comparison(c);m=v['ebitda'];s=workflow_summary([c])
-        row_values(ws,row,[c.name,v['period_label'],v['revenue'].actual,m.actual,m.budget,m.variance,m.variance_pct,v['margin'].actual,s['issues'],s['act_now'],'Open company →',', '.join(m.source_ids)],64)
+        row_values(ws,row,[c.name,v['period_label'],v['revenue'].actual,m.actual,m.budget,m.variance,m.variance_pct,v['margin'].actual,s['issues'],s['act_now'],'Open company →'],64)
         for col in (3,4,5,6):ws.cell(row,col).number_format=MONEY
         for col in (7,8):ws.cell(row,col).number_format=PERCENT
         link(ws.cell(row,1),COMPANY_SHEETS[c.id],1);link(ws.cell(row,11),COMPANY_SHEETS[c.id],1)
-        source_link(ws.cell(row,12),c.id,m.source_ids,source_rows)
-    ws.auto_filter.ref=f'A{OVERVIEW_HEAD}:L{OVERVIEW_HEAD+len(companies)}';ws.freeze_panes='C29'
+    ws.auto_filter.ref=f'A{OVERVIEW_HEAD}:K{OVERVIEW_HEAD+len(companies)}';ws.freeze_panes='C29'
     narrative(ws,34,'Review workflow','1. Identify an operating exception. 2. Open the company analysis. 3. Use Investment Issues for the management question and proposed follow-up. 4. Follow Source References to verify the original source. 5. Copy Reporting Output into your existing reporting process.',12)
     narrative(ws,36,'Prepared results','0 new analyst model calls / $0 current inference. Source and arithmetic checks preserve traceability; interpretations, causal explanations and illustrative sensitivities still require investment-team review.',12)
     narrative(ws,38,'Reporting Output','Flat, numeric, source-referenced rows for copying or mapping into an existing template. No automatic platform integration or compatibility is claimed.',12)

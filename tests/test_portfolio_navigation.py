@@ -15,7 +15,10 @@ def test_all_company_summary_evidence_exports_and_return(slug, monkeypatch):
     assert not at.exception
     assert any(s.value == 'Investment Summary' for s in at.subheader)
     assert any(s.value == 'Priority findings' for s in at.subheader)
-    assert any(s.value == 'Management Questions' for s in at.subheader)
+    assert not any(s.value in ('Management Questions','See where every conclusion came from') for s in at.subheader)
+    assert not any(r.key=='gp_company_tab' for r in at.radio)
+    assert not any(b.label in ('View source evidence','View Evidence  →','Open source evidence  →') for b in at.button)
+    assert not any(e.label=='Derived calculations & original operands' for e in at.expander)
     for choice in ['Standard Excel report', 'Use supplied firm template']:
         at.selectbox(key='gp_company_format').set_value(choice).run()
         assert not at.exception
@@ -24,10 +27,6 @@ def test_all_company_summary_evidence_exports_and_return(slug, monkeypatch):
         assert 'Source Evidence' in book.sheetnames
         if choice.startswith('Use'):
             assert book['Partner Review']['C16'].data_type == 'f'
-    next(b for b in at.button if b.label.startswith('View Evidence')).click().run()
-    assert not at.exception
-    assert any('See where every conclusion' in t.value for t in at.subheader)
-    assert any('<table' in m.value and 'Fact ID' in m.value for m in at.markdown)
     next(b for b in at.button if b.label == '← Portfolio Overview').click().run()
     assert not at.exception
     assert at.title[0].value == 'Portfolio Overview'
@@ -42,13 +41,12 @@ def test_watchlist_filter_and_link_to_exact_finding():
     assert len(buttons) == 5
     at.button(key='watch_harrow_10003').click().run()
     assert not at.exception
-    assert at.radio(key='selected').value == 10003
-    assert 'renewal' in next(s.value for s in at.subheader if 'renewal' in s.value).lower()
-    at.radio(key='gp_company_tab').set_value('summary').run()
-    next(b for b in at.button if b.label == 'View source evidence').click().run()
-    assert not at.exception
-    assert at.radio(key='gp_company_tab').value == 'evidence'
-    assert at.radio(key='selected').value == 10003
+    assert at.session_state['selected'] == 10003
+    assert at.query_params['finding']=='10003'
+    assert any(s.value=='Priority findings' for s in at.subheader)
+    assert not any(r.key=='gp_company_tab' for r in at.radio)
+    assert not any(s.value=='See where every conclusion came from' for s in at.subheader)
+
 
 
 def test_financial_watchlist_prose_is_literal_currency():

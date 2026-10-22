@@ -76,12 +76,9 @@ with sync_playwright() as p:
         page.locator('.st-key-open_'+slug+' button').click()
         expect(page.get_by_role('heading', name='Investment Summary', exact=True)).to_be_visible(timeout=60000)
         check(page)
-        page.locator('.st-key-desktop_company_detail summary').filter(has_text='Investment context').click()
-        page.wait_for_timeout(400)  # Native expander animation must finish before capturing details.
-        expect(page.get_by_text('Illustrative enterprise value ',exact=False)).to_be_visible()
         assert page.locator('.katex').count()==0
         page.screenshot(path=str(OUT/(slug+'-summary.png')), full_page=True)
-        page.get_by_role('heading', name='Management Questions', exact=True).scroll_into_view_if_needed()
+        page.get_by_role('heading', name='Priority findings', exact=True).scroll_into_view_if_needed()
         page.screenshot(path=str(OUT/(slug+'-assessment-questions.png')), full_page=True)
         page.locator('[data-testid="stMain"]').evaluate('(e)=>e.scrollTo(0,0)')
         outputs = {}
@@ -105,10 +102,11 @@ with sync_playwright() as p:
             else:
                 assert 'Partner Review' not in book.sheetnames
             outputs['custom' if custom else 'standard'] = destination.stat().st_size
-        page.get_by_role('button', name='View Evidence  →', exact=True).first.click()
-        expect(page.get_by_role('heading', name='See where every conclusion came from', exact=True)).to_be_visible(timeout=60000)
-        check(page)
-        page.screenshot(path=str(OUT/(slug+'-evidence.png')), full_page=True)
+        page.get_by_role('button',name='View in Source',exact=True).first.click()
+        expect(page.get_by_role('dialog').locator('.source-target')).to_have_count(1,timeout=60000)
+        page.screenshot(path=str(OUT/(slug+'-source-cell.png')),full_page=True)
+        page.keyboard.press('Escape')
+        expect(page.get_by_role('dialog')).to_have_count(0)
         page.get_by_role('button', name='← Portfolio Overview', exact=True).click()
         expect(page.get_by_role('heading', name='Portfolio Overview', exact=True)).to_be_visible(timeout=60000)
         results['companies'][slug] = {'summary': 'pass', 'evidence': 'pass', 'return': 'pass', 'downloads': outputs}
@@ -128,12 +126,12 @@ with sync_playwright() as p:
     expect(page.get_by_role('heading',name='Tallis Brook Accounting',exact=True)).to_be_visible()
     page.screenshot(path=str(OUT/'investment-issues.png'), full_page=True)
     page.locator('.st-key-watch_tallis_10000 button').click()
-    expect(page.get_by_role('heading', name='See where every conclusion came from', exact=True)).to_be_visible(timeout=60000)
-    expect(page.get_by_role('radio', name='010000  Reported earnings materially trail plan', exact=True)).to_be_checked()
-    page.get_by_text('Investment Summary & Priority Findings', exact=True).click()
-    page.get_by_role('button', name='View source evidence', exact=True).click()
-    expect(page.get_by_role('heading', name='See where every conclusion came from', exact=True)).to_be_visible(timeout=60000)
-    expect(page.get_by_role('radio', name='010000  Reported earnings materially trail plan', exact=True)).to_be_checked()
+    expect(page.get_by_role('heading',name='Investment Summary',exact=True)).to_be_visible(timeout=60000)
+    assert 'finding=10000' in page.url
+    page.locator('.st-key-company_source_tallis_10000_view button').click()
+    expect(page.get_by_role('dialog').locator('.source-target')).to_have_attribute('data-coordinate','K40',timeout=60000)
+    page.keyboard.press('Escape')
+    expect(page.get_by_role('dialog')).to_have_count(0)
     results['deep_link_summary_evidence_regression'] = 'pass'
     page.get_by_role('button', name='Documents & Reports', exact=True).click()
     expect(page.get_by_role('heading', name='Source Documents', exact=True)).to_be_visible(timeout=60000)

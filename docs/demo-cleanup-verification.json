@@ -1,0 +1,230 @@
+{
+  "task": 53,
+  "base": "ce91bf54b11d4093a60cad7c9d7c15474003829a",
+  "branch": "feat/ai-workflow-readiness",
+  "scope": "Presentation only. Desktop Company Detail shows Investment Summary and Priority Findings; no evidence panel, derived-calculation displays or Original source cell dropdowns. Every finding retains its existing default original-cell source action. Remove only the two trailing Source IDs table columns from GP Portfolio Overview. Company Financial Performance sheets were already ID-free and remain unchanged.",
+  "final_tallis_sources": {
+    "findings": [
+      {
+        "finding_id": 10000,
+        "title": "Reported earnings materially trail plan",
+        "original_cells_clicked": 1,
+        "default_target_preserved": true,
+        "supporting_records_retained_in_excel": 0
+      },
+      {
+        "finding_id": 10001,
+        "title": "Adjusted EBITDA depends on unverified and future items",
+        "original_cells_clicked": 1,
+        "default_target_preserved": true,
+        "supporting_records_retained_in_excel": 2
+      },
+      {
+        "finding_id": 10002,
+        "title": "Redfern realization and aged WIP warrant intervention",
+        "original_cells_clicked": 1,
+        "default_target_preserved": true,
+        "supporting_records_retained_in_excel": 2
+      },
+      {
+        "finding_id": 10003,
+        "title": "Ashcombe retention contradicts the firmwide claim",
+        "original_cells_clicked": 1,
+        "default_target_preserved": true,
+        "supporting_records_retained_in_excel": 3
+      },
+      {
+        "finding_id": 10004,
+        "title": "Reported growth does not establish organic demand",
+        "original_cells_clicked": 1,
+        "default_target_preserved": true,
+        "supporting_records_retained_in_excel": 1
+      }
+    ],
+    "citations": [
+      {
+        "finding_id": 10000,
+        "source_id": "s4_K40",
+        "worksheet": "Monthly Trend",
+        "cell": "K40",
+        "original_value_or_formula": "=K21-K31-K38",
+        "selected_exactly": true
+      },
+      {
+        "finding_id": 10001,
+        "source_id": "s5_B17",
+        "worksheet": "Adjusted EBITDA",
+        "cell": "B17",
+        "original_value_or_formula": "=SUM(B8:B16)",
+        "selected_exactly": true
+      },
+      {
+        "finding_id": 10002,
+        "source_id": "s7_D9",
+        "worksheet": "WIP AR Realization",
+        "cell": "D9",
+        "original_value_or_formula": "=IF(D7=0,0,D8/D7)",
+        "selected_exactly": true
+      },
+      {
+        "finding_id": 10003,
+        "source_id": "s8_F7",
+        "worksheet": "Client Book",
+        "cell": "F7",
+        "original_value_or_formula": "=IF(B7=0,0,1-C7/B7)",
+        "selected_exactly": true
+      },
+      {
+        "finding_id": 10004,
+        "source_id": "s4_K12",
+        "worksheet": "Monthly Trend",
+        "cell": "K12",
+        "original_value_or_formula": "=SUM(B12:J12)",
+        "selected_exactly": true
+      }
+    ],
+    "errors": [],
+    "external_requests": []
+  },
+  "reconciliation": {
+    "base": "ce91bf54b11d4093a60cad7c9d7c15474003829a",
+    "comparison": "Exact remaining values, formula text, cell types, number formats and hyperlinks. Chart XML identical. Company Source Evidence worksheet XML byte-identical.",
+    "mismatches": [],
+    "workbooks": [
+      {
+        "workbook": "harrow-custom.xlsx",
+        "route": "generated",
+        "remaining_cells_compared": 25147,
+        "intentionally_removed_id_cells": [],
+        "source_evidence_xml_identical": true,
+        "chart_xml_identical": true
+      },
+      {
+        "workbook": "harrow-standard.xlsx",
+        "route": "generated",
+        "remaining_cells_compared": 24707,
+        "intentionally_removed_id_cells": [],
+        "source_evidence_xml_identical": true,
+        "chart_xml_identical": true
+      },
+      {
+        "workbook": "portfolio.xlsx",
+        "route": "generated",
+        "remaining_cells_compared": 31322,
+        "intentionally_removed_id_cells": [
+          "E42",
+          "E43",
+          "E44",
+          "E45",
+          "L28",
+          "L29",
+          "L30",
+          "L31"
+        ],
+        "source_evidence_xml_identical": null,
+        "chart_xml_identical": true
+      },
+      {
+        "workbook": "portfolio.xlsx",
+        "route": "actual_download",
+        "remaining_cells_compared": 31322,
+        "intentionally_removed_id_cells": [
+          "E42",
+          "E43",
+          "E44",
+          "E45",
+          "L28",
+          "L29",
+          "L30",
+          "L31"
+        ],
+        "source_evidence_xml_identical": null,
+        "chart_xml_identical": true
+      },
+      {
+        "workbook": "summit-custom.xlsx",
+        "route": "generated",
+        "remaining_cells_compared": 22980,
+        "intentionally_removed_id_cells": [],
+        "source_evidence_xml_identical": true,
+        "chart_xml_identical": true
+      },
+      {
+        "workbook": "summit-standard.xlsx",
+        "route": "generated",
+        "remaining_cells_compared": 22540,
+        "intentionally_removed_id_cells": [],
+        "source_evidence_xml_identical": true,
+        "chart_xml_identical": true
+      },
+      {
+        "workbook": "tallis-custom.xlsx",
+        "route": "generated",
+        "remaining_cells_compared": 14418,
+        "intentionally_removed_id_cells": [],
+        "source_evidence_xml_identical": true,
+        "chart_xml_identical": true
+      },
+      {
+        "workbook": "tallis-standard.xlsx",
+        "route": "generated",
+        "remaining_cells_compared": 13978,
+        "intentionally_removed_id_cells": [],
+        "source_evidence_xml_identical": true,
+        "chart_xml_identical": true
+      },
+      {
+        "workbook": "tallis-standard.xlsx",
+        "route": "actual_download",
+        "remaining_cells_compared": 13978,
+        "intentionally_removed_id_cells": [],
+        "source_evidence_xml_identical": true,
+        "chart_xml_identical": true
+      }
+    ]
+  },
+  "regression": {
+    "full_offline_suite": "462 passed in 322.18s",
+    "final_dropdown_removal_focused_suite": "17 passed in 49.56s",
+    "coverage_note": "Full suite precedes the last source-dropdown presentation adjustment; the 17 focused summary/navigation/document checks and five actual Chrome source-link checks validate that final adjustment."
+  },
+  "spreadsheet_renderer": [
+    {
+      "broken_internal_destinations": 0,
+      "download": "portfolio.xlsx",
+      "page": 1,
+      "renderer": "LibreOffice Calc 26.8.1 native PDF export",
+      "resolved_internal_destinations": 1214,
+      "screenshot": "portfolio-overview-excel.png",
+      "sheet": "Portfolio Overview"
+    },
+    {
+      "broken_internal_destinations": 0,
+      "download": "tallis-standard.xlsx",
+      "page": 3,
+      "renderer": "LibreOffice Calc 26.8.1 native PDF export",
+      "resolved_internal_destinations": 20,
+      "screenshot": "tallis-financial-performance.png",
+      "sheet": "Financial Performance"
+    }
+  ],
+  "integrity": {
+    "frozen_source_pins_unchanged": 23,
+    "original_workbook_and_review_pins_unchanged": 6,
+    "new_analyst_inference": 0,
+    "source_evidence_sheets_unchanged": true,
+    "remaining_value_mismatches": [],
+    "financial_calculations_and_pipeline_unchanged": true
+  },
+  "screenshots": [
+    "docs/images/demo-cleanup/tallis-company-detail.png",
+    "docs/images/demo-cleanup/tallis-finding-direct-source.png",
+    "docs/images/demo-cleanup/portfolio-overview-excel.png",
+    "docs/images/demo-cleanup/tallis-financial-performance.png",
+    "docs/images/demo-cleanup/tallis-ebitda-source.png",
+    "docs/images/demo-cleanup/portfolio-overview-app.png"
+  ],
+  "tracking": "Canonical #53 reopened using Companion supported Reopen UI; subsequent intake/status updates use harmony_local. No duplicate card.",
+  "delivery": "Local commit only; no push, merge or deployment. Preview port8502; original8501 untouched.",
+  "artifact_receipts": "artifacts/demo-cleanup (ignored): original/current/generated/downloaded workbooks, native Calc PDFs, full/focused test logs, source clicks and exact reconciliation."
+}
