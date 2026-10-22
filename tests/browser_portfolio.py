@@ -97,6 +97,10 @@ with sync_playwright() as p:
                 page.get_by_role('button', name='Download Excel', exact=True).first.click()
             destination = OUT/(slug+('-custom' if custom else '-standard')+'.xlsx')
             download.value.save_as(destination)
+            expected_name = {'summit':'Summit_Home_Services_Sep2026_MonthlyReview',
+                             'tallis':'Tallis_Brook_Accounting_Sep2026_MonthlyReview',
+                             'harrow':'Harrow_Ridge_Environmental_FY2026_AnnualReview'}[slug]
+            assert download.value.suggested_filename == expected_name + ('_CustomTemplate' if custom else '') + '.xlsx'
             book = load_workbook(destination)
             assert {'Findings', 'Source Evidence', 'Analyst Execution'} <= set(book.sheetnames)
             assert any(c.hyperlink for row in book['Findings'] for c in row)

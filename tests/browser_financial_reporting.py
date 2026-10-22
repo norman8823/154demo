@@ -17,7 +17,8 @@ def checked(download,name,custom):
  assert 'TALLIS BROOK' in sheet['A3'].value
  assert sheet['B7'].value==3475418 and sheet['C7'].value==3651832
  assert sheet['B12'].value==684306 and sheet['C12'].value==946225
- assert sheet.max_column==4 and book.active.title=='Financial Performance'
+ assert sheet.max_column==4 and book.active.title==('Partner Review' if custom else 'Executive Summary')
+ assert download.suggested_filename=='Tallis_Brook_Accounting_Sep2026_MonthlyReview'+('_CustomTemplate' if custom else '')+'.xlsx'
  assert sheet['B11'].value=='N/A' and sheet['B17'].value=='N/A'
  assert 'money' not in str(list(sheet.values)) and 'ratio' not in str(list(sheet.values))
  assert 'Statement Evidence' in book and 'Extracted Detail' in book

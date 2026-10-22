@@ -47,18 +47,18 @@ def test_six_company_exports_preserve_evidence_templates_and_statement(companies
   original=load_workbook(io.BytesIO(frozen_export(c.review,template)[0]))
   result=load_workbook(io.BytesIO(export_company_report(c.review,template)[0]))
   for name in original.sheetnames:
-   if name not in ('Financial Performance','Investment Summary'):assert signature(original[name])==signature(result[name]),name
-  # Context sheet retains every value; the gross-margin unit/format is intentionally humanized.
-  for row in original['Investment Summary']:
-   for old in row:
-    new=result['Investment Summary'][old.coordinate]
-    if isinstance(old.value,str) and old.value.startswith('ratio;'):
-     assert new.value=='%'+old.value[len('ratio'):]
-     assert '%' in result['Investment Summary'].cell(old.row,2).number_format
-    else:assert new.value==old.value
+   if name not in ('Financial Performance','Investment Summary','Executive Summary'):assert signature(original[name])==signature(result[name]),name
+  if custom:
+   # Generated context remains in custom exports; supplied worksheets are protected.
+   for row in original['Investment Summary']:
+    for old in row:
+     new=result['Investment Summary'][old.coordinate]
+     expected='%'+old.value[len('ratio'):] if isinstance(old.value,str) and old.value.startswith('ratio;') else old.value
+     assert new.value==expected
+  else:assert 'Investment Summary' not in result
   if custom:assert result['Partner Review']['C16'].data_type=='f'
   sheet=result['Financial Performance'];assert sheet.max_column==4 and sheet.max_row<=22
-  assert result.active.title=='Financial Performance'
+  assert result.active.title==('Partner Review' if custom else 'Executive Summary')
   for row,line in enumerate(statement(c.review),7):
    assert sheet.cell(row,1).value==line.label
    for col,value in zip((2,3,4),(line.actual,line.budget,line.variance)):

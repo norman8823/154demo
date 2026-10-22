@@ -230,11 +230,31 @@ def prepare_template(template):
 def export_company_report(review, template=None):
     """Wrap the frozen exporter; all portfolio standard/custom/upload routes use this."""
     from reports import export_report
+    custom = template is not None
+    original_sheets = set()
+    protected_summary = None
+    if custom:
+        supplied = load_workbook(io.BytesIO(template))
+        original_sheets = set(supplied.sheetnames)
+        if 'Investment Summary' in supplied:
+            # Protect the supplied layout from the frozen exporter's generated
+            # context table. Original formulas remain verbatim and resolve after
+            # the original sheet name is restored, before bytes are returned.
+            protected_summary = 'Supplied Investment Summary'
+            suffix = 1
+            while protected_summary in supplied:
+                protected_summary = 'Supplied Summary ' + str(suffix)
+                suffix += 1
+            supplied['Investment Summary'].title = protected_summary
+            stream = io.BytesIO(); supplied.save(stream); template = stream.getvalue()
     template, presentation_warnings = prepare_template(template)
     data, filename, warnings = export_report(review, template)
     warnings += presentation_warnings
     wb = load_workbook(io.BytesIO(data))
-    if 'Investment Summary' in wb:
+    if protected_summary:
+        if 'Investment Summary' in wb: wb.remove(wb['Investment Summary'])
+        wb[protected_summary].title = 'Investment Summary'
+    if 'Investment Summary' in wb and 'Investment Summary' not in original_sheets:
         for row in wb['Investment Summary']:
             unit=row[2] if len(row)>2 else None
             if unit and isinstance(unit.value,str) and unit.value.startswith('ratio;'):
@@ -264,8 +284,14 @@ def export_company_report(review, template=None):
         banner(ws,22,1,4,'Tallis: unresolved classifications prevent a complete expense reconciliation. Unsupported lines remain N/A; no balancing expense is inferred.');ws.row_dimensions[22].height=44
     ws.print_area='A1:D'+str(ws.max_row);ws.print_title_rows='1:6'
     ws.sheet_view.zoomScale=90
+    from portfolio_company_excel import executive_review, company_filename
+    if 'Executive Summary' not in original_sheets:
+        executive_review(wb, review, statement(review), context, remove_summary=not custom)
+    filename = company_filename(review, context, custom=custom)
+    # Open the investment review first; a supplied template keeps its own lead sheet.
+    index = 0 if custom else wb.sheetnames.index('Executive Summary')
     for sheet in wb: sheet.sheet_view.tabSelected=False
-    ws.sheet_view.tabSelected=True
+    wb.worksheets[index].sheet_view.tabSelected=True
     from openpyxl.workbook.views import BookView
     if not wb.views: wb.views=[BookView()]
     for view in wb.views: view.activeTab=index
