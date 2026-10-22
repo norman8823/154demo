@@ -90,7 +90,7 @@ Branch: **`feat/portfolio-intelligence-v3`**, created from exact v2 checkpoint `
 
 ## Preview and restart
 
-From `/Users/norman/main/154demo-portfolio`:
+From the repository root:
 
 ```sh
 COPILOT_ENV_FILE='' .venv/bin/python scripts/seed_demo_results.py --verify-only

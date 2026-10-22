@@ -75,7 +75,7 @@ Illustrative investment-ledger assumptions remain excluded. Investment Monitorin
 
 Screenshots: [desktop](images/ai-readiness/desktop.png), [source inspection](images/ai-readiness/source-details.png), [reconciliation operands](images/ai-readiness/issue-operands.png), [mobile](images/ai-readiness/mobile.png). Full local receipts and downloaded artifacts remain in `artifacts/ai-readiness/` (ignored from source control).
 
-Restart from `/Users/norman/main/154demo-portfolio` using `./scripts/run_portfolio_demo.sh`. It binds **127.0.0.1:8502** and disables credential-file loading. Leave the frozen analytical-engine instance on 8501 untouched. For focused checks:
+Restart from the repository root using `./scripts/run_portfolio_demo.sh`. It binds **127.0.0.1:8502** and disables credential-file loading. Leave the frozen analytical-engine instance on 8501 untouched. For focused checks:
 
 ```sh
 COPILOT_ENV_FILE='' .venv/bin/python -m pytest tests/test_portfolio_readiness.py tests/test_portfolio_foundation.py -q

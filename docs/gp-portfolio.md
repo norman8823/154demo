@@ -25,9 +25,10 @@ the unchanged analytical-engine preview on 8501.
 ## Run and reproduce
 
 ```sh
-cd /Users/norman/main/154demo-portfolio
 ./scripts/run_portfolio_demo.sh
 ```
+
+Run these commands from the repository root.
 
 The launcher binds to loopback on 8502 and disables local environment-file loading.
 The GP path needs no API credential: it reads only the committed, approved prepared

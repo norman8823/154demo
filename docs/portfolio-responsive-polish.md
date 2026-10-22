@@ -41,6 +41,6 @@ Detailed receipts: `artifacts/ui-polish/full-regression.txt`, `final-table-tests
 
 ## Preview and limits
 
-Open **http://127.0.0.1:8502**. Restart from `/Users/norman/main/154demo-portfolio` using `./scripts/run_portfolio_demo.sh`. Only the portfolio preview was restarted. The analytical application on **8501**, PID **20385**, remains untouched.
+Open **http://127.0.0.1:8502**. Restart from the repository root using `./scripts/run_portfolio_demo.sh`. Only the portfolio preview was restarted. The analytical application on **8501**, PID **20385**, remains untouched.
 
 The responsive presentation is validated in Chrome at the requested sizes; physical-device Safari/other browsers were not separately tested. Sorting now uses **Table options**, rather than clickable dataframe headers. Large evidence sets require paging/filtering or opening record details; full original data remains in the existing downloads. Long source/JSON disclosures deliberately grow the page when opened. No separate mobile app, hosting, QR code, tunnel, deployment or backend feature was introduced.

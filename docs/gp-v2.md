@@ -70,7 +70,7 @@ Compared with the supplied visual references, the implementation uses genuine op
 
 ## Preview and receipts
 
-From `/Users/norman/main/154demo-portfolio`:
+From the repository root:
 
 ```sh
 COPILOT_ENV_FILE='' .venv/bin/python scripts/seed_demo_results.py --verify-only

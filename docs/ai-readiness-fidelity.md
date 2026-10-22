@@ -6,9 +6,9 @@ Presentation-only follow-up to `5d45486`, on `feat/ai-workflow-readiness`, track
 
 Open **http://127.0.0.1:8502/?page=foundation**.
 
-Before editing, port 8502 was confirmed as PID **70437**, `python -m streamlit run portfolio_app.py --server.address 127.0.0.1 --server.port 8502`, with cwd `/Users/norman/main/154demo-portfolio`, clean branch `feat/ai-workflow-readiness` at exact commit `5d454863ebc1691de26da29daacbf7a4ab34878e`. The serving checkout was correct. Imported presentation modules were subsequently cleared by restarting only that preview after styling changes. Final preview PID: **74549**.
+Before editing, port 8502 was confirmed as PID **70437**, `python -m streamlit run portfolio_app.py --server.address 127.0.0.1 --server.port 8502`, with the portfolio worktree on clean branch `feat/ai-workflow-readiness` at exact commit `5d454863ebc1691de26da29daacbf7a4ab34878e`. The serving checkout was correct. Imported presentation modules were subsequently cleared by restarting only that preview after styling changes. Final preview PID: **74549**.
 
-Port **8501**, PID **20385**, continues to serve `app.py` from `/Users/norman/main/154demo`. It was never stopped or changed. Restart the portfolio preview with `./scripts/run_portfolio_demo.sh` from the portfolio worktree.
+Port **8501**, PID **20385**, continues to serve `app.py` from the separate frozen-engine worktree. It was never stopped or changed. Restart the portfolio preview with `./scripts/run_portfolio_demo.sh` from the portfolio worktree.
 
 ## Visual changes
 

@@ -39,7 +39,7 @@ or print it. A second local worktree can reference the original configuration
 without copying the credential:
 
 ```sh
-export COPILOT_ENV_FILE=/Users/norman/main/154demo/.env
+export COPILOT_ENV_FILE=/path/to/your/untracked/local/.env
 .venv/bin/python scripts/seed_demo_results.py
 ./scripts/run_skill_demo.sh --server.port 8502
 ```
@@ -115,5 +115,5 @@ records the exact checkpoint SHA and remote verification after commit/push.
 
 Only after the skill checkpoint is committed and its GitHub branch verified may
 `feat/portfolio-overview` be created from that exact SHA at
-`/Users/norman/main/154demo-portfolio`. Creating that branch/worktree does not
+the portfolio repository. Creating that branch/worktree does not
 authorize portfolio implementation, merging or deployment.
