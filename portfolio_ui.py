@@ -25,6 +25,8 @@ def navigate(page, company=None, finding=None):
 
 def shell(page, companies):
     st.markdown(CSS, unsafe_allow_html=True)
+    from portfolio_source_device import mount_source_device
+    mount_source_device()
     with st.sidebar:
         st.markdown('<div class="gp-brand">154 Partners<span class="gp-product">Portfolio Reporting Copilot</span><small>by NL Intelligence</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')

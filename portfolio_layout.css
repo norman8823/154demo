@@ -160,3 +160,10 @@ div[class*="st-key-gp_company_"]:has(.v2-company-head) .stButton button {backgro
  [data-testid="stSidebarUserContent"]>div>[data-testid="stVerticalBlock"] {min-height:calc(100dvh - 100px);}
  [data-testid="stSidebarUserContent"] [data-testid="stLayoutWrapper"]:has(>.st-key-sidebar_footer) {margin-top:auto;}
 }
+
+/* Source inspection is a desktop document tool; keep its native accessible title. */
+.st-key-source_viewport{display:none}
+[role="dialog"]:has(.source-document-header)>h2[slot="title"]{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.source-document-header{padding-right:32px;margin:0 0 2px}.source-document-header h3{font-size:19px!important;line-height:1.4!important;margin:0 0 3px!important}.source-document-header p{font-size:12px!important;color:#60738a;margin:0 0 3px!important}.source-document-header small{font-size:11px;color:#657e72;font-style:italic}
+@media(max-width:1023px){[class*="st-key-desktop_source_"]{display:none!important}}
+[role="dialog"]:has(.source-document-header)>button[aria-label="Close"]{z-index:3}

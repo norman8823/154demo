@@ -77,6 +77,7 @@ def test_formula_fallback_and_html_are_safe(companies):
 
 def test_documents_page_preserves_formats_and_removes_fake_preview():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60)
+    at.session_state['source_viewport']={'desktop':True}
     at.query_params['page']='excel';at.run()
     assert not at.exception
     assert at.title[0].value=='Documents & Reports'
@@ -90,19 +91,21 @@ def test_documents_page_preserves_formats_and_removes_fake_preview():
             assert not at.exception
     at.button(key='preview_summit').click().run()
     assert not at.exception
-    assert any(s.label=='Worksheet' for s in at.selectbox)
-    component=at.get('bidi_component')[0]
-    assert json.loads(component.proto.json)['initial']=='A1'
+    assert not any(s.label=='Worksheet' for s in at.selectbox)
+    component=next(n for n in at.get('bidi_component') if n.proto.component_name=='original_worksheet_grid')
+    assert json.loads(component.proto.json)['citation']['cell']=='A1'
 
 
 
 def test_foundation_mapping_opens_original_source():
     at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60)
+    at.session_state['source_viewport']={'desktop':True}
     at.query_params['page']='foundation';at.run()
     assert not at.exception
     at.button(key='foundation_source_view').click().run()
     assert not at.exception
-    assert any(s.label=='Worksheet' and s.value=='Income Statement' for s in at.selectbox)
-    payload=json.loads(at.get('bidi_component')[0].proto.json)
-    assert payload['initial']=='D15' and payload['sheet']=='Income Statement'
-    assert payload['cells']['D15']['bar']=='=SUM(D9:D14)'
+    assert not any(s.label=='Worksheet' for s in at.selectbox)
+    component=next(n for n in at.get('bidi_component') if n.proto.component_name=='original_worksheet_grid')
+    payload=json.loads(component.proto.json)
+    assert payload['citation']=={'sheet':'Income Statement','cell':'D15'}
+    assert payload['sheets']['Income Statement']['cells']['D15']['bar']=='=SUM(D9:D14)'

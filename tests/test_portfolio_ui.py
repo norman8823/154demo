@@ -13,7 +13,9 @@ def test_overview_uses_prepared_financials_and_explicit_periods():
 
 
 def test_documents_library_separates_originals_and_generated_reports():
-    at = AppTest.from_file(str(ROOT / 'portfolio_app.py'), default_timeout=60).run()
+    at = AppTest.from_file(str(ROOT / 'portfolio_app.py'), default_timeout=60)
+    at.session_state['source_viewport']={'desktop':True}
+    at.run()
     at.button(key='nav_excel').click().run()
     assert not at.exception
     assert at.title[0].value == 'Documents & Reports'

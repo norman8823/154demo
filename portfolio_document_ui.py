@@ -1,5 +1,7 @@
 """One shared native source viewer for library, mappings and accepted findings."""
+from html import escape
 import streamlit as st
+from portfolio_source_device import source_desktop, MOBILE_MESSAGE
 from engine import InputError
 from portfolio_documents import (original_document, source_books, checked_coordinate,
     source_fact, evidence_locations)
@@ -8,6 +10,9 @@ XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 
 def open_source(company, sheet=None, cell=None):
+    if not source_desktop():
+        st.info(MOBILE_MESSAGE)
+        return
     try:
         document = original_document(company)
         book, _ = source_books(document)
@@ -22,37 +27,35 @@ def open_source(company, sheet=None, cell=None):
         st.error('Source preview unavailable: '+str(exc))
 
 
-@st.dialog('Original source workbook', width='large', dismissible=True)
+@st.dialog('Source inspection', width='large', dismissible=True)
 def source_dialog(company, requested_sheet, requested_cell, request_id):
     try:
         document = original_document(company)
         book, cached = source_books(document)
-        st.subheader(company.name)
-        st.caption(document.filename+' · Read-only original · SHA-256 verified')
-        prefix = 'source_'+str(request_id)+'_'+company.id+'_'+requested_sheet+'_'+requested_cell
-        name = st.selectbox('Worksheet', book.sheetnames, index=book.sheetnames.index(requested_sheet), key=prefix+'_sheet')
-        sheet = book[name]
-        focus = requested_cell if name == requested_sheet else 'A1'
+        if not source_desktop():
+            st.info(MOBILE_MESSAGE)
+            return
+        st.markdown('<div class="source-document-header"><h3>'+escape(company.name)+'</h3><p>'+escape(document.filename)+'</p><small>Read-only · Verified original</small></div>',unsafe_allow_html=True)
+        prefix='source_'+str(request_id)+'_'+company.id
         from portfolio_sheet_grid import render_sheet_grid
-        render_sheet_grid(company,sheet,cached[name],focus,prefix+'_'+name+'_grid')
-        st.caption('Bounded worksheet reconstruction; original coordinates and cached values are retained. Formulas are never executed. Merged layouts and Excel artwork are not reproduced.')
-        download,close=st.columns(2)
-        download.download_button('Download Original',document.data,file_name=document.filename,mime=XLSX,on_click='ignore',key=prefix+'_download',width='stretch')
-        if close.button('Close',key=prefix+'_close',width='stretch'): st.rerun()
+        render_sheet_grid(company,book,cached,requested_sheet,requested_cell,prefix+'_grid')
+        st.download_button('Download Original',document.data,file_name=document.filename,mime=XLSX,on_click='ignore',key=prefix+'_download')
     except (InputError,OSError,ValueError) as exc:
         st.error('Source preview unavailable: '+str(exc))
-        if st.button('Close',key='invalid_source_close'): st.rerun()
 
 
 def source_action(company, fact_id, key):
+    if not source_desktop():return
     try:
         fact=source_fact(company,fact_id)
     except (InputError,OSError,ValueError) as exc:
         st.caption('Original source unavailable: '+str(exc)); return
-    if st.button('View in Source',key=key): open_source(company,fact['sheet'],fact['cell'])
+    with st.container(key='desktop_source_'+key):
+        if st.button('View in Source',key=key): open_source(company,fact['sheet'],fact['cell'])
 
 
 def evidence_actions(company, source_ids, key):
+    if not source_desktop():return
     try: originals,derived,unsupported=evidence_locations(company,source_ids)
     except (InputError,OSError,ValueError) as exc:
         st.warning('Original sources unavailable: '+str(exc)); return
@@ -82,10 +85,15 @@ def render_documents(companies, workbook_data):
             try: document=original_document(company)
             except (InputError,OSError,ValueError) as exc:
                 st.error(company.name+' · '+str(exc));continue
-            title,preview,download=st.columns([3,1,1.5],vertical_alignment='center')
+            if source_desktop():
+                title,preview,download=st.columns([3,1,1.5],vertical_alignment='center')
+            else:
+                title,download=st.columns([3,1.5],vertical_alignment='center')
             title.markdown('**'+company.name+'**')
             title.caption(document.filename+' · '+comparison(company)['period_label'])
-            if preview.button('Preview',key='preview_'+company.id,width='stretch'): open_source(company)
+            if source_desktop():
+                with preview,st.container(key='desktop_source_preview_'+company.id):
+                    if st.button('Preview',key='preview_'+company.id,width='stretch'): open_source(company)
             download.download_button('Download Original',document.data,file_name=document.filename,mime=XLSX,on_click='ignore',key='original_'+company.id,width='stretch')
     st.subheader('Generated Reports')
     st.caption('Generated portfolio and company analyses. Original reporting packages are listed separately above.')
@@ -103,3 +111,17 @@ def render_documents(companies, workbook_data):
             st.error('This template could not be populated. Choose the standard report or supplied firm template.');return
     else: data=company_export(company.review,custom)
     st.download_button('Download Company Excel',data[0],file_name=data[1],mime=XLSX,key='documents_company_download')
+
+
+def render_source_route(companies):
+    """A guarded direct inspection URL; never a file path or upload endpoint."""
+    from portfolio_data import company_by_id
+    st.title('Source Documents')
+    if not source_desktop():
+        st.info(MOBILE_MESSAGE)
+        return
+    company=company_by_id(companies,st.query_params.get('company',''))
+    if company is None:
+        st.error('Unknown approved source company.')
+        return
+    open_source(company,st.query_params.get('sheet'),st.query_params.get('cell'))

@@ -53,6 +53,9 @@ elif page == 'company':
 elif page == 'issues':
     page_heading('Investment Issues', 'Verified findings → Management follow-up → Supporting source evidence', workbook_data)
     render_watchlist(companies)
+elif page == 'source':
+    from portfolio_document_ui import render_source_route
+    render_source_route(companies)
 elif page == 'excel':
     from portfolio_document_ui import render_documents
     render_documents(companies, workbook_data)

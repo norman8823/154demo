@@ -43,6 +43,15 @@ def worksheet_payload(company,sheet,cached,coordinate):
                 initial=coordinate,cells=cells)
 
 
-def render_sheet_grid(company,sheet,cached,coordinate,key):
+def workbook_payload(company,book,cached,sheet,coordinate):
+    if sheet not in book.sheetnames:
+        from engine import InputError
+        raise InputError('The cited worksheet is not in the approved original.')
+    checked_coordinate(book[sheet],coordinate)
+    return dict(initial_sheet=sheet,citation={'sheet':sheet,'cell':coordinate},
+                sheets={ws.title:worksheet_payload(company,ws,cached[ws.title],coordinate if ws.title==sheet else 'A1') for ws in book})
+
+
+def render_sheet_grid(company,book,cached,sheet,coordinate,key):
     # Data is serialized as data, never interpolated into executable HTML/JS.
-    _grid(key=key,data=worksheet_payload(company,sheet,cached,coordinate),height='content')
+    _grid(key=key,data=workbook_payload(company,book,cached,sheet,coordinate),height='content')

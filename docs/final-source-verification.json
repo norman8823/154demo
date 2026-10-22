@@ -1,0 +1,347 @@
+{
+  "task": 52,
+  "branch": "feat/ai-workflow-readiness",
+  "base": "ec261c243e2a0aef2750e5bdf1422de0f59a1ebf",
+  "scope": "Desktop-only source-viewer UX; no analytical, source-verification, financial or exporter changes.",
+  "implementation": [
+    "Compact company/filename/read-only header; native accessible dialog title visually hidden, native X/Escape/outside dismissal preserved; Download Original is the only bottom action.",
+    "Formula/name box \u2192 bounded grid \u2192 horizontal scrollbar \u2192 actual bottom worksheet tabs, with vertical scrollbar immediately right of grid.",
+    "Pointer-drag/track-click virtual scrollbars change viewport independently of cell selection and clamp to original used bounds. Accessible scrollbar keyboard controls remain scoped to the scrollbar.",
+    "Grid clicks/arrows/name-box navigation reveal selection; original formula/raw value and optional provenance stay synchronized locally.",
+    "No wheel handlers: wheel events cannot change worksheet position and continue scrolling the native dialog.",
+    "Tabs switch among actual approved workbook sheets without a Python rerun; source citation identity is separate and restored when returning to its sheet.",
+    "Client viewport measurement prevents workbook component mounting until desktop width \u22651024px is confirmed. Preview/View in Source are absent on phones; a guarded ?page=source route reports desktop-only access.",
+    "Existing strict three-company source allowlist, byte hash verification, downloads and derived-operand navigation reused unchanged."
+  ],
+  "validation": {
+    "portfolio_regressions": "103 passed in 129.21s",
+    "focused_tests": "24 passed in 28.78s",
+    "actual_chrome": {
+      "desktop": [
+        {
+          "company": "summit",
+          "width": 1280,
+          "citation": "Income Statement!D15",
+          "drag_track_bounds": "pass",
+          "independent_viewport_selection": "pass",
+          "click_arrows_edge_reveal": "pass",
+          "wheel_changes_worksheet": false,
+          "native_dialog_scrolling": "pass",
+          "tabs_and_citation_return": "pass",
+          "read_only": "pass",
+          "dismissal": "X"
+        },
+        {
+          "company": "tallis",
+          "width": 1280,
+          "citation": "Practice P&L!G12",
+          "drag_track_bounds": "pass",
+          "independent_viewport_selection": "pass",
+          "click_arrows_edge_reveal": "pass",
+          "wheel_changes_worksheet": false,
+          "native_dialog_scrolling": "pass",
+          "tabs_and_citation_return": "pass",
+          "read_only": "pass",
+          "dismissal": "Escape"
+        },
+        {
+          "company": "harrow",
+          "width": 1280,
+          "citation": "P&L Summary!F13",
+          "drag_track_bounds": "pass",
+          "independent_viewport_selection": "pass",
+          "click_arrows_edge_reveal": "pass",
+          "wheel_changes_worksheet": false,
+          "native_dialog_scrolling": "pass",
+          "tabs_and_citation_return": "pass",
+          "read_only": "pass",
+          "dismissal": "outside"
+        },
+        {
+          "company": "summit",
+          "width": 1440,
+          "citation": "Income Statement!D15",
+          "drag_track_bounds": "pass",
+          "independent_viewport_selection": "pass",
+          "click_arrows_edge_reveal": "pass",
+          "wheel_changes_worksheet": false,
+          "native_dialog_scrolling": "pass",
+          "tabs_and_citation_return": "pass",
+          "read_only": "pass",
+          "dismissal": "X"
+        },
+        {
+          "company": "tallis",
+          "width": 1440,
+          "citation": "Practice P&L!G12",
+          "drag_track_bounds": "pass",
+          "independent_viewport_selection": "pass",
+          "click_arrows_edge_reveal": "pass",
+          "wheel_changes_worksheet": false,
+          "native_dialog_scrolling": "pass",
+          "tabs_and_citation_return": "pass",
+          "read_only": "pass",
+          "dismissal": "Escape"
+        },
+        {
+          "company": "harrow",
+          "width": 1440,
+          "citation": "P&L Summary!F13",
+          "drag_track_bounds": "pass",
+          "independent_viewport_selection": "pass",
+          "click_arrows_edge_reveal": "pass",
+          "wheel_changes_worksheet": false,
+          "native_dialog_scrolling": "pass",
+          "tabs_and_citation_return": "pass",
+          "read_only": "pass",
+          "dismissal": "outside"
+        }
+      ],
+      "downloads": [
+        {
+          "company": "summit",
+          "width": 1280,
+          "sha256": "52c66cf2c5b95fbfd68b4cbafcffd2d1c1fd4877cbc16a8fec75ff4eb90cbaf0",
+          "viewer_selection_preserved": true
+        },
+        {
+          "company": "tallis",
+          "width": 1280,
+          "sha256": "197be0d0e0a34273206d61c47df3f63fbb22fca468a2d9c4fc497d030c49cd9b",
+          "viewer_selection_preserved": true
+        },
+        {
+          "company": "harrow",
+          "width": 1280,
+          "sha256": "bdd9c427e57f4c55fa4a135a0126bd25f5fbdae5781b7c192067bbb937788efb",
+          "viewer_selection_preserved": true
+        },
+        {
+          "company": "summit",
+          "width": 1440,
+          "sha256": "52c66cf2c5b95fbfd68b4cbafcffd2d1c1fd4877cbc16a8fec75ff4eb90cbaf0",
+          "viewer_selection_preserved": true
+        },
+        {
+          "company": "tallis",
+          "width": 1440,
+          "sha256": "197be0d0e0a34273206d61c47df3f63fbb22fca468a2d9c4fc497d030c49cd9b",
+          "viewer_selection_preserved": true
+        },
+        {
+          "company": "harrow",
+          "width": 1440,
+          "sha256": "bdd9c427e57f4c55fa4a135a0126bd25f5fbdae5781b7c192067bbb937788efb",
+          "viewer_selection_preserved": true
+        }
+      ],
+      "citations": [
+        {
+          "route": "issues",
+          "operand": "Income Statement!K44"
+        },
+        {
+          "route": "company&company=summit&finding=10000",
+          "operand": "Income Statement!K44"
+        }
+      ],
+      "mobile": [
+        {
+          "width": 390,
+          "route": "excel",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 390,
+          "route": "foundation",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 390,
+          "route": "issues",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 390,
+          "route": "company&company=summit",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 390,
+          "route": "source&company=summit&sheet=Income%20Statement&cell=D15",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 430,
+          "route": "excel",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 430,
+          "route": "foundation",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 430,
+          "route": "issues",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 430,
+          "route": "company&company=summit",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 430,
+          "route": "source&company=summit&sheet=Income%20Statement&cell=D15",
+          "worksheet_mounted": false,
+          "preview_actions": false,
+          "horizontal_overflow": false
+        }
+      ],
+      "errors": [],
+      "external_requests": []
+    },
+    "existing_investment_mobile": {
+      "phone_cases": [
+        {
+          "company": "summit",
+          "width": 390,
+          "card_action_and_back": "pass",
+          "original_assessment_and_incremental_context": "pass",
+          "full_report_controls_hidden": true,
+          "no_overflow_or_nested_scrolling": true
+        },
+        {
+          "company": "tallis",
+          "width": 390,
+          "card_action_and_back": "pass",
+          "original_assessment_and_incremental_context": "pass",
+          "full_report_controls_hidden": true,
+          "no_overflow_or_nested_scrolling": true
+        },
+        {
+          "company": "harrow",
+          "width": 390,
+          "card_action_and_back": "pass",
+          "original_assessment_and_incremental_context": "pass",
+          "full_report_controls_hidden": true,
+          "no_overflow_or_nested_scrolling": true
+        },
+        {
+          "company": "summit",
+          "width": 430,
+          "card_action_and_back": "pass",
+          "original_assessment_and_incremental_context": "pass",
+          "full_report_controls_hidden": true,
+          "no_overflow_or_nested_scrolling": true
+        },
+        {
+          "company": "tallis",
+          "width": 430,
+          "card_action_and_back": "pass",
+          "original_assessment_and_incremental_context": "pass",
+          "full_report_controls_hidden": true,
+          "no_overflow_or_nested_scrolling": true
+        },
+        {
+          "company": "harrow",
+          "width": 430,
+          "card_action_and_back": "pass",
+          "original_assessment_and_incremental_context": "pass",
+          "full_report_controls_hidden": true,
+          "no_overflow_or_nested_scrolling": true
+        }
+      ],
+      "desktop_cases": [
+        {
+          "company": "summit",
+          "full_summary_exports_and_evidence": "pass"
+        },
+        {
+          "company": "tallis",
+          "full_summary_exports_and_evidence": "pass"
+        },
+        {
+          "company": "harrow",
+          "full_summary_exports_and_evidence": "pass"
+        }
+      ],
+      "phone_deep_link_and_switching": "pass",
+      "errors": [],
+      "external_requests": []
+    },
+    "existing_reporting": {
+      "downloads": 8,
+      "company_exports": 6,
+      "excel_issue_source_chains": 17,
+      "independent_consumer": {
+        "bytes": 60627,
+        "standalone_consumer": "pass",
+        "company_comparisons": 3
+      },
+      "browser_errors": [],
+      "external_requests": []
+    },
+    "integrity": {
+      "xlsx_values_formats_types_links_identical": [
+        "portfolio-browser.xlsx",
+        "summit-standard.xlsx",
+        "summit-custom.xlsx",
+        "tallis-standard.xlsx",
+        "tallis-custom.xlsx",
+        "harrow-standard.xlsx",
+        "harrow-custom.xlsx"
+      ],
+      "zip_bytes_identical": true,
+      "zip_sha256": "b2e5da282e8b950dbae6a4c48cd45d4694a0441ac8cdbe35bc2d26fe72811a7b",
+      "frozen_hash_pins": 29,
+      "new_analyst_calls": 0
+    },
+    "secret_audit": "Exact change-path allowlist and high-confidence credential scan; no findings; no environment/credential files read."
+  },
+  "bounded_review": [
+    "Corrected custom header stacking so its transparent box cannot intercept clicks on the native modal X.",
+    "Verified the hidden native heading still supplies the accessible dialog name.",
+    "Confirmed mouse wheel is neither handled nor cancelled by the worksheet, and actual native dialog scrolling works over/outside the grid.",
+    "Verified unknown and phone viewports never mount the workbook component; desktop-to-phone resize also removes it.",
+    "Inspected actual Chrome screenshots at1280/1440 and the phone direct-access message."
+  ],
+  "screenshots": [
+    "docs/images/final-source/harrow-1440-cited.png",
+    "docs/images/final-source/phone-source-inspection-message.png",
+    "docs/images/final-source/summit-1280-cited.png",
+    "docs/images/final-source/summit-1440-cited.png",
+    "docs/images/final-source/tallis-1440-cited.png"
+  ],
+  "preview": {
+    "library": "http://127.0.0.1:8502/?page=excel",
+    "restart": "./scripts/run_portfolio_demo.sh --server.headless true",
+    "portfolio_pid": 91088,
+    "analytical_8501_pid_unchanged": 20385
+  },
+  "limitations": [
+    "Interactive worksheet inspection is deliberately restricted to viewports at least1024CSS pixels wide; original downloads remain available on phones.",
+    "Virtual scrollbars represent original row/column positions, not native overflowing spreadsheet DOM. At most12rows\u00d76columns are rendered.",
+    "Merged layouts, images and Excel artwork are not reproduced. Truncated cell text remains fully inspectable in the formula/value bar.",
+    "Original formulas are displayed without evaluation; cells use original cached values or explicitly attributed approved retained source observations."
+  ]
+}
