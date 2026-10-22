@@ -52,10 +52,8 @@ with sync_playwright() as p:
         last=desktop.locator('.st-key-finding_panel_'+str(company.review.package['ai_insights'][-1]['id']))
         assert download.bounding_box()['y']>=last.bounding_box()['y']+last.bounding_box()['height']
         receipt['styles'].append(style(download))
-        first=desktop.locator('.st-key-finding_panel_10000');actions=first.locator('.st-key-finding_actions_10000')
-        actions.get_by_text('Follow Up',exact=True).click()
+        first=desktop.locator('.st-key-finding_panel_10000');actions=first
         expect(first.get_by_text(company.review.package['ai_insights'][0]['action'],exact=True)).to_be_visible()
-        actions.get_by_text('Follow Up',exact=True).click()
         target=evidence_locations(company,company.review.package['ai_insights'][0]['fact_ids'])[0][0]
         actions.get_by_role('button',name='View in Source',exact=True).click()
         dialog=page.get_by_role('dialog',name='Source inspection',exact=True)

@@ -9,25 +9,34 @@ from portfolio_outlook import investment_outlook
 from portfolio_comparison import comparison,money
 from portfolio_investments import investments_for,investment_summary
 
-@pytest.mark.parametrize('index,moic,irr,equity,period,pct',[
- (0,'2.50x','21.77%','$27.00M','September 2026 monthly','23.8%'),
- (1,'0.71x','-9.54%','$15.00M','September 2026 monthly','27.7%'),
- (2,'1.68x','13.80%','$40.00M','FY2026 annual','10.9%')])
-def test_editorial_words_figures_periods_and_approved_support(index,moic,irr,equity,period,pct):
+@pytest.mark.parametrize('index,keywords',[
+ (0,('HVAC','technician','installation','equipment procurement','maintenance agreement','collections')),
+ (1,('tax','billable utilization','realization','partner compensation','client','work-in-progress','collection')),
+ (2,('commercial','route density','fleet utilization','downtime','capital spending','cash conversion','renewal'))])
+def test_business_sections_grounded_context_and_unchanged_financial_contracts(index,keywords):
+ from portfolio_outlook import SECTIONS
  company=load_companies()[index];original=deepcopy(company.review)
  outlook=investment_outlook(company);text=' '.join(outlook.paragraphs)
- assert 80<=len(text.split())<=120
- for value in (moic,irr,equity,period,pct,'synthetic'):assert value in text
+ assert len(outlook.paragraphs)==4
+ assert [s[0] for s in SECTIONS]==['Business Overview',"What's Working", "What's Under Pressure",'Operational Priorities']
+ assert 150<=len(text.split())<=250
+ for word in keywords:assert word.lower() in text.lower()
+ assert 'illustrative' in outlook.paragraphs[0].lower()
+ assert 'Illustrative business context'==SECTIONS[0][1]
+ assert 'Proposed initiatives' in SECTIONS[3][1]
+ assert 'Source-backed' in SECTIONS[2][1]
  ledger=investment_summary(investments_for([company]))
- assert f'{ledger["gross_moic"]:.2f}x'==moic
- assert f'{ledger["gross_irr"]:.2%}'==irr
- assert money(ledger['current_equity_value'])==equity
- assert f'{abs(comparison(company)["ebitda"].variance_pct):.1%}'==pct
+ assert ledger['gross_moic']==pytest.approx([2.5,0.7142857142857143,1.68][index])
+ assert ledger['gross_irr']==pytest.approx([.2177,-.0954,.1380][index],abs=.00005)
+ assert ledger['current_equity_value']==[27000000,15000000,40000000][index]
+ # No duplicated monetary/return figures in the editorial prose.
+ assert money(ledger['current_equity_value']) not in text
+ assert f'{ledger["gross_moic"]:.2f}x' not in text
  assert set(outlook.finding_ids)<={f['id'] for f in original.package['ai_insights']}
  assert outlook.ledger_sha256==investments_for([company])[0].ledger_sha256
  assert company.review==original
- if index==2:assert 'monthly' not in text
- else:assert 'does not establish' in text
+ if index==2:assert 'FY2026 annual' in text and 'September monthly' not in text
+ else:assert 'September monthly' in text and 'FY2026 annual' not in text
 
 
 def test_hidden_navigation_and_legacy_issues_are_lossless():
@@ -56,7 +65,5 @@ def test_switching_narrative_hierarchy_and_original_followups():
   assert investment_outlook(company).headline in text
   assert all(investment_outlook(other).headline not in text for other in load_companies() if other.id!=company.id)
   for finding in company.review.package['ai_insights']:
-   at.button(key='toggle_finding_followup_'+company.id+'_'+str(finding['id'])).click().run()
-   followup=unescape('\n'.join(m.value for m in at.markdown))
-   assert finding['action'] in followup and finding['management_question'] in followup
-  assert len([e for e in at.button if e.label=='Follow Up'])==len(company.review.package['ai_insights'])
+   assert finding['text'] in text and finding['action'] in text and finding['management_question'] in text
+  assert not any(b.label in ('Follow Up','Read Full Analysis') for b in at.button)

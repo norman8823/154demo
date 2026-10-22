@@ -35,7 +35,7 @@ def render_mobile_detail(company):
         st.markdown('<h1>Investment Detail</h1><h2 class="investment-company-name">'+escape(company.name)+'</h2>',unsafe_allow_html=True)
         st.caption(company.sector+' · '+company.review.report_period+' · Prepared assessment')
         from portfolio_outlook import render_outlook
-        render_outlook(company)
+        render_outlook(company,compact=True)
         investment=investments_for([company])[0];result=investment_summary([investment])
         values=[('Invested capital',result['invested_capital']),('Realized distributions',result['realized_proceeds']),('Current equity value',result['current_equity_value'])]
         st.markdown('<div class="mobile-investment-context">'+''.join('<div><small>'+label+'</small><strong>'+escape(money(value))+'</strong></div>' for label,value in values)+'</div>',unsafe_allow_html=True)

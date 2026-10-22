@@ -17,7 +17,8 @@ def test_investment_detail_keeps_company_deep_links_followups_and_export_choices
     assert at.button(key='nav_company').label=='Investment Detail'
     assert at.selectbox(key='gp_company_selector').value==company.id
     assert at.query_params['page']=='company' and at.query_params['finding']=='10000'
-    assert len([e for e in at.button if e.label=='Follow Up'])==len(company.review.package['ai_insights'])
+    assert len([m for m in at.markdown if m.value=='**Follow Up**'])==len(company.review.package['ai_insights'])
+    assert not any(b.label in ('Follow Up','Read Full Analysis') for b in at.button)
     labels=[d.proto.label for d in at.get('download_button')]
     assert labels==['Download Excel']
     for choice in ('Use supplied firm template','Standard Excel report'):
