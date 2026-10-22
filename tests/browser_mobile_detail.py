@@ -93,7 +93,7 @@ with sync_playwright() as p:
         assert not page.locator('.st-key-mobile_company_detail').is_visible()
         expect(page.get_by_role('heading',name='Investment Summary',exact=True)).to_be_visible()
         expect(page.get_by_role('combobox',name='Company Excel format',exact=True)).to_be_visible()
-        expect(page.get_by_role('button',name='↓  Download Excel Report',exact=True)).to_be_visible()
+        expect(page.get_by_role('button',name='Download Investment Excel',exact=True)).to_be_visible()
         audit(page)
         if company.id=='summit':page.screenshot(path=str(OUT/'desktop-complete-1440.png'),full_page=True)
         page.get_by_role('button',name='View in Source',exact=True).first.click()

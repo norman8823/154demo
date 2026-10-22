@@ -29,7 +29,7 @@ with sync_playwright() as p:
   else:route.continue_()
  page.route('**/*',local)
  page.goto('http://127.0.0.1:8502/')
- with page.expect_download() as d:page.get_by_role('button',name='↓ Download Portfolio Excel',exact=True).click(timeout=60000)
+ with page.expect_download() as d:page.get_by_role('button',name='Download Portfolio Excel',exact=True).click(timeout=60000)
  d.value.save_as(DOWNLOADS/'portfolio.xlsx')
  page.locator('.st-key-open_tallis button').click()
  expect(page.get_by_role('heading',name='Investment Summary',exact=True)).to_be_visible(timeout=60000)
@@ -47,7 +47,7 @@ with sync_playwright() as p:
  assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
  page.locator('[data-testid="stMain"]').evaluate('(e)=>e.scrollTop=0')
  page.screenshot(path=str(IMAGES/'tallis-company-detail.png'),full_page=True)
- with page.expect_download() as d:page.get_by_role('button',name='↓  Download Excel Report',exact=True).click()
+ with page.expect_download() as d:page.get_by_role('button',name='Download Investment Excel',exact=True).click()
  d.value.save_as(DOWNLOADS/'tallis-standard.xlsx')
  for finding in company.review.package['ai_insights']:
   prefix='company_source_tallis_'+str(finding['id'])

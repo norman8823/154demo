@@ -51,8 +51,11 @@ elif page == 'company':
     else:
         render_company(company, companies)
 elif page == 'issues':
-    page_heading('Investment Issues', 'Verified findings → Management follow-up → Supporting source evidence', workbook_data)
+    page_heading('Investment Issues', 'Verified findings → Management follow-up → Supporting source evidence')
     render_watchlist(companies)
+    from portfolio_ui import generated_excel_download
+    generated_excel_download('Download Portfolio Excel',workbook_data,
+        'GP_Portfolio_Review_Sep2026_FY2026.xlsx','gp_download')
 elif page == 'source':
     from portfolio_document_ui import render_source_route
     render_source_route(companies)

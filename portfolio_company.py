@@ -85,7 +85,8 @@ def render_company(company, companies=None):
 
 def _render_desktop_company(company,r,v):
     st.button('← Portfolio Overview', on_click=navigate, args=('overview',))
-    st.title(company.name)
+    st.title('Investment Detail')
+    st.markdown('<h2 class="investment-company-name">'+escape(company.name)+'</h2>',unsafe_allow_html=True)
     st.caption(company.sector+' · '+v['period_label']+' · Verified prepared review')
     from portfolio_outlook import render_outlook
     render_outlook(company)
@@ -107,9 +108,9 @@ def _render_desktop_company(company,r,v):
     st.session_state.export = data
     st.session_state.custom = custom
     data_bytes, filename, warnings = data
-    st.download_button('↓  Download Excel Report',data_bytes,file_name=filename,
-                       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     for warning in warnings: st.caption(warning)
+    from portfolio_ui import generated_excel_download
+    generated_excel_download('Download Investment Excel',data_bytes,filename,'company_download')
 
 
 def render_company_summary(company):

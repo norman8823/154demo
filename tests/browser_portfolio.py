@@ -50,7 +50,7 @@ with sync_playwright() as p:
     expect(page.get_by_text('10.95%',exact=True)).to_be_visible()
     expect(page.get_by_text('Illustrative investment values and valuation context',exact=True)).to_have_count(0)
     with page.expect_download() as downloaded:
-        page.get_by_role('button', name='↓ Download Portfolio Excel', exact=True).click()
+        page.get_by_role('button', name='Download Portfolio Excel', exact=True).click()
     path = OUT/'portfolio-browser.xlsx'
     downloaded.value.save_as(path)
     gp = load_workbook(path)
@@ -94,7 +94,7 @@ with sync_playwright() as p:
                 expect(page.get_by_text('Optional company Excel template', exact=True)).to_have_count(0)
             check(page)
             with page.expect_download() as download:
-                page.get_by_role('button', name='↓  Download Excel Report', exact=True).first.click()
+                page.get_by_role('button', name='Download Investment Excel', exact=True).first.click()
             destination = OUT/(slug+('-custom' if custom else '-standard')+'.xlsx')
             download.value.save_as(destination)
             book = load_workbook(destination)
@@ -113,7 +113,7 @@ with sync_playwright() as p:
         page.get_by_role('button', name='← Portfolio Overview', exact=True).click()
         expect(page.get_by_role('heading', name='Portfolio Overview', exact=True)).to_be_visible(timeout=60000)
         results['companies'][slug] = {'summary': 'pass', 'evidence': 'pass', 'return': 'pass', 'downloads': outputs}
-    page.get_by_role('button', name='Company Detail', exact=True).click()
+    page.get_by_role('button', name='Investment Detail', exact=True).click()
     for slug,name in [('tallis','Tallis Brook Accounting'),('harrow','Harrow Ridge Environmental'),('summit','Summit Home Services')]:
         page.get_by_role('combobox',name='Company',exact=True).click()
         page.get_by_role('option',name=name,exact=True).click()

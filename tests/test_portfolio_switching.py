@@ -14,7 +14,8 @@ def test_company_selector_updates_all_data_and_clears_finding_and_export_state()
     for slug, name, revenue in [('tallis','Tallis Brook Accounting',3475418),('harrow','Harrow Ridge Environmental',46650000),('summit','Summit Home Services',3298000)]:
         at.selectbox(key='gp_company_selector').set_value(slug).run()
         assert not at.exception
-        assert at.title[0].value == name
+        assert at.title[0].value == 'Investment Detail'
+        assert any(name in m.value for m in at.markdown)
         assert at.session_state['gp_company_tab'] == 'summary'
         assert not any(r.key=='gp_company_tab' for r in at.radio)
         assert at.selectbox(key='gp_company_format').value == 'Standard Excel report'
@@ -25,7 +26,7 @@ def test_company_selector_updates_all_data_and_clears_finding_and_export_state()
     assert not any(s.key=='gp_sidebar_company' for s in at.selectbox)
     at.selectbox(key='gp_company_selector').set_value('tallis').run()
     assert not at.exception
-    assert at.title[0].value == 'Tallis Brook Accounting'
+    assert at.title[0].value=='Investment Detail'
 
 
 def test_issues_are_grouped_with_original_questions_and_actions():

@@ -31,14 +31,14 @@ def shell(page, companies):
         st.markdown('<div class="gp-brand">154 Partners<span class="gp-product">Portfolio Reporting Copilot</span><small>by NL Intelligence</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
         with st.container(key='workspace_navigation'):
-            for label, destination in [('Portfolio Overview', 'overview'), ('Company Detail', 'company'), ('Data Landscape','foundation'), ('Documents & Reports', 'excel')]:
+            for label, destination in [('Portfolio Overview', 'overview'), ('Investment Detail', 'company'), ('Data Landscape','foundation'), ('Documents & Reports', 'excel')]:
                 st.button(label, key='nav_watchlist' if destination == 'issues' else 'nav_'+destination, type='primary' if page == destination else 'secondary', width='stretch',
                           on_click=navigate, args=(destination, st.query_params.get('company', companies[0].id)) if destination == 'company' else (destination,))
         with st.container(key='sidebar_footer'):
             from portfolio_mobile import mobile_panel
             mobile_panel()
             st.markdown('<div class="sidebar-demo">Product Demo · Synthetic Data</div>',unsafe_allow_html=True)
-    names = {'overview': 'Overview', 'foundation':'Data Landscape', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Company Detail', 'excel': 'Documents & Reports'}
+    names = {'overview': 'Overview', 'foundation':'Data Landscape', 'issues': 'Investment Issues', 'watchlist': 'Investment Issues', 'comparison':'Company Comparison', 'company': 'Investment Detail', 'excel': 'Documents & Reports'}
     st.markdown('<div class="gp-breadcrumb">Portfolio / '+names.get(page, 'Overview')+'<span class="gp-tag">Product Demo · Synthetic Data</span></div>', unsafe_allow_html=True)
 
 
@@ -68,20 +68,22 @@ def company_card(company, investment_result=None):
         st.button('View Investment Detail →', key='open_'+company.id, width='stretch', on_click=navigate, args=('company', company.id))
 
 
-def page_heading(title, subtitle, workbook_data=None):
-    heading, action = st.columns([3, 1])
-    with heading:
-        st.title(title)
-        st.caption(subtitle)
-    if workbook_data:
-        action.download_button('↓ Download Portfolio Excel', workbook_data,
-            file_name='GP_Portfolio_Review_Sep2026_FY2026.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            type='primary', width='stretch', key='gp_download')
+def generated_excel_download(label, data, filename, key):
+    """Shared presentation for generated reports; source downloads stay distinct."""
+    with st.container(key='generated_excel_'+key):
+        st.download_button(label, data, file_name=filename,
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            icon=':material/download:', type='primary', key=key)
+
+
+def page_heading(title, subtitle):
+    st.title(title)
+    st.caption(subtitle)
 
 
 def overview(companies, workbook_data=None):
     st.markdown('<div class="gp-eyebrow">GP MONITORING / REPORTING CYCLE</div>', unsafe_allow_html=True)
-    page_heading('Portfolio Overview', 'Operating performance, investment issues and management follow-up · September 2026 / FY2026', workbook_data)
+    page_heading('Portfolio Overview', 'Operating performance, investment issues and management follow-up · September 2026 / FY2026')
     st.markdown('<div class="v2-workflow"><b>01 &nbsp;Company packages ✓</b><span>→</span><b>02 &nbsp;Verified AI assessments ✓</b><span>→</span><b>03 &nbsp;Portfolio review</b><span>→</span><b>04 &nbsp;Management follow-up</b><span>→</span><b>05 &nbsp;Source-linked Excel</b></div>', unsafe_allow_html=True)
     from portfolio_investment_ui import investment_cards
     investment_cards(companies)
@@ -92,6 +94,9 @@ def overview(companies, workbook_data=None):
     render_holdings(companies)
     with st.expander('Reporting periods & comparability'):
         literal_prose(COMPARABILITY)
+    if workbook_data:
+        generated_excel_download('Download Portfolio Excel',workbook_data,
+            'GP_Portfolio_Review_Sep2026_FY2026.xlsx','gp_download')
 
 
 def render_comparison(companies, matrix=False):

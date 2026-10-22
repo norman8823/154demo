@@ -142,4 +142,4 @@ def test_mapping_filters_detail_state_and_original_finding_navigation():
     at.button(key='foundation_issue_summit:finding:10004').click().run()
     assert not at.exception
     assert at.query_params['company']=='summit' and at.query_params['finding']=='10004'
-    assert at.title[0].value=='Summit Home Services'
+    assert at.title[0].value=='Investment Detail'

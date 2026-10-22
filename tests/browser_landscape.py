@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/outlook/landscape';OUT.mkdir(parents=True,exist_ok=True)
 IMAGES=ROOT/'docs/images/outlook';IMAGES.mkdir(parents=True,exist_ok=True)
 receipt={'browser_errors':[],'external_requests':[]}
-expected=['Portfolio Overview','Company Detail','Data Landscape','Documents & Reports']
+expected=['Portfolio Overview','Investment Detail','Data Landscape','Documents & Reports']
 with sync_playwright() as p:
     browser=p.chromium.launch(channel='chrome',headless=True)
     page=browser.new_page(viewport={'width':1440,'height':1100},accept_downloads=True)
@@ -44,7 +44,7 @@ with sync_playwright() as p:
     page.locator('[data-testid="stMain"]').evaluate('(e)=>e.scrollTop=0')
     page.screenshot(path=str(IMAGES/'data-landscape-desktop.png'),full_page=True)
     receipt.update({'navigation':expected,'foundation_url_preserved':True,'kpis':['76/100','67%','4'],'data_zip_sha256_unchanged':actual_hash,'standalone_consumer_companies':3,'desktop_no_overflow':True})
-    page.get_by_role('button',name='Company Detail',exact=True).click()
+    page.get_by_role('button',name='Investment Detail',exact=True).click()
     expect(page.get_by_role('heading',name='Summit Home Services',exact=True)).to_be_visible(timeout=60000)
     page.get_by_role('button',name='Data Landscape',exact=True).click();ready()
     assert 'page=foundation' in page.url

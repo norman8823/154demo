@@ -32,7 +32,7 @@ def render_mobile_detail(company):
     from portfolio_ui import navigate,literal_prose
     with st.container(key='mobile_company_detail'):
         st.button('← Back to portfolio',key='mobile_back_portfolio',on_click=navigate,args=('overview',),width='stretch')
-        st.markdown('<h1>'+escape(company.name)+'</h1>',unsafe_allow_html=True)
+        st.markdown('<h1>Investment Detail</h1><h2 class="investment-company-name">'+escape(company.name)+'</h2>',unsafe_allow_html=True)
         st.caption(company.sector+' · '+company.review.report_period+' · Prepared assessment')
         from portfolio_outlook import render_outlook
         render_outlook(company)

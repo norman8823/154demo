@@ -52,7 +52,7 @@ def test_real_investment_cards_remain_distinct_from_verified_operating_values():
         assert value in html or any(value in c.value for c in at.caption)
     at.button(key='open_tallis').click().run()
     assert not at.exception
-    assert at.title[0].value=='Tallis Brook Accounting'
+    assert at.title[0].value=='Investment Detail'
     # The final demo restricts desktop detail to summary/findings. Ledger values
     # remain unchanged in the already-validated portfolio cards and Excel.
     assert not any(e.label.startswith('Investment context ·') for e in at.expander)
