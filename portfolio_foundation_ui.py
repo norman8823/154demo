@@ -1,4 +1,6 @@
 """Presentation-only workflow page over the unchanged v3 data contracts."""
+from contextlib import nullcontext
+import hashlib
 import json
 from html import escape
 from pathlib import Path
@@ -9,9 +11,19 @@ from portfolio_readiness import workflow_readiness
 from portfolio_tables import responsive_table,json_records
 
 
-@st.cache_data(show_spinner=False)
-def foundation_package(companies):
-    return export_foundation(companies)
+def _foundation_identity(companies):
+    identity=[(c.id,c.run,c.provenance['workbook_sha256'],c.provenance['snapshot_sha256']) for c in companies]
+    return hashlib.sha256(json.dumps(identity,separators=(',',':')).encode()).hexdigest()
+
+
+@st.cache_resource(show_spinner=False)
+def foundation_package(source_identity, _companies):
+    """Return immutable ZIP bytes keyed by approved source identity.
+
+    The underscore excludes Review objects from Streamlit's cache key. `bytes`
+    are immutable, and export_foundation only reads the verified package inputs.
+    """
+    return export_foundation(_companies)
 
 
 def _value(row):
@@ -30,8 +42,13 @@ def _fields(items):
     return '<dl>'+''.join('<dt>'+escape(k)+'</dt><dd>'+escape(str(v))+'</dd>' for k,v in items)+'</dl>'
 
 
+def _measure(perf, name):
+    return perf.measure(name) if perf is not None else nullcontext()
+
+
 def render_foundation(companies, perf=None):
-    st.markdown('<style>'+Path(__file__).with_name('portfolio_foundation.css').read_text()+'</style>',unsafe_allow_html=True)
+    with _measure(perf, 'data_landscape_stylesheet_read'):
+        st.markdown('<style>'+Path(__file__).with_name('portfolio_foundation.css').read_text()+'</style>',unsafe_allow_html=True)
     if perf is None:
         view=workflow_readiness(companies)
     else:
@@ -45,16 +62,21 @@ def render_foundation(companies, perf=None):
         badge.markdown('<span class="foundation-demo">Product Demo · Synthetic Data</span>',unsafe_allow_html=True)
         st.subheader('AI Workflow Readiness')
         st.markdown('<div class="foundation-subtitle">'+escape(view['model']['name'])+'</div>',unsafe_allow_html=True)
-        _render_summary(view)
+        with _measure(perf, 'data_landscape_summary_render'):
+            _render_summary(view)
         st.markdown('<div class="foundation-scope"><span class="foundation-scope-icon">i</span><div><strong>Scope: '+escape(view['model']['name'])+'</strong>Mapping, source verification and reporting-frequency checks for this workflow.</div><a href="#foundation-model">View workflow configuration &nbsp; →</a></div>',unsafe_allow_html=True)
         with st.container(key='foundation_mapping_panel'):
-            _render_mapping(companies,view)
+            with _measure(perf, 'data_landscape_mapping_panel_total'):
+                _render_mapping(companies,view,perf=perf)
         issues,export=st.columns([1.65,1],gap='small')
         with issues,st.container(key='foundation_issues'):
-            _render_issues(companies,view['issues'])
+            with _measure(perf, 'data_landscape_issues_render'):
+                _render_issues(companies,view['issues'],perf=perf)
         with export,st.container(key='foundation_export'):
-            _render_export(companies,view['quality'])
-        _render_methodology(view)
+            with _measure(perf, 'data_landscape_export_render'):
+                _render_export(companies,view['quality'],perf=perf)
+        with _measure(perf, 'data_landscape_methodology_render'):
+            _render_methodology(view)
 
 
 def _render_summary(view):
@@ -67,9 +89,10 @@ def _render_summary(view):
         '<div class="foundation-kpi"><div class="foundation-kpi-head"><span class="foundation-kpi-value issues">'+str(a['issue_groups'])+'</span><span class="foundation-kpi-label">Data Issues</span></div><div class="foundation-kpi-note" style="margin-top:9px">Evidence-backed review groups · remain open</div><div class="foundation-kpi-foot">'+str(q['unresolved_mappings'])+' unresolved mapping rows · '+str(q['blank_observations'])+' blanks retained</div></div></div>',unsafe_allow_html=True)
 
 
-def _render_mapping(companies,view):
-    from portfolio_catalog import catalog_entries,catalog_detail,GRAINS
-    entries=catalog_entries(view['facts'],view['lineage'],view['model'])
+def _render_mapping(companies,view,perf=None):
+    from portfolio_catalog import catalog_entries,GRAINS
+    with _measure(perf, 'data_landscape_catalog_entries_build'):
+        entries=catalog_entries(view['facts'],view['lineage'],view['model'])
     index={e['metric_id']:e for e in entries}
     st.subheader('Data Catalog & Dictionary')
     st.caption('Explore a financial definition, compare company reporting conventions and inspect the source-to-output mapping.')
@@ -77,7 +100,8 @@ def _render_mapping(companies,view):
     identity=st.selectbox('Data element',list(index),format_func=lambda k:index[k]['label']+' · '+str(index[k]['observations'])+' observations',key='foundation_metric')
     entry=index[identity]
     with st.expander('Browse catalog · '+str(len(entries))+' data elements'):
-        responsive_table(pd.DataFrame([{'Data element':e['label'],'Observations':e['observations'],'Accepted automatic mappings':str(e['accepted'])+'/'+str(e['observations']),'Numeric source checks':str(e['verified'])+'/'+str(e['observations'])} for e in entries]),key='foundation_catalog',page_size=10,details=False)
+        with _measure(perf, 'data_landscape_catalog_table_render'):
+            responsive_table(pd.DataFrame([{'Data element':e['label'],'Observations':e['observations'],'Accepted automatic mappings':str(e['accepted'])+'/'+str(e['observations']),'Numeric source checks':str(e['verified'])+'/'+str(e['observations'])} for e in entries]),key='foundation_catalog',page_size=10,details=False)
         st.caption('Retained financial categories include account detail, subtotals and repeated presentations; they must not be summed blindly. Source checking does not establish semantic mapping acceptance.')
     st.markdown('<div class="foundation-definition"><strong>'+escape(entry['label'])+'</strong><p>'+escape(entry['definition'])+'</p><small>'+escape(entry['metric_id'])+' · '+escape(entry['category'])+'</small></div>',unsafe_allow_html=True)
     if entry['workflow_definition']:st.caption('GP workflow requirement: '+entry['workflow_definition'])
@@ -104,7 +128,8 @@ def _render_mapping(companies,view):
         sources.append('<div class="catalog-company-source"><h4>'+escape(company.name)+'</h4><div class="catalog-source-label">'+escape(shown_labels)+'</div><small>REPORTING CONVENTIONS</small><p>'+escape(frequency+' package · '+', '.join(bases)+' observations')+'</p><small>SOURCE LOCATION</small><p>'+escape(source_location)+'</p><span>'+escape(source_sheets)+'</span></div>')
     st.markdown('<div class="catalog-source-grid">'+''.join(sources)+'</div>',unsafe_allow_html=True)
     with st.expander('Company source index & CSV'):
-        responsive_table(pd.DataFrame(source_records),key='foundation_sources',page_size=3,details=False,css_class='gp-catalog-sources')
+        with _measure(perf, 'data_landscape_source_index_table_render'):
+            responsive_table(pd.DataFrame(source_records),key='foundation_sources',page_size=3,details=False,css_class='gp-catalog-sources')
     linked=catalog_linked_issues(entry,view)
     with st.container(key='catalog_workflow_context'):
         usage,gaps=st.columns([1.15,1])
@@ -123,22 +148,28 @@ def _render_mapping(companies,view):
             else:st.caption('No known review group is linked to this element’s source records. Comprehensive reconciliation is not established.')
     st.caption(f"{entry['observations']} observations · {entry['accepted']} accepted automatic mappings · {entry['verified']} numeric source checks · Human approval: not recorded")
     with st.expander('Inspect company mapping and source evidence',expanded=True):
-        company_filter,scenario_filter,period_filter=st.columns([2,1,1.4])
-        owners=[c.name for c in companies if any(r['company_id']==c.id for r in entry['rows'])]
-        if st.session_state.get('foundation_company') not in ['All companies']+owners:st.session_state.foundation_company='All companies'
-        selected=company_filter.selectbox('Company',['All companies']+owners,key='foundation_company')
-        scenario=scenario_filter.selectbox('Scenario',['All scenarios','actual','budget'],key='foundation_scenario')
-        periods=['All periods']+sorted({r['period'] for r in entry['rows']},reverse=True)
-        if st.session_state.get('foundation_period') not in periods:st.session_state.foundation_period='All periods'
-        period=period_filter.selectbox('Period',periods,key='foundation_period')
-        rows=[r for r in entry['rows'] if (selected=='All companies' or r['company_name']==selected) and (scenario=='All scenarios' or r['scenario']==scenario) and (period=='All periods' or r['period']==period)]
-        rows.sort(key=lambda r:(not r['comparison_selected'],r['scenario']!='actual',next(i for i,c in enumerate(companies) if c.id==r['company_id'])))
-        if not rows:st.info('No source observations match these filters.')
-        else:
-            by_id={r['fact_key']:r for r in rows}
-            if st.session_state.get('foundation_mapping') not in by_id:st.session_state.foundation_mapping=next(iter(by_id))
-            fact=st.selectbox('Mapping source',list(by_id),format_func=lambda key:by_id[key]['company_name']+' · '+by_id[key]['source_label']+' · '+by_id[key]['period']+' · '+by_id[key]['scenario']+' · '+by_id[key]['workbook_reference'],key='foundation_mapping')
-            _render_detail(catalog_detail(by_id[fact],view['lineage'],view['model']),next(c for c in companies if c.id==by_id[fact]['company_id']))
+        with _measure(perf, 'data_landscape_mapping_detail_controls_and_table'):
+            _render_mapping_detail(companies,view,entry)
+
+
+def _render_mapping_detail(companies,view,entry):
+    from portfolio_catalog import catalog_detail
+    company_filter,scenario_filter,period_filter=st.columns([2,1,1.4])
+    owners=[c.name for c in companies if any(r['company_id']==c.id for r in entry['rows'])]
+    if st.session_state.get('foundation_company') not in ['All companies']+owners:st.session_state.foundation_company='All companies'
+    selected=company_filter.selectbox('Company',['All companies']+owners,key='foundation_company')
+    scenario=scenario_filter.selectbox('Scenario',['All scenarios','actual','budget'],key='foundation_scenario')
+    periods=['All periods']+sorted({r['period'] for r in entry['rows']},reverse=True)
+    if st.session_state.get('foundation_period') not in periods:st.session_state.foundation_period='All periods'
+    period=period_filter.selectbox('Period',periods,key='foundation_period')
+    rows=[r for r in entry['rows'] if (selected=='All companies' or r['company_name']==selected) and (scenario=='All scenarios' or r['scenario']==scenario) and (period=='All periods' or r['period']==period)]
+    rows.sort(key=lambda r:(not r['comparison_selected'],r['scenario']!='actual',next(i for i,c in enumerate(companies) if c.id==r['company_id'])))
+    if not rows:st.info('No source observations match these filters.')
+    else:
+        by_id={r['fact_key']:r for r in rows}
+        if st.session_state.get('foundation_mapping') not in by_id:st.session_state.foundation_mapping=next(iter(by_id))
+        fact=st.selectbox('Mapping source',list(by_id),format_func=lambda key:by_id[key]['company_name']+' · '+by_id[key]['source_label']+' · '+by_id[key]['period']+' · '+by_id[key]['scenario']+' · '+by_id[key]['workbook_reference'],key='foundation_mapping')
+        _render_detail(catalog_detail(by_id[fact],view['lineage'],view['model']),next(c for c in companies if c.id==by_id[fact]['company_id']))
 
 
 def catalog_linked_issues(entry,view):
@@ -173,7 +204,7 @@ def _render_detail(row,company=None):
         st.caption('Retained normalization: original value × '+str(row['source_scale'])+' × sign '+str(row['sign_adjustment'])+'. No FX or period conversion. Formula text is provenance only and is not executed.')
 
 
-def _render_issues(companies,all_issues):
+def _render_issues(companies,all_issues,perf=None):
     from portfolio_ui import literal_prose,navigate
     st.markdown('<div id="foundation-data-issues"></div>',unsafe_allow_html=True)
     st.subheader('Data Issues')
@@ -199,18 +230,21 @@ def _render_issues(companies,all_issues):
                                      'Original value / formula':str(e.get('Original value / formula',e.get('original_value'))),
                                      'Mapping / check':e.get('Check / use',e.get('mapping_status'))})
                 st.caption('Source workbook: '+str(issue['evidence'][0].get('File',issue['evidence'][0].get('workbook'))))
-                responsive_table(pd.DataFrame(evidence),key='issue_records_'+issue['id'],page_size=10,details=True)
+                with _measure(perf, 'data_landscape_issue_evidence_table'):
+                    responsive_table(pd.DataFrame(evidence),key='issue_records_'+issue['id'],page_size=10,details=True)
                 if issue['finding_id'] is not None:
                     st.button('Open original finding & evidence',key='foundation_issue_'+issue['id'],on_click=navigate,args=('company',company.id,issue['finding_id']))
     st.caption('Known review groups, not a complete audit. Overlapping groups are not additive observation counts.')
 
 
-def _render_export(companies,quality):
+def _render_export(companies,quality,perf=None):
     st.subheader('Structured Data Export')
     st.markdown('<div class="foundation-export-copy">Consume the structured data independently of this dashboard, without original workbooks, network access or an AI model.</div>',unsafe_allow_html=True)
     files=[('financial_facts.csv',f"{quality['normalized_observations']:,} observations"),('metric_definitions.json','Versioned semantic definitions'),('source_lineage.csv','Workbook / cell lineage'),('quality_report.json','Verification & mapping states'),('example_consumer.py','Standalone comparison'),('README.md','Usage & limitations')]
     st.markdown('<div class="foundation-files">'+''.join('<b>▤ &nbsp;'+escape(name)+'</b><span>'+escape(note)+'</span>' for name,note in files)+'</div>',unsafe_allow_html=True)
-    st.download_button('↓ Download AI-ready data package',foundation_package(companies),file_name='AI_Ready_Operating_Data_v1.zip',mime='application/zip',type='primary',key='gp_data_download',width='stretch')
+    with _measure(perf, 'data_landscape_package_zip_cache_lookup'):
+        package=foundation_package(_foundation_identity(companies),companies)
+    st.download_button('↓ Download AI-ready data package',package,file_name='AI_Ready_Operating_Data_v1.zip',mime='application/zip',type='primary',key='gp_data_download',width='stretch')
     st.caption(f"{quality['source_observations_verified']:,} numeric source checks · {quality['unresolved_mappings']} unresolved mapping rows · {quality['blank_observations']} blanks preserved")
     st.markdown('<div class="foundation-uses"><strong>Potential Downstream Uses</strong>Investment Monitoring · Underwriting · Due Diligence · Portfolio Operations · Expense Benchmarking · Compliance</div>',unsafe_allow_html=True)
     with st.expander('Independent reuse and package contents'):

@@ -80,7 +80,7 @@ def page_heading(title, subtitle):
     st.caption(subtitle)
 
 
-def overview(companies, workbook_data=None):
+def overview(companies, workbook_data=None, workbook_filename='GP_Portfolio_Review_Sep2026_FY2026.xlsx'):
     st.markdown('<div class="gp-eyebrow">GP MONITORING / REPORTING CYCLE</div>', unsafe_allow_html=True)
     page_heading('Portfolio Overview', 'Operating performance, investment issues and management follow-up · September 2026 / FY2026')
     st.markdown('<div class="v2-workflow"><b>01 &nbsp;Company packages ✓</b><span>→</span><b>02 &nbsp;Verified AI assessments ✓</b><span>→</span><b>03 &nbsp;Portfolio review</b><span>→</span><b>04 &nbsp;Management follow-up</b><span>→</span><b>05 &nbsp;Source-linked Excel</b></div>', unsafe_allow_html=True)
@@ -95,7 +95,7 @@ def overview(companies, workbook_data=None):
         literal_prose(COMPARABILITY)
     if workbook_data:
         generated_excel_download('Download Excel',workbook_data,
-            'GP_Portfolio_Review_Sep2026_FY2026.xlsx','gp_download')
+            workbook_filename,'gp_download')
 
 
 def render_comparison(companies, matrix=False):

@@ -3,8 +3,8 @@ import streamlit as st
 from engine import InputError
 from portfolio_data import load_companies, company_by_id
 from portfolio_ui import shell, overview, footer, render_watchlist, page_heading
-from portfolio_excel import export_portfolio
 from portfolio_performance import start_run
+from portfolio_report_assets import report_asset
 
 st.set_page_config(page_title='Portfolio Reporting Copilot | 154 Partners', page_icon='▣', layout='wide', initial_sidebar_state='locked')
 
@@ -26,14 +26,6 @@ def prepared_companies(_perf=None):
         return load_companies()
 
 
-@st.cache_data(show_spinner=False)
-def gp_workbook(companies, _perf=None):
-    if _perf is None:
-        return export_portfolio(companies)
-    with _perf.measure('gp_workbook_generation_on_cache_miss'):
-        return export_portfolio(companies)
-
-
 try:
     with st.spinner('Verifying prepared company reports…'):
         with perf.measure('prepared_cache_lookup_and_deserialization'):
@@ -45,10 +37,11 @@ except (InputError, OSError, ValueError, KeyError) as exc:
 with perf.measure('sidebar_and_navigation_render'):
     shell(page, companies, perf=perf)
 workbook_data = None
+workbook_filename = None
 if page in {'overview', 'issues'}:
     try:
-        with perf.measure('gp_workbook_cache_lookup_and_deserialization'):
-            workbook_data = gp_workbook(companies, perf)
+        with perf.measure('gp_report_asset_verification_and_disk_read'):
+            workbook_data, workbook_filename, _warnings = report_asset('gp_portfolio', companies)
     except (InputError, OSError, ValueError) as exc:
         st.error('GP Excel source verification failed. Restore the canonical prepared sources before downloading. '+str(exc))
         st.stop()
@@ -71,7 +64,7 @@ with perf.measure('page_render'):
         render_watchlist(companies)
         from portfolio_ui import generated_excel_download
         generated_excel_download('Download Excel',workbook_data,
-            'GP_Portfolio_Review_Sep2026_FY2026.xlsx','gp_download')
+            workbook_filename,'gp_download')
     elif page == 'source':
         from portfolio_document_ui import render_source_route
         render_source_route(companies)
@@ -79,6 +72,6 @@ with perf.measure('page_render'):
         from portfolio_document_ui import render_documents
         render_documents(companies, workbook_data)
     else:
-        overview(companies, workbook_data)
+        overview(companies, workbook_data, workbook_filename)
     footer()
 perf.finish()

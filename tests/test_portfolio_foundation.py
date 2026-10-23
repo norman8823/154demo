@@ -146,3 +146,15 @@ def test_data_foundation_page_exposes_approval_distinctions_and_real_preview():
     at.selectbox(key='foundation_scenario').set_value('budget').run()
     assert not at.exception
     assert any('204 unresolved mapping rows' in c.value for c in at.caption)
+
+
+def test_data_package_immutable_resource_cache_preserves_exact_export(package):
+    from portfolio_foundation_ui import foundation_package, _foundation_identity
+    companies,data,_files=package
+    foundation_package.clear()
+    identity=_foundation_identity(companies)
+    first=foundation_package(identity,companies)
+    second=foundation_package(identity,companies)
+    assert first==data and second==data
+    assert first is second
+    foundation_package.clear()

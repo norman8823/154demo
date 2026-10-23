@@ -14,7 +14,6 @@ from engine import ROOT, NOT_AVAILABLE, company_name
 from executive import present, money as executive_money, pp
 from card_presentation import finding_html, card_metric
 from package_analysis import analysis_findings
-from portfolio_financial_reporting import export_company_report as export_report
 from portfolio_comparison import comparison
 from portfolio_ui import navigate, company_selector
 from portfolio_tables import CompanyPresentation
@@ -52,14 +51,6 @@ def existing_views():
     return namespace
 
 
-@st.cache_data(show_spinner=False)
-def company_export(review, _perf=None):
-    if _perf is None:
-        return export_report(review)
-    with _perf.measure('company_workbook_generation_on_cache_miss'):
-        return export_report(review)
-
-
 def render_company(company, companies=None, perf=None):
     r = company.review
     v = comparison(company)
@@ -80,12 +71,12 @@ def render_company(company, companies=None, perf=None):
     # CSS chooses the existing complete report or the concise phone view.
     # Both share the exact company/route; resizing never changes navigation state.
     with st.container(key='desktop_company_detail'):
-        _render_desktop_company(company,r,v,perf=perf)
+        _render_desktop_company(company,r,v,companies or (company,),perf=perf)
     from portfolio_mobile_detail import render_mobile_detail
     render_mobile_detail(company)
 
 
-def _render_desktop_company(company,r,v,perf=None):
+def _render_desktop_company(company,r,v,companies,perf=None):
     st.button('← Portfolio Overview', on_click=navigate, args=('overview',))
     st.title('Investment Detail')
     st.markdown('<h2 class="investment-company-name">'+escape(company.name)+'</h2>',unsafe_allow_html=True)
@@ -94,13 +85,13 @@ def _render_desktop_company(company,r,v,perf=None):
     render_outlook(company)
     render_company_summary(company)
     # The portfolio demo exposes only the standard, prepared company report.
+    from portfolio_report_assets import report_asset
     if perf is None:
-        data = company_export(r)
+        data_bytes, filename, warnings = report_asset(company.id, companies)
     else:
-        with perf.measure('company_workbook_cache_lookup_and_deserialization'):
-            data = company_export(r, perf)
-    st.session_state.export = data
-    data_bytes, filename, warnings = data
+        with perf.measure('company_report_asset_verification_and_disk_read'):
+            data_bytes, filename, warnings = report_asset(company.id, companies)
+    st.session_state.export = (data_bytes, filename, warnings)
     for warning in warnings: st.caption(warning)
     from portfolio_ui import generated_excel_download
     generated_excel_download('Download Excel',data_bytes,filename,'company_download')

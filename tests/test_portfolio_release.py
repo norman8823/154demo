@@ -20,7 +20,7 @@ def test_gp_workbook_is_only_retrieved_for_pages_with_a_gp_download():
     app = ast.parse((ROOT/'portfolio_app.py').read_text())
     calls = [node for node in ast.walk(app)
              if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
-             and node.func.id == 'gp_workbook']
+             and node.func.id == 'report_asset']
     guards = [node for node in app.body if isinstance(node, ast.If)
               and isinstance(node.test, ast.Compare)
               and ast.unparse(node.test) == "page in {'overview', 'issues'}"]
