@@ -30,9 +30,13 @@ def _fields(items):
     return '<dl>'+''.join('<dt>'+escape(k)+'</dt><dd>'+escape(str(v))+'</dd>' for k,v in items)+'</dl>'
 
 
-def render_foundation(companies):
+def render_foundation(companies, perf=None):
     st.markdown('<style>'+Path(__file__).with_name('portfolio_foundation.css').read_text()+'</style>',unsafe_allow_html=True)
-    view=workflow_readiness(companies)
+    if perf is None:
+        view=workflow_readiness(companies)
+    else:
+        with perf.measure('data_landscape_readiness_build'):
+            view=workflow_readiness(companies)
     with st.container(key='foundation_page'):
         title,badge=st.columns([4.5,1.5])
         with title:

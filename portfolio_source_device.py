@@ -14,9 +14,14 @@ export default function({setStateValue}) {
 ''')
 
 
-def mount_source_device():
-    result=_probe(key='source_viewport',default={'desktop':None},
-                  on_desktop_change=lambda:None,height=1)
+def mount_source_device(perf=None):
+    if perf is None:
+        result=_probe(key='source_viewport',default={'desktop':None},
+                      on_desktop_change=lambda:None,height=1)
+    else:
+        with perf.measure('viewport_component_update'):
+            result=_probe(key='source_viewport',default={'desktop':None},
+                          on_desktop_change=lambda:None,height=1)
     st.session_state.source_desktop=result.desktop
 
 

@@ -53,11 +53,14 @@ def existing_views():
 
 
 @st.cache_data(show_spinner=False)
-def company_export(review):
-    return export_report(review)
+def company_export(review, _perf=None):
+    if _perf is None:
+        return export_report(review)
+    with _perf.measure('company_workbook_generation_on_cache_miss'):
+        return export_report(review)
 
 
-def render_company(company, companies=None):
+def render_company(company, companies=None, perf=None):
     r = company.review
     v = comparison(company)
     if companies:
@@ -77,12 +80,12 @@ def render_company(company, companies=None):
     # CSS chooses the existing complete report or the concise phone view.
     # Both share the exact company/route; resizing never changes navigation state.
     with st.container(key='desktop_company_detail'):
-        _render_desktop_company(company,r,v)
+        _render_desktop_company(company,r,v,perf=perf)
     from portfolio_mobile_detail import render_mobile_detail
     render_mobile_detail(company)
 
 
-def _render_desktop_company(company,r,v):
+def _render_desktop_company(company,r,v,perf=None):
     st.button('← Portfolio Overview', on_click=navigate, args=('overview',))
     st.title('Investment Detail')
     st.markdown('<h2 class="investment-company-name">'+escape(company.name)+'</h2>',unsafe_allow_html=True)
@@ -91,7 +94,11 @@ def _render_desktop_company(company,r,v):
     render_outlook(company)
     render_company_summary(company)
     # The portfolio demo exposes only the standard, prepared company report.
-    data = company_export(r)
+    if perf is None:
+        data = company_export(r)
+    else:
+        with perf.measure('company_workbook_cache_lookup_and_deserialization'):
+            data = company_export(r, perf)
     st.session_state.export = data
     data_bytes, filename, warnings = data
     for warning in warnings: st.caption(warning)

@@ -9,6 +9,8 @@ CSS = '<style>'+Path(__file__).with_name('portfolio_layout.css').read_text()+'</
 
 
 def navigate(page, company=None, finding=None):
+    from portfolio_performance import record_navigation
+    record_navigation(st.session_state, page)
     if page == 'company' and company and company != st.query_params.get('company'):
         for key in ('gp_company_route','gp_company_tab','selected','gp_selected_finding','export'):
             st.session_state.pop(key, None)
@@ -20,10 +22,10 @@ def navigate(page, company=None, finding=None):
     st.query_params.from_dict(params)
 
 
-def shell(page, companies):
+def shell(page, companies, perf=None):
     st.markdown(CSS, unsafe_allow_html=True)
     from portfolio_source_device import mount_source_device
-    mount_source_device()
+    mount_source_device(perf=perf)
     with st.sidebar:
         st.markdown('<div class="gp-brand">154 Partners<span class="gp-product">Portfolio Reporting Copilot</span><small>by NL Intelligence</small></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
