@@ -1,7 +1,7 @@
 {
   "schema_version": "illustrative-investments-1.0",
   "provenance": "synthetic_illustrative",
-  "notice": "SYNTHETIC ILLUSTRATIVE DATA. Fictional investments, sponsor and fund. Not facts about 154 Partners or any real holdings or returns. Not supported by company reporting workbooks.",
+  "notice": "SYNTHETIC ILLUSTRATIVE DATA. Fictional investments, sponsor and fund. Not facts about any real sponsor, holdings or returns. Not supported by company reporting workbooks.",
   "valuation_date": "2026-09-30",
   "currency": "USD",
   "sponsor": "Illustrative Sponsor (fictional)",

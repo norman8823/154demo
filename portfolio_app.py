@@ -6,7 +6,7 @@ from portfolio_ui import shell, overview, footer, render_watchlist, page_heading
 from portfolio_performance import start_run
 from portfolio_report_assets import report_asset
 
-st.set_page_config(page_title='Portfolio Reporting Copilot | 154 Partners', page_icon='▣', layout='wide', initial_sidebar_state='locked')
+st.set_page_config(page_title='Portfolio Reporting Copilot | NL Intelligence', page_icon='▣', layout='wide', initial_sidebar_state='locked')
 
 
 page = st.query_params.get('page', 'overview')
