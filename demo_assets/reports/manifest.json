@@ -9,15 +9,15 @@
         "portfolio_comparison.py": "e2c45f2ac820154088bbc1950028e6dcd487d4035b2a5b8aa3bdd56e4f436e88",
         "portfolio_dashboard.py": "b88fcc6765d1869ec50560989ec8de0ddf6192513e3f9b9f8d5be1ac44da2556",
         "portfolio_excel.py": "63d21419d46a79d49d235b53bd779c3b688b7b608fb79c1e5c80ba0ec9570fe5",
-        "portfolio_financial_reporting.py": "bf1f1d12d07cf9d593ee749632ca7c64cb2a5e2fa2f6cc2c8cdcd1fb00cad263",
-        "portfolio_gp_presentation.py": "068f7dd3b4fff21aecd559adcc49cb46965b2ce483fa6634a3794d9c32cbda9a",
+        "portfolio_financial_reporting.py": "8af19f25e44e5e4ba9d523a63cb9cf929504e7feec289c0c997b0f16ee41b82f",
+        "portfolio_gp_presentation.py": "1d36100fa8c68eedcf7df5aa923b072230fe3368fd473a2a6c850132b2f2a47c",
         "portfolio_investment_excel.py": "b8f3cbcac093cc36320dea14f237f6a6593698a9e9a2619f956f4c3d95b948f8",
-        "portfolio_investments.py": "fb3b630fbf8b9453dfa036941a83b8964144f9e53df49954fe07fb2f0bf08fd0",
+        "portfolio_investments.py": "f83462422c81f70a66d9b607d1fc70c339dd080c4b04be6b85f1dbdc5d617bc8",
         "portfolio_outlook.py": "bb26462c9e490aada30d01c01497ce1469564f2b09a747de4eac0cf6f166d9bc",
         "portfolio_sources.py": "e942a9e7c15bde029bc258e8a845f06b871356dae4ed3903b808e700cfcd130c",
         "portfolio_watchlist.py": "089cff922886403d3c6503078094a0c4e6f06298da4378bc85afeb4fa834f3e7"
       },
-      "sha256": "8c29a3b64ef876808e3223265d1c74d9667f95e087e3a8f8218fad771e75bfac",
+      "sha256": "06bab8f79f8553cc6dcf3f7406cc82df4a1b82a1b230a3ac27105225652c104d",
       "source_checkpoints": {
         "harrow": {
           "run": "harrow-17-final",
@@ -49,10 +49,10 @@
         "excel_layout.py": "8e2514de19042da1c228318398639e18ab0643babf18ab601881f9b53976e682",
         "portfolio_company_excel.py": "7f03e4d7911641991c51d1f449d1fb960e4dbb9154c344ff248584a57b17bcdb",
         "portfolio_comparison.py": "e2c45f2ac820154088bbc1950028e6dcd487d4035b2a5b8aa3bdd56e4f436e88",
-        "portfolio_financial_reporting.py": "bf1f1d12d07cf9d593ee749632ca7c64cb2a5e2fa2f6cc2c8cdcd1fb00cad263",
+        "portfolio_financial_reporting.py": "8af19f25e44e5e4ba9d523a63cb9cf929504e7feec289c0c997b0f16ee41b82f",
         "reports.py": "4a7b2a08b9fdc4294b30057b73f99bcf7c6b6571ed498ea2f52596434928894c"
       },
-      "sha256": "4a6996e49fa9aa13a4c1514586de85178f3f041f98f7af59780dc708b34b05b9",
+      "sha256": "425f2dddde516964bc79eabaa42463b40e296091d576936c2c29ca1540ccfc79",
       "source_checkpoints": {
         "harrow": {
           "run": "harrow-17-final",
@@ -70,10 +70,10 @@
         "excel_layout.py": "8e2514de19042da1c228318398639e18ab0643babf18ab601881f9b53976e682",
         "portfolio_company_excel.py": "7f03e4d7911641991c51d1f449d1fb960e4dbb9154c344ff248584a57b17bcdb",
         "portfolio_comparison.py": "e2c45f2ac820154088bbc1950028e6dcd487d4035b2a5b8aa3bdd56e4f436e88",
-        "portfolio_financial_reporting.py": "bf1f1d12d07cf9d593ee749632ca7c64cb2a5e2fa2f6cc2c8cdcd1fb00cad263",
+        "portfolio_financial_reporting.py": "8af19f25e44e5e4ba9d523a63cb9cf929504e7feec289c0c997b0f16ee41b82f",
         "reports.py": "4a7b2a08b9fdc4294b30057b73f99bcf7c6b6571ed498ea2f52596434928894c"
       },
-      "sha256": "5df04a44a96102d325b42328cc991df5169a3cc1d1eed4ef2eac14981238fbf3",
+      "sha256": "4a419de3297d3cb9e86f668674bd00793091901601b90a1ea052df54b0c2eaf8",
       "source_checkpoints": {
         "summit": {
           "run": "summit-05-final",
@@ -91,10 +91,10 @@
         "excel_layout.py": "8e2514de19042da1c228318398639e18ab0643babf18ab601881f9b53976e682",
         "portfolio_company_excel.py": "7f03e4d7911641991c51d1f449d1fb960e4dbb9154c344ff248584a57b17bcdb",
         "portfolio_comparison.py": "e2c45f2ac820154088bbc1950028e6dcd487d4035b2a5b8aa3bdd56e4f436e88",
-        "portfolio_financial_reporting.py": "bf1f1d12d07cf9d593ee749632ca7c64cb2a5e2fa2f6cc2c8cdcd1fb00cad263",
+        "portfolio_financial_reporting.py": "8af19f25e44e5e4ba9d523a63cb9cf929504e7feec289c0c997b0f16ee41b82f",
         "reports.py": "4a7b2a08b9fdc4294b30057b73f99bcf7c6b6571ed498ea2f52596434928894c"
       },
-      "sha256": "8be8773e8b61decd138369b20357e3a2412c7c951a415fa05fada17656dd4ef2",
+      "sha256": "6839ecce853232291ea24f0b90b89ec13f13a6d4c8bd63143911b83043896db1",
       "source_checkpoints": {
         "tallis": {
           "run": "tallis-05-final",

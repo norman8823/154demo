@@ -14,7 +14,7 @@ import math
 import re
 
 LEDGER_PATH = Path(__file__).resolve().parent/'demo_investments/ledger.json'
-NOTICE = 'SYNTHETIC ILLUSTRATIVE DATA · Fictional sponsor investments; not 154 Partners holdings or returns. Separate from verified operating financials.'
+NOTICE = 'SYNTHETIC ILLUSTRATIVE DATA · Fictional sponsor investments; not actual holdings or returns. Separate from verified operating financials.'
 METHOD = 'Gross sponsor returns · ACT/365 dated cash flows · before fees, carry and fund expenses · no net fund or LP returns'
 
 

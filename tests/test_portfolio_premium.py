@@ -28,7 +28,7 @@ def test_application_branding_and_disclosure_are_presentation_only():
  at=AppTest.from_file(str(ROOT/'portfolio_app.py'),default_timeout=60).run()
  assert not at.exception
  html='\n'.join(m.value for m in at.markdown)
- for text in ('154 Partners','Portfolio Reporting Copilot','by NL Intelligence','Product Demo · Synthetic Data','For demo only. All portfolio companies, investment data, and financial figures are synthetic. Any resemblance to real companies or investments is coincidental.'):
+ for text in ('NL Intelligence','Portfolio Reporting Copilot','Product Demo · Synthetic Data','For demo only. All portfolio companies, investment data, and financial figures are synthetic. Any resemblance to real companies or investments is coincidental.'):
   assert text in html
  for old in ('Concept developed for','Synthetic demonstration','Prepared results · 0 new model calls'):assert old not in html
  at.button(key='open_tallis').click().run()

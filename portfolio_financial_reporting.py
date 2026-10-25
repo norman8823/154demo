@@ -117,7 +117,7 @@ def banner(ws, row, start, end, value, dark=False, size=10):
 def setup(ws, title, columns):
     ws.sheet_view.showGridLines = False
     banner(ws, 1, 1, columns, title, True, 19); ws.row_dimensions[1].height = 38
-    banner(ws, 2, 1, columns, '154 Partners · Portfolio Reporting Copilot · Product Demo · Synthetic Data')
+    banner(ws, 2, 1, columns, 'NL Intelligence · Portfolio Reporting Copilot · Product Demo · Synthetic Data')
     ws.row_dimensions[2].height = 26
     ws.column_dimensions['A'].width = 35
     for col in range(2, columns+1): ws.column_dimensions[get_column_letter(col)].width = 18

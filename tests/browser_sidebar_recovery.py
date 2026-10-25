@@ -66,7 +66,7 @@ with sync_playwright() as p:
    expect(page.get_by_role('heading',name='Data Landscape',exact=True)).to_be_visible();opened(page)
    page.get_by_role('button',name='Portfolio Overview',exact=True).click();ready(page)
    page.screenshot(path=str(SHOTS/f'desktop-{width}.png'))
-  assert '154 Partners' in page.locator('.gp-brand').inner_text()
+  assert 'NL Intelligence' in page.locator('.gp-brand').inner_text()
   assert 'Portfolio Reporting Copilot' in page.locator('.gp-brand').inner_text()
   assert 'linear-gradient' in sidebar.evaluate('(e)=>getComputedStyle(e).backgroundImage')
   assert page.locator('.st-key-sidebar_footer').count()==1

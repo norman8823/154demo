@@ -27,7 +27,7 @@ def shell(page, companies, perf=None):
     from portfolio_source_device import mount_source_device
     mount_source_device(perf=perf)
     with st.sidebar:
-        st.markdown('<div class="gp-brand">154 Partners<span class="gp-product">Portfolio Reporting Copilot</span><small>by NL Intelligence</small></div>', unsafe_allow_html=True)
+        st.markdown('<div class="gp-brand">NL Intelligence<span class="gp-product">Portfolio Reporting Copilot</span></div>', unsafe_allow_html=True)
         st.caption('WORKSPACE')
         with st.container(key='workspace_navigation'):
             for label, destination in [('Portfolio Overview', 'overview'), ('Investment Detail', 'company'), ('Data Landscape','foundation'), ('Source Documents', 'excel')]:

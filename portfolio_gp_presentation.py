@@ -79,7 +79,7 @@ def write_investment_review(wb, companies):
     total, positions, returns, operating = assessment(companies)
     merged(1, 'Portfolio Overview', size=22, bold=True, height=35, wrap=False)
     merged(2, 'Portfolio Investment Review · Valuation as of '+total['valuation_date'], color=MUTED, height=22)
-    merged(3, '154 Partners · For Investment Team Review · Product Demo · Synthetic Data', color=MUTED, size=10, height=22)
+    merged(3, 'NL Intelligence · For Investment Team Review · Product Demo · Synthetic Data', color=MUTED, size=10, height=22)
     cell = merged(4, 'Open Portfolio Financial Performance →', size=10, height=22)
     internal_link(cell, 'Portfolio Financial Performance', 'A1')
     for start, label, key, fmt in ((1,'Current Equity Value','current_equity_value',MILLIONS),

@@ -30,7 +30,7 @@ with sync_playwright() as p:
     expect(page.get_by_text('76/100',exact=True)).to_be_visible()
     expect(page.get_by_text('67%',exact=True)).to_be_visible()
   if phase=='after':
-   assert page.locator('.gp-brand').inner_text()=='154 Partners\nPortfolio Reporting Copilot\nby NL Intelligence'
+   assert page.locator('.gp-brand').inner_text()=='NL Intelligence\nPortfolio Reporting Copilot'
    expect(page.locator('.gp-note')).to_have_text('For demo only. All portfolio companies, investment data, and financial figures are synthetic. Any resemblance to real companies or investments is coincidental.')
   page.set_viewport_size({'width':390,'height':1200});wait(page)
   if page.locator('[data-testid="stSidebar"]').get_attribute('data-collapsed')=='false':page.get_by_role('button',name='Collapse sidebar',exact=True).click()

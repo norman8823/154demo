@@ -38,7 +38,7 @@ with sync_playwright() as p:
             page.goto('http://127.0.0.1:8502/?page='+route);settle(page)
             if width==390 and page.locator('[data-testid="stSidebar"]').get_attribute('data-collapsed')=='false':
                 page.get_by_role('button',name='Collapse sidebar',exact=True).click();page.wait_for_timeout(250)
-            assert page.title()=='Portfolio Reporting Copilot | 154 Partners'
+            assert page.title()=='Portfolio Reporting Copilot | NL Intelligence'
             assert page.get_by_role('combobox',name='Open company',exact=True).count()==0
             if route=='overview':
                 expect(page.locator('.v3-card-returns')).to_have_count(3)
